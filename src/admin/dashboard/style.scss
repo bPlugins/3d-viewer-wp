@@ -1,0 +1,21 @@
+:root {
+    --bpl-dashboard-primary-color: #146ef5;
+    --bpl-dashboard-primary-color-rgb: 20, 110, 245;
+    --bpl-dashboard-secondary-color: #ff7a00;
+    --bpl-dashboard-secondary-color-rgb: 255, 122, 0;
+    --bpl-dashboard-title-color: #070127;
+    --bpl-dashboard-title-color-rgb: 7, 1, 39;
+    --bpl-dashboard-content-color: #1b2e4b;
+    --bpl-dashboard-content-color-rgb: 27, 46, 75;
+}
+
+@import '../../../../bpl-tools/Admin/style.scss';
+
+// Your custom dashboard styles here
+
+
+#wpbody-content .fs-notice.promotion,
+#wpbody-content .fs-notice.success,
+#wpbody-content .fs-notice.updated {
+    display: none !important;
+}

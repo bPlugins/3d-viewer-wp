@@ -1,0 +1,633 @@
+.b3dviewer-wrapper {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 150px;
+
+  &:fullscreen {
+    background: #fff;
+  }
+}
+
+.b3dviewer {
+  .activate_ar {
+    background-color: white;
+    border-radius: 4px;
+    border: none;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}
+
+.pagination .b3dviewer-wrapper {
+  // height: calc(100% - 70px);
+}
+
+.b3dviewer.aligncenter {
+  text-align: left;
+}
+
+.b3dviewer-wrapper model-viewer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.b3dviewer-wrapper .slider {
+  width: fit-content;
+  text-align: center;
+  overflow: hidden;
+  position: absolute;
+  bottom: 16px;
+}
+
+.b3dviewer-wrapper * {
+  box-sizing: border-box;
+}
+
+.b3dviewer-wrapper .slides {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  margin-left: 10px;
+  overflow-y: hidden;
+}
+
+.slides .slide.selected,
+.modelThumbs .selected {
+  border: 2px solid #b3b3b3;
+}
+
+.slideController {
+
+  .arrow-left,
+  .arrow-right {
+    cursor: pointer;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+  }
+
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  top: 50%;
+  width: 100%;
+}
+
+.slides {
+  .slide {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #fff;
+    margin-right: 10px;
+    border: none;
+    display: flex;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    @media (max-width: 576px) {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  .slide-number {
+    background: #ebebeb;
+    text-align: center;
+
+    span {
+      font-size: 65px;
+      text-align: center;
+      margin: auto;
+      color: #666;
+    }
+  }
+}
+
+.b3dviewer-wrapper .slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.woocommerce div.product div.images img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.modelViewerBlock .woocommerce .bp_model_parent.b3dviewer-wrapper img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.bp_model_parent {
+  .DMC canvas {
+    pointer-events: none;
+  }
+
+  &:fullscreen {
+    height: 100vh;
+  }
+
+  &:fullscreen {
+    .online_3d_viewer {
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+  }
+}
+
+.online_3d_viewer {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  div:last-child {
+    text-align: center;
+    vertical-align: center;
+  }
+}
+
+#openBtn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 999999;
+  fill: #333;
+  cursor: pointer;
+  background: #fff;
+  padding: 5px;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+#closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 999999;
+  fill: #333;
+  cursor: pointer;
+  display: none;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.b3dviewer .fullscreen #closeBtn {
+  display: block;
+}
+
+.modelViewerBlock,
+.modelViewerBlock.b3dviewer {
+  max-width: 100%;
+
+  .alignright,
+  .alignend {
+    margin-left: auto;
+  }
+
+  .aligncenter {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .alignleft,
+  .alignstart {
+    margin-right: auto;
+  }
+
+  .fullscreen {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: fixed;
+    z-index: 99999;
+    background: #fff;
+    animation-name: fullscreen;
+    animation-duration: 0.5s;
+    top: 0;
+    left: 0;
+  }
+
+  #openBtn {
+    display: none;
+
+    @media screen and (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  .bp_model_parent:fullscreen {
+
+    // height: 100vh;
+    #openBtn {
+      display: none;
+    }
+
+    #closeBtn {
+      display: block;
+    }
+  }
+
+  #default-poster {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+  .modelThumbs {
+    display: flex;
+    gap: 10px;
+    height: 70px;
+    max-width: 100%;
+    flex-wrap: wrap;
+    margin-top: 10px;
+
+    .thumbsItem {
+      width: 100px;
+      height: 80px;
+      cursor: pointer;
+    }
+  }
+}
+
+.b3dviewer-wrapper .select {
+  background: white;
+  display: inline-block;
+  padding: 5px 12px;
+  margin-left: 5px;
+  margin-top: 5px;
+  display: none;
+  border-radius: 3px;
+}
+
+.b3dviewer-wrapper .select select {
+  display: inline-block;
+  padding: 3px 24px 3px 8px;
+  width: auto;
+  outline: none;
+  border: 1px solid #c3c3c3;
+  border-radius: 3px;
+}
+
+.percentageWrapper .overlay {
+  width: 100%;
+  height: 100%;
+  background: #333333a1;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.percentageWrapper .percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+}
+
+.b3dviewer .fullscreen model-viewer {
+  height: 100% !important;
+}
+
+model-viewer.hide_progressbar::part(default-progress-bar) {
+  display: none;
+}
+
+.woocommerce-product-gallery.images .b3dviewer.woocommerce {
+  width: 100%;
+}
+
+.woocommerce-page .b3dviewer_woo_wrapper .woocommerce-product-gallery.images {
+  width: 100%;
+}
+
+.woocommerce-page .b3dviewer_woo_wrapper .b3dviewer.woocommerce,
+// .woocommerce #content div.product div.images:not(.avada-product-gallery),
+.woocommerce-page #content .ast-woocommerce-container div.product .b3dviewer_woo_wrapper div.images {
+  width: 100%;
+}
+
+.woocommerce #content div.product .product-summary-wrapper div.images:not(.avada-product-gallery) {
+  width: 48%;
+}
+
+.woocommerce #content div.product .owp-product-nav-wrap+div.images {
+  width: 52%;
+}
+
+div#st-primary-content .product.type-product .woocommerce-product-gallery.images.images {
+  width: 44%;
+}
+
+.b3dviewer_woo_wrapper {
+  float: left;
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.woocommerce-page .product .b3dviewer.woocommerce:not(.b3dviewer_woo_wrapper .b3dviewer.woocommerce) {
+  float: left;
+  width: 48%;
+}
+
+.woocommerce-page .product .b3dviewer.woocommerce,
+.b3dviewer_woo_wrapper {}
+
+#animations {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+
+.fullscreen {
+
+  .online_3d_viewer,
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    // canvas {
+    //   margin: 0 auto;
+    // }
+  }
+}
+
+
+// issue on this code 
+
+.woocommerce-product-gallery.woocommerce-product-gallery--with-images:not(.avada-product-gallery) {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+.woocommerce #content div.product div.images.avada-product-gallery {
+  width: 500px;
+  float: left;
+  display: block !important;
+}
+
+.theme-woodmart .woocommerce-product-gallery.woocommerce-product-gallery--with-images {
+  flex-direction: initial;
+}
+
+
+.modelViewerBlock #default-poster {
+  pointer-events: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .woocommerce #content .shoptimizer-archive div.product div.images {
+    width: 60%;
+  }
+}
+
+// /**
+// * Modal/popup
+// */
+
+.bp3dv-model-main {
+  text-align: center;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* z-index: 1050; */
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  opacity: 0;
+  // -webkit-transition: opacity 0.15s linear, z-index 0.15;
+  // -o-transition: opacity 0.15s linear, z-index 0.15;
+  transition: opacity 0.15s linear, z-index 0.15;
+  z-index: -1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 0;
+  display: none;
+
+  &:target {
+    z-index: 99999;
+    opacity: 1;
+    overflow: hidden;
+    position: fixed;
+    height: auto;
+  }
+}
+
+.model-open {
+  z-index: 9999999;
+  opacity: 1;
+  overflow: hidden;
+  position: fixed;
+  height: auto;
+  display: block;
+}
+
+.bp3dv-model-inner {
+  // -webkit-transform: translate(0, -25%);
+  // -ms-transform: translate(0, -25%);
+  transform: translate(0, -25%);
+  // -webkit-transition: -webkit-transform 0.3s ease-out;
+  // -o-transition: -o-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+  -o-transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  display: inline-block;
+  vertical-align: middle;
+  width: 900px;
+  margin: 30px auto;
+  max-width: 90%;
+}
+
+.bp3dv-model-wrap {
+  display: block;
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+  outline: 0;
+  text-align: left;
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  max-height: calc(100vh - 70px);
+  // overflow-y: auto;
+}
+
+.model-open .bp3dv-model-inner,
+.bp3dv-model-main:target {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  transform: translate(0, 0);
+  position: relative;
+  z-index: 9999;
+}
+
+.model-open .bg-overlay,
+.bp3dv-model-main:target {
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 99;
+  position: fixed;
+}
+
+.bg-overlay {
+  background: rgba(0, 0, 0, 0);
+  height: 100vh;
+  width: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  -webkit-transition: background 0.15s linear;
+  -o-transition: background 0.15s linear;
+  transition: background 0.15s linear;
+}
+
+.close-btn {
+  position: absolute;
+  right: -15px;
+  top: -35px;
+  cursor: pointer;
+  z-index: 99;
+  font-size: 30px;
+  color: #fff;
+  font-family: none;
+  font-weight: bold;
+  line-height: 135%;
+}
+
+@media screen and (min-width: 800px) {
+  .bp3dv-model-main:before {
+    content: "";
+    display: inline-block;
+    height: auto;
+    vertical-align: middle;
+    margin-right: -0px;
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 799px) {
+  .bp3dv-model-inner {
+    margin-top: 45px;
+  }
+}
+
+.bp3dv_a_popup_opener {
+  position: relative;
+
+  &::before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 9999;
+    cursor: pointer;
+  }
+}
+
+.bp3dv_play_icon::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  content: "\f01d";
+  font-family: FontAwesome;
+  font-size: 100px;
+  color: #fff;
+  opacity: 0.8;
+  text-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
+  width: auto;
+  height: auto;
+
+  &:hover::before {
+    color: #eee;
+  }
+}
+
+.bp3d_custom_selector_models {
+  height: 0;
+  overflow: hidden;
+}
+
+.single-product #main-content>.clearfix,
+.single-product.et_pb_pagebuilder_layout .clearfix>.woocommerce-product-gallery {
+  display: none
+}
+
+.woocommerce-product-model-viewer-wrapper {
+  max-width: 100%;
+
+  &.position_top {
+    margin-bottom: 10px;
+  }
+
+  &.position_bottom {
+    margin-top: 10px;
+  }
+}
+
+.type-product.product .product-summary-wrapper .product-modal-wrap .woocommerce-product-gallery.images {
+  display: block;
+}
+
+// .productListItem + * {
+//   display: none;
+// }
+
+.productListItem {
+  overflow: hidden;
+  background: #dddddd1e;
+  // visibility: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.woocommerce div.product div.images .bp3d_slick_model_container img {
+  display: none;
+}
+
+
+
+
+
+
+// @import 'scss/themes/common.scss';
+// @import 'scss/themes/themes.scss';

@@ -1,0 +1,265 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "b3dviewer/modelviewer",
+  "title": "3D Model Viewer",
+  "description": "Easily embed 3D models in your WordPress site with this intuitive block.",
+  "category": "design",
+  "version": "1.8.9",
+  "keywords": [
+    "3D Viewer",
+    "3D Embedder",
+    "3D Model Viewer"
+  ],
+  "textdomain": "3d-viewer",
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "default": "uniqueId"
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false
+    },
+    "model": {
+      "type": "object",
+      "default": {
+        "skyboxImage": null,
+        "environmentImage": null,
+        "arEnabled": false,
+        "arPlacement": "floor",
+        "arMode": "quick-look",
+        "arScale": "fixed"
+      }
+    },
+    "models": {
+      "type": "array",
+      "default": [
+        {
+          "modelUrl": "",
+          "poster": "",
+          "useDecoder": "none"
+        }
+      ]
+    },
+    "currentViewer": {
+      "type": "string",
+      "default": "modelViewer"
+    },
+    "attributes": {
+      "type": "object",
+      "default": {
+        "tonMapping": "neutral"
+      }
+    },
+    "O3DVSettings": {
+      "type": "object",
+      "default": {
+        "isFullscreen": true,
+        "isPagination": false,
+        "isNavigation": false,
+        "camera": null,
+        "mouseControl": true,
+        "showEdge": false,
+        "zoom": true
+      }
+    },
+    "lazyLoad": {
+      "type": "boolean",
+      "default": true
+    },
+    "preload": {
+      "type": "string",
+      "default": "auto"
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "shadow": {
+      "type": "boolean",
+      "default": true
+    },
+    "rotate": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoRotate": {
+      "type": "boolean",
+      "default": false
+    },
+    "zoom": {
+      "type": "boolean",
+      "default": true
+    },
+    "zoomInOutBtn": {
+      "type": "boolean",
+      "default": false
+    },
+    "isPagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "isNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "rotationPerSecond": {
+      "type": "number",
+      "default": 20
+    },
+    "mouseControl": {
+      "type": "boolean",
+      "default": true
+    },
+    "fullscreen": {
+      "type": "boolean",
+      "default": true
+    },
+    "cameraBtn": {
+      "type": "boolean",
+      "default": false
+    },
+    "variant": {
+      "type": "boolean",
+      "default": false
+    },
+    "loadingPercentage": {
+      "type": "boolean",
+      "default": false
+    },
+    "progressBar": {
+      "type": "boolean",
+      "default": true
+    },
+    "rotateAlongX": {
+      "type": "number",
+      "default": "0"
+    },
+    "rotateAlongY": {
+      "type": "number",
+      "default": 75
+    },
+    "exposure": {
+      "type": "number",
+      "default": 1
+    },
+    "environmentImage": {
+      "type": "string",
+      "default": ""
+    },
+    "useEnvironmentAsSkybox": {
+      "type": "boolean",
+      "default": false
+    },
+    "zoomLevel": {
+      "type": "number",
+      "default": 1
+    },
+    "appliedTextures": {
+      "type": "object",
+      "default": {
+        "modelUrl": null
+      }
+    },
+    "toneMapping": {
+      "type": "string",
+      "default": "neutral"
+    },
+    "hotspots": {
+      "type": "array",
+      "default": []
+    },
+    "styles": {
+      "type": "object",
+      "default": {
+        "width": {
+          "desktop": "100%",
+          "tablet": "100%",
+          "mobile": "100%"
+        },
+        "height": {
+          "desktop": "400px",
+          "tablet": "300px",
+          "mobile": "300px"
+        },
+        "bgColor": "transparent",
+        "progressBarColor": "#666",
+        "thumbSize": "90px"
+      }
+    },
+    "stylesheet": {
+      "type": "string"
+    },
+    "additional": {
+      "type": "object",
+      "default": {
+        "ID": "",
+        "Class": "",
+        "CSS": ""
+      }
+    },
+    "animation": {
+      "type": "boolean",
+      "default": false
+    },
+    "woo": {
+      "type": "boolean",
+      "default": false
+    },
+    "selectedAnimation": {
+      "type": "string",
+      "default": ""
+    },
+    "hotspotStyle": {
+      "type": "string",
+      "default": "style-1"
+    },
+    "placement": {
+      "type": "string",
+      "default": "block"
+    },
+    "lockXAxisRotation": {
+      "type": "boolean",
+      "default": false
+    },
+    "lockYAxisRotation": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false,
+    "lock": false,
+    "align": [
+      "left",
+      "right",
+      "center"
+    ]
+  },
+  "example": {
+    "attributes": {
+      "preview": true
+    }
+  },
+  "render": "file:./render.php",
+  "editorStyle": [
+    "file:./index.css"
+  ],
+  "editorScript": [
+    "file:./index.js",
+    "bp3d-lib-model-viewer",
+    "bp3d-lib-o3dviewer",
+    "wp-components",
+    "wp-block-editor",
+    "wp-i18n"
+  ],
+  "viewScript": [
+    "react",
+    "react-dom",
+    "file:./view.js"
+  ],
+  "style": [
+    "file:./view.css"
+  ]
+}

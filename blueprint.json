@@ -1,0 +1,9 @@
+{
+    "landingPage": "/wp-admin/plugins.php",
+    "login": true,
+    "steps": [
+        {
+            "step": "login"
+        }
+    ]
+}

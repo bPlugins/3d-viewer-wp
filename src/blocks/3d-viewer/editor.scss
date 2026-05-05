@@ -1,0 +1,517 @@
+.b3dviewer-multiple-model .components-panel__row.width-100 input {
+  width: 220px;
+}
+
+.bPlPanelBody {
+  .bp3dTextureUploadRow input {
+    display: none;
+  }
+
+  .components-snackbar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #222;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+  }
+
+  &.hotspots {
+    .addItem {
+      display: none;
+    }
+  }
+
+  &.highlight {
+    animation: blink-red-background 2s infinite;
+
+    .components-panel__body-title {
+      color: inherit;
+
+      button {
+        color: inherit;
+      }
+    }
+  }
+
+  .add-hotspot {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn-fullwidth {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.b3dviewer-multiple-model .btn-dismiss {
+  height: auto;
+  margin-top: 3px;
+}
+
+#closeBtn {
+  right: 20px;
+  top: 65px;
+
+  &.sidebar-open {
+    right: 300px;
+    top: 62px;
+  }
+}
+
+[data-align="center"] .aligncenter {
+  margin: 0 auto;
+}
+
+.modelPanel.is-opened {
+  border: 1px solid #ddd;
+}
+
+.modelRemover {
+  justify-content: end;
+
+  button.components-button {
+    background: rgb(168, 20, 20);
+
+    &:hover:not(:disabled) {
+      background: rgb(117, 13, 13);
+    }
+  }
+}
+
+.b3dviewer.woocommerce {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.woocommerce model-viewer {
+  border: 1px solid #ddd;
+}
+
+.modelViewerIsSelected {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+}
+
+.b3dviewer_front_shortcode .components-snackbar {
+  position: fixed;
+  top: 130px;
+  right: 20px;
+}
+
+.b3dviewer_front_shortcode {
+  margin: 0 auto;
+}
+
+.b3dviewer-tab-panel [role="tablist"] {
+  display: flex;
+  justify-content: space-around;
+
+  button {
+    flex: 1;
+    justify-content: center;
+
+    // &[aria-selected="true"] {
+    //   background: var(--wp-admin-theme-color);
+    //   color: #fff;
+    // }
+  }
+}
+
+.bp_model_parent {
+  position: relative;
+
+  .DMC {
+    pointer-events: none;
+  }
+
+  .setDefaultViewContainer {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    gap: 10px;
+
+    button {
+      color: #fff !important;
+      font-weight: 600;
+      padding: 5px 15px;
+      border-radius: 3px;
+    }
+  }
+}
+
+.deviceForUnit {
+  .iconButton {
+    height: 30px;
+    width: 24px;
+    padding: 0;
+    border: 1px solid #ddd;
+    outline: none;
+  }
+
+  .bDevicePopup {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    position: absolute;
+    top: -15px;
+    z-index: 999;
+  }
+
+  .bDevice {
+    position: relative;
+    width: 30px;
+    display: flex;
+    margin-top: -10px;
+  }
+}
+
+.block-editor-block-inspector .b3dviewer-tab-panel .components-toggle-control {
+  margin-bottom: 10px;
+}
+
+.bp3d_help {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.b3dviewer-tab-panel {
+
+  // .components-button:hover:not(:disabled, [aria-disabled=true]) {
+  //     background: #105589;
+  //     color: #fff;
+  // }
+}
+
+
+.environmentImages {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+
+  img {
+    cursor: pointer;
+
+    &.image-active {
+      border: 3px solid #007cba;
+    }
+  }
+}
+
+.textures-popup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 300px;
+  height: 300px;
+
+  img {
+    width: 95px;
+    height: 100px;
+    object-fit: cover;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.texture-popup-active {
+      border: 2px solid #007cba;
+      border-radius: 10px;
+      opacity: 1;
+    }
+  }
+}
+
+.upload3d {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #4527A4;
+  margin-bottom: 10px;
+  text-align: center;
+
+  flex-direction: column;
+
+  .bPlInlineMediaUpload {
+    width: 500px;
+  }
+
+  input {
+    height: 50px;
+    font-size: 20px;
+  }
+
+  button {
+    height: 50px;
+    width: 50px;
+  }
+
+  h2 {
+    color: #4527A4;
+    font-size: 30px;
+    font-weight: 500;
+    margin-top: 0;
+  }
+
+}
+
+.b3dviewer-tab-panel .labelPro {
+  padding: 0px 5px;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #146ef5;
+}
+
+.bp3d_upload_environment_btn.components-button.has-icon.has-text {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bp3dNullTextureSquare {
+  background: linear-gradient(to right top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) calc(50% - 0.8px), rgb(255, 0, 0) 50%, rgba(0, 0, 0, 0) calc(50% + 0.8px), rgba(0, 0, 0, 0) 100%) white;
+  border-radius: 3px;
+  border: 1px solid #666;
+  cursor: pointer;
+  height: calc(48px - 2px);
+  width: calc(48px - 2px);
+
+  .bp3dTextureImage {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.bp3d-texture-item {
+  position: relative;
+
+  .dashicons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #0000008f;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    display: none;
+  }
+
+  &:hover {
+    .dashicons {
+      display: flex;
+    }
+  }
+}
+
+.bp3dTextureOpenButton.components-button {
+  height: 50px;
+}
+
+.bp3d_factor_reset_btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
+#yt-player .ytWrapper .custom-overlay {
+  position: absolute;
+  z-index: 10;
+  opacity: 0.8;
+  bottom: 10px;
+  left: 10px;
+}
+
+#yt-player .ytWrapper .custom-overlay img {
+  border-radius: 50%;
+  width: 50px;
+}
+
+@media only screen and (max-width: 1024px) {
+  #yt-player .ytWrapper .custom-overlay img {
+    width: 50px;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  #yt-player .ytWrapper .custom-overlay img {
+    width: 50px;
+  }
+}
+
+#yt-player .ytWrapper .custom-overlay img {
+  width: 50px;
+}
+
+#yt-player .plyr {
+  border-radius: 50px;
+}
+
+#yt-player .plyr .plyr__control--overlaid {
+  padding: 15px 15px 15px 15px;
+  border-radius: 30%;
+  background: #000000;
+}
+
+#yt-player .plyr .plyr__control--overlaid svg {
+  height: 25px;
+  width: 25px;
+}
+
+#yt-player .ytWrapper {
+  width: 100%;
+}
+
+
+
+// keyframes
+
+@keyframes blink-red-background {
+  0% {
+    background-color: #1d7cba;
+    color: #fff;
+
+  }
+
+  25% {
+    background-color: unset;
+  }
+
+  50% {
+    background-color: #1d7cba;
+    color: #fff;
+  }
+
+  75% {
+    background-color: unset;
+  }
+
+  100% {
+    background-color: #1d7cba;
+    color: #fff;
+  }
+}
+
+// bInfoControl
+.bInfoControl {
+  .dashicons-info-outline {
+    margin-top: 1px;
+    color: #146ef5;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  .bPlLabel .dashicons-info-outline {
+    margin-left: 0px;
+  }
+
+}
+
+.bPlLabel .dashicons-info-outline {
+  margin-top: 1px;
+  color: #146ef5;
+  cursor: pointer;
+}
+
+.bp3d-upgrade-panel {
+  background: #f9f9f9;
+  border: 1px solid #146ef5;
+  border-radius: 3px;
+  padding: 10px 15px;
+}
+
+
+// pro modal
+.bp3d-upgrade-modal {
+  width: 530px;
+  display: flex;
+  gap: 20px;
+
+  .bp3d-upgrade-modal-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bp3d-upgrade-modal-content {
+    flex: 1;
+
+    .button {
+      background: #146ef5;
+    }
+  }
+
+  h2 {
+    font-size: 21px;
+    line-height: 135%;
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 17px;
+    margin-top: 10px;
+  }
+
+  .button {
+    margin-top: 10px;
+    border: none;
+    padding: 6px 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+}
+
+.bPlPanelBody .bInfoControl .bPlLabel {
+  display: inline-flex;
+
+
+}
+
+.bPlPanelBody .ml5 {
+  margin-left: 5px;
+}
+
+
+.bp3d-panel-icon {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.bp3d-panel-pro-badge {
+  position: absolute;
+  right: 0;
+  padding: 5px 8px;
+  background: #146ef5;
+  color: #fff;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 1.3em;
+}

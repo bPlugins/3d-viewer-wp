@@ -1,0 +1,349 @@
+/* Custom css for 3D Viewer */
+
+.b3dviewer_front_shortcode input {
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  outline: none;
+  background-color: #1e8cbe;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+
+.b3dviewer_front_shortcode {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  /* margin: 0 auto;
+  width: 100%; */
+}
+
+.b3dviewer_front_shortcode svg {
+  cursor: pointer;
+}
+
+.b3dviewer_front_shortcode .htooltip {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.b3dviewer_front_shortcode .htooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.b3dviewer_front_shortcode:hover .htooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.bp3d_shortcode {
+  margin-top: 30px;
+  border: 5px solid #4527a4;
+  overflow: hidden;
+}
+
+.bp3d_shortcode .shortcode-heading {
+  background: #4527a4;
+  padding: 15px;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.bp3d_shortcode .shortcode-heading .icon {
+  float: left;
+  overflow: hidden;
+  width: 50%;
+}
+
+.bp3d_shortcode .shortcode-heading .text {
+  float: right;
+  overflow: hidden;
+  text-align: right;
+}
+
+.bp3d_shortcode .shortcode-heading .text a {
+  color: #ffffff;
+  display: block;
+  text-decoration: none;
+}
+
+.bp3d_shortcode .shortcode-left {
+  width: 50%;
+  float: left;
+  overflow: hidden;
+  padding: 20px 0 30px;
+  text-align: center;
+  background: #ffffff;
+  border-right: 5px solid #4527a4;
+  box-sizing: border-box;
+}
+
+.bp3d_shortcode .shortcode-right {
+  width: 50%;
+  float: left;
+  overflow: hidden;
+  padding: 20px 0 30px;
+  text-align: center;
+  background: #ffffff;
+}
+
+.bp3d_shortcode .shortcode {
+  padding: 8px 15px;
+  background: #eae6f9;
+  display: inline-block;
+  user-select: all;
+  font-size: 16px;
+}
+
+/* Woocommerce Css */
+/* #woocommerce-product-images {
+  display: none;
+} */
+
+.meta-box-sortables #shortcode_area {
+  margin-top: 70px;
+}
+
+.meta-box-sortables .bp3d-down-arrow::after {
+  content: "➜";
+  position: absolute;
+  top: -115px;
+  left: 42%;
+  rotate: 90deg;
+  font-size: 40px;
+  animation: jumpInfinite 2s infinite;
+}
+
+
+@keyframes jumpInfinite {
+  0% {
+    margin-top: 0
+  }
+
+  50% {
+    margin-top: 20px
+  }
+
+  to {
+    margin-top: 0
+  }
+}
+
+.bp3d_front_shortcode_area {
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .button {
+    margin-top: 12px;
+    width: 100%;
+    border-radius: 3px;
+    background: #146ef5;
+  }
+}
+
+.bp3d_upgrade_notice {
+  border: 1px solid #ccc;
+  background: linear-gradient(#fefefe, #f5f5f5);
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bp3d_upgrade_notice .flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bp3d_upgrade_notice a.button {
+  background: #146ef5;
+  border: none;
+  padding: 4px 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.bp3d_upgrade_notice a.button:hover,
+.bp3d_upgrade_notice a.button:focus,
+.bp3d_upgrade_notice a.button:active {
+  background: #0957ca;
+  border: none;
+  box-shadow: none;
+}
+
+.bp3d-metabox-upgrade-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.csf-theme-light .csf-nav-normal>ul li a {
+  font-size: 15px;
+}
+
+.button.button-bplugins {
+  background: #146ef5;
+  color: #fff;
+}
+
+.components-button.button.button-bplugins:hover,
+.button.button-bplugins:hover {
+  background: #0957ca;
+  color: #fff;
+}
+
+.bp3d_shortcode_area_after_title {
+  display: flex;
+  background: #fff;
+  padding: 5px 15px;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 15px;
+  border-radius: 3px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+
+  label {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  .shortcode_area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    svg {
+      cursor: pointer;
+    }
+  }
+}
+
+.csf-metabox .ui-icon,
+.csf-metabox .ui-state-hover .ui-icon {
+  background-image: none !important
+}
+
+/* codestar pro card */
+/* Pro Notice Box Styles */
+.bp3d-pro-notice-box {
+  background: linear-gradient(135deg, #f9fbff 0%, #f0f5ff 100%);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #e0e7ff;
+  box-shadow: 0 4px 15px rgba(35, 119, 242, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.bp3d-pro-notice-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #2377f2;
+}
+
+.bp3d-pro-notice-title {
+  margin-top: 0 !important;
+  color: #1a56b1 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bp3d-pro-notice-desc {
+  font-size: 14px;
+  color: #2377f2;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.bp3d-pro-notice-list {
+  margin: 15px 0 !important;
+  padding-left: 0 !important;
+  list-style: none !important;
+}
+
+.bp3d-pro-notice-list li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+  color: #1a56b1;
+  font-size: 13.5px;
+}
+
+.bp3d-pro-notice-list li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  color: #2377f2;
+  font-weight: bold;
+}
+
+.bp3d-pro-notice-list li strong {
+  color: #0d2c5a;
+}
+
+.bp3d-pro-notice-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2377f2;
+  color: #fff !important;
+  padding: 10px 22px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(35, 119, 242, 0.2);
+  border: none;
+  cursor: pointer;
+}
+
+.bp3d-pro-notice-button:hover {
+  background: #1a56b1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(35, 119, 242, 0.3);
+  color: #fff !important;
+}

@@ -1,0 +1,150 @@
+// woodmart theme
+.product_woodmart .order-lg-first {
+  order: 1
+}
+
+.product_woodmart .position_bottom {
+  order: 20
+}
+
+// woostify theme
+.product_woostify {
+  flex-wrap: wrap;
+
+  .position_bottom {
+    order: 20;
+    flex-basis: 100%;
+  }
+
+  .product-images {
+    width: 100%;
+  }
+}
+
+.product-gallery.vertical-style.has-product-thumbnails.product_woostify .product-images {
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .product-gallery.vertical-style.has-product-thumbnails.product_woostify .product-images {
+    flex: 1;
+  }
+}
+
+// botiga
+
+.product-gallery-summary .botiga .woocommerce-product-gallery {
+  max-width: 100%;
+}
+
+// zakra
+
+@media (min-width: 768px) {
+  .product-modal-wrap.zakra {
+    width: 46%;
+    flex: 1 1 calc(var(--product-gallery-width, 50%) - 15px);
+  }
+}
+
+
+
+
+// rife_free 
+@media only screen and (max-width: 768px) {
+  .woocommerce #content div.product div.summary {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .woocommerce #content .theme-thumbs div.product .position_replace div.images.has-thumbnails {
+    padding: 0 15px;
+  }
+}
+
+// responsive
+.product-modal-wrap {
+  &.responsive.position_bottom {
+    display: block;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .product-modal-wrap {
+    &.responsive {
+      margin-bottom: 25px
+    }
+  }
+}
+
+
+// kadence
+
+
+// neve
+
+@media only screen and (min-width: 769px) {
+  .product-modal-wrap {
+    &.neve {
+      width: 48%;
+    }
+  }
+}
+
+
+// porto
+
+.porto-wrap-container .wpb_wrapper .images {
+  display: block;
+}
+
+
+// storefront
+.storefront-product-pagination {
+  .modelViewerBlock {
+    display: none;
+  }
+}
+
+.product-modal-wrap.storefront {
+  width: 45%;
+}
+
+// customify
+
+.wc-product-inner:hover {
+  .modelViewerBlock.active+.secondary-image {
+    display: none;
+  }
+}
+
+.product-has-gallery>.wc-product-inner:hover .modelViewerBlock img {
+  opacity: 1
+}
+
+
+// oceanwp
+
+.oceanwp {
+  &.position_top {
+
+    .woocommerce-product-gallery__trigger {
+      margin-top: 12px;
+    }
+  }
+}
+
+
+
+// b technologies
+.product_b_technologies.position_merge_with_first_image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+// flatsome theme
+.wooCustomSelector.product_flatsome {
+  left: 0 !important;
+  position: relative;
+}

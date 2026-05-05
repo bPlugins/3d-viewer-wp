@@ -1,0 +1,163 @@
+/* common css for all theme */
+
+// zakra, rife_free, generatepress , responsive
+.product-modal-wrap.zakra,
+.rife_free,
+.generatepress,
+.sydney,
+.responsive,
+.kadence,
+.neve,
+.shoppingcart,
+.estore,
+.astra {
+  &.position_top {
+    .woocommerce-product-gallery__trigger {
+      margin-top: 40px;
+    }
+  }
+
+  &.position_top .modelViewerBlock {
+    margin-bottom: 10px;
+  }
+
+  &.position_bottom .modelViewerBlock {
+    margin-top: 10px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .product-modal-wrap:has(+.summary) {
+
+    &.responsive,
+    &.shoppingcart {
+      width: 100%;
+    }
+  }
+}
+
+
+@media only screen and (min-width: 769px) {}
+
+.product-modal-wrap {
+
+  &.kadence,
+  &.neve,
+  &.shoppingcart,
+  &.estore {
+    margin-bottom: 25px;
+  }
+
+  &.position_top .b3dviewer {
+    margin-bottom: 10px;
+  }
+
+  &.position_bottom .b3dviewer {
+    margin-top: 10px;
+  }
+
+
+}
+
+
+.product-modal-wrap.model-full-width {
+  width: 100%;
+
+  &.divi {
+    width: 50%;
+  }
+}
+
+.flex-viewport .position_merge_with_first_image {
+  position: relative;
+}
+
+.active {
+  .position_merge_with_first_image {
+
+    model-viewer,
+    canvas {
+      visibility: visible;
+    }
+
+    .fullscreen-open {
+      display: block;
+    }
+  }
+}
+
+.position_merge_with_first_image {
+  .b3dviewer-wrapper .view_3d {
+    display: block;
+  }
+
+  .b3dviewer-wrapper {
+    float: left;
+  }
+
+  .slideController,
+  .cameraBtn,
+  .fullscreen-open {
+    display: none;
+  }
+
+
+  model-viewer,
+  canvas {
+    visibility: hidden;
+  }
+
+  .modelViewerBlock {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &.active {
+
+    model-viewer,
+    canvas {
+      visibility: visible;
+    }
+
+    .view_3d {
+      display: none;
+    }
+
+    .view_img,
+    .fullscreen-open,
+    .cameraBtn {
+      display: block;
+    }
+
+    .slideController {
+      display: flex;
+    }
+
+    // .fullscreen-open {
+    //   display: block;
+    // }
+
+    // .cameraBtn {
+    //   display: block;
+    // }
+
+    // .slideController {
+    //   display: block;
+    // }
+  }
+
+  .b3dviewer-wrapper:fullscreen {
+    .view_img {
+      display: none;
+    }
+  }
+
+}
+
+.pop-up-content-wrap .wooCustomSelector {
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
