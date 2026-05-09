@@ -4,7 +4,7 @@ import getClickAbleDom from '../utils/getClickAbleDom';
  * Sets up click-to-popup behavior for WooCommerce product 3D models.
  */
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll<HTMLElement>('.bp3dv-model-main')?.forEach((model) => {
+    document.querySelectorAll<HTMLElement>('.bp3d-model-main')?.forEach((model) => {
         const selector = model.dataset.selector;
 
         if (!selector || selector === '') {

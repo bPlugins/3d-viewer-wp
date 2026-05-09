@@ -43,7 +43,7 @@ class EnqueueAssets
     public function enqueueFrontEndFiles()
     {
 
-        wp_localize_script('bp3d-public', 'assetsUrl', [
+        wp_localize_script('bp3d-public', 'bp3dAssetsUrl', [
             'siteUrl' => site_url(),
             'assetsUrl' => BP3D_DIR . '/public',
         ]);
@@ -59,6 +59,7 @@ class EnqueueAssets
         global $post;
 
         $post_type = isset($post->post_type) ? $post->post_type
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             : (isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'] ?? '')) : null);
 
         // Admin script & styles

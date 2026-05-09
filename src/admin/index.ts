@@ -61,29 +61,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Hide WooCommerce admin notice
-    setTimeout(() => {
-        const dismissEl = document.querySelector('.bp3dv_woocommerce_admin_notice .notice-dismiss');
+    // setTimeout(() => {
+    //     const dismissEl = document.querySelector('.bp3d_woocommerce_admin_notice .notice-dismiss');
 
-        dismissEl?.addEventListener('click', () => {
-            const nonce = (document.querySelector('.bp3dv_woocommerce_admin_notice') as HTMLElement | null)?.dataset?.nonce;
+    //     dismissEl?.addEventListener('click', () => {
+    //         const nonce = (document.querySelector('.bp3d_woocommerce_admin_notice') as HTMLElement | null)?.dataset?.nonce;
 
-            fetch((window as any).ajaxurl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    action: 'dismiss_product_edit_notice',
-                    security: nonce || '',
-                }),
-            })
-                .then((response) => response.json())
-                .then((data: { success: boolean }) => {
-                    if (data.success) {
-                        console.log('Notice dismissed for 30 days');
-                    }
-                })
-                .catch((error) => console.error('Error:', error));
-        });
-    }, 500);
+    //         fetch((window as any).ajaxurl, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/x-www-form-urlencoded',
+    //             },
+    //             body: new URLSearchParams({
+    //                 action: 'dismiss_product_edit_notice',
+    //                 security: nonce || '',
+    //             }),
+    //         })
+    //             .then((response) => response.json())
+    //             .then((data: { success: boolean }) => {
+    //                 if (data.success) {
+    //                     console.log('Notice dismissed for 30 days');
+    //                 }
+    //             })
+    //             .catch((error) => console.error('Error:', error));
+    //     });
+    // }, 500);
 });

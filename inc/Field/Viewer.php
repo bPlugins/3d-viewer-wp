@@ -122,7 +122,7 @@ class Viewer
                             <li><strong>AR:</strong> Enables AR (Augmented Reality) so visitors can view the 3D model in their real environment on supported devices.</li>
                             <li><strong>Apply Textures:</strong> Allows you to apply and customize textures on supported 3D models. This feature is experimental and may vary depending on the model.</li>
                         </ul>
-                        <a href="https://bplugins.com/products/3d-viewer/pricing/" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
+                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
                     </div>
                 ',
           'dependency' => array('currentViewer', '==', 'modelViewer'),
@@ -157,6 +157,16 @@ class Viewer
           'text_width' => 60,
           'default' => true,
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
+        ),
+        array(
+          'id' => 'bp_3d_fullscreen',
+          'type' => 'switcher',
+          'title' => __('Full Screen Button', '3d-viewer'),
+          'subtitle' => __('Show/Hide Full Screen Button', '3d-viewer'),
+          'desc' => __("Show/Hide Full Screen Button in the 3D model viewer.", "3d-viewer"),
+          'text_on' => __('Yes', '3d-viewer'),
+          'text_off' => __('NO', '3d-viewer'),
+          'default' => true,
         ),
         array(
           'id' => 'bp_3d_zoom_in_out_btn',
@@ -224,7 +234,7 @@ class Viewer
                             <li><strong>Lock Left-Right, Up-Down Rotation:</strong> Prevents the model from rotating along the X and Y axis.</li>
                             <li><strong>Set Initial Zoom:</strong> Sets the default zoom level of the model. Higher values zoom in closer.</li>
                         </ul>
-                        <a href="https://bplugins.com/products/3d-viewer/pricing/" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
+                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
                     </div>
                 ',
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
@@ -290,9 +300,9 @@ class Viewer
                         <h4 class="bp3d-pro-notice-title">🚀 Get More with Premium Version</h4>
                         <p class="bp3d-pro-notice-desc">The following features are available in the Premium Version:</p>
                         <ul class="bp3d-pro-notice-list">
-                            <li><strong>Background Image:</strong> Set background image of model</li>
+                            <li><strong>Background Image:</strong> Set background image of the 3D model.</li>
                         </ul>
-                        <a href="https://bplugins.com/products/3d-viewer/pricing/" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
+                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
                     </div>
                 ',
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']

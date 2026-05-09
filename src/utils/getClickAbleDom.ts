@@ -39,12 +39,12 @@ export default function getClickAbleDom(selector: string): HTMLElement | null {
         clickableItem = findParentUntilMultipleChildren(clickableItem);
         setTimeout(() => {
             if (clickableItem?.innerHTML?.includes('<a')) {
-                clickableItem.classList.add('bp3dv_a_popup_opener');
+                clickableItem.classList.add('bp3d_a_popup_opener');
             }
         }, 500);
 
         if (clickableItem?.innerHTML?.includes('<img') && window.location.host === 'reintest.be') {
-            clickableItem.classList.add('bp3dv_play_icon');
+            clickableItem.classList.add('bp3d_play_icon');
         }
     }
 

@@ -3,7 +3,6 @@ import { BControlPro } from "../../../bpl-tools/ProControls";
 import Label from "./Label";
 
 interface BInfoControlProps {
-    isPremium?: boolean;
     info?: string;
     label?: string;
     className?: string;
@@ -12,11 +11,11 @@ interface BInfoControlProps {
     [key: string]: any;
 }
 
-const BInfoControl = ({ isPremium = true, info = "", label = "", className = "", onChange = () => { }, setOpen, ...restPros }: BInfoControlProps) => {
+const BInfoControl = ({ info = "", label = "", className = "", onChange = () => { }, setOpen, ...restPros }: BInfoControlProps) => {
     return (
         <div className="mt5 bInfoControl">
             {/* @ts-ignore */}
-            <BControlPro isPremium={isPremium} Component={ToggleControl} label={<Label info={info}>{label}</Label>} className={className} onChange={onChange} setIsProModalOpen={setOpen} {...restPros} />
+            <BControlPro isPremium={true} Component={ToggleControl} label={<Label info={info}>{label}</Label>} className={className} onChange={onChange} setIsProModalOpen={setOpen} {...restPros} />
         </div>
     );
 };

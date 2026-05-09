@@ -28,11 +28,11 @@ interface SettingsProps {
 
 const Settings = ({ attributes, setAttributes, postId, postType }: SettingsProps) => {
   const [copied, setCopied] = useState(false);
-  const { currentViewer, isPremium, placement } = attributes;
+  const { currentViewer, placement } = attributes;
   const [open, setOpen] = useState<boolean>(false);
 
 
-  const props = { attributes, setAttributes, isPremium, open, setOpen }
+  const props = { attributes, setAttributes, open, setOpen }
 
   return (
     <InspectorControls>

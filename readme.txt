@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
 Tested up to: 6.9
-Stable tag: 1.8.9
+Stable tag: 1.8.10
 Requires PHP: 7.4
 Requires at least: 5.8
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -212,7 +212,7 @@ This plugin bundles the following third-party JavaScript/PHP libraries.
 
 * **Source:** [http://codestarframework.com/](http://codestarframework.com/)
 * **GitHub:** [https://github.com/Codestar/codestar-framework](https://github.com/Codestar/codestar-framework)
-* **License:** GPLv2 or later – [https://github.com/Codestar/codestar-framework/blob/master/LICENSE](https://github.com/Codestar/codestar-framework/blob/master/LICENSE.md)
+* **License:** GPLv2 or later – [https://github.com/Codestar/codestar-framework/blob/master/LICENSE.md](https://github.com/Codestar/codestar-framework/blob/master/LICENSE.md)
 * **Purpose:** Provides the options framework for the plugin's settings and shortcode generator.
 
 = Freemius SDK =
@@ -276,6 +276,9 @@ Yes, we have build in Elementor widget and shortcode both.
 
 
 == Changelog ==
+
+= 1.8.10 - 09 May, 2026  =
+Improved: Overall code quality and strengthened security protocols.
 
 = 1.8.9 - 05 May, 2026  =
 Update: Updated Codestar Framework for better stability.

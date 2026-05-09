@@ -4,7 +4,6 @@ const slug = '3d-viewer';
 
 interface DashboardInfoInput {
     version: string;
-    isPremium: boolean;
     hasPro: boolean;
     licenseActiveNonce: string;
 }
@@ -15,7 +14,6 @@ interface DashboardInfo {
     description: string;
     slug: string;
     version: string;
-    isPremium: boolean;
     hasPro: boolean;
     displayOurPlugins: boolean;
     media: {
@@ -50,22 +48,20 @@ interface DashboardInfo {
 }
 
 export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
-    const { version, isPremium, hasPro, licenseActiveNonce } = info;
-    const proSuffix = isPremium ? ' Pro' : '';
+    const { version, hasPro, licenseActiveNonce } = info;
 
     return {
-        name: `3D Viewer${proSuffix}`,
-        displayName: `3D Viewer ${proSuffix} – Display Interactive 3D Models`,
+        name: `3D Viewer`,
+        displayName: `3D Viewer – Display Interactive 3D Models`,
         description: 'Easily display interactive 3D models on the web. Supported File type .glb, .gltf, .obj, .3ds, .stl, .ply, .off, .3dm, .fbx, .dae, .wrl, .3mf, .amf, .ifc, .brep, .step, .iges, .fcstd, .bim',
         slug,
         version,
-        isPremium,
         hasPro,
         displayOurPlugins: true,
         media: {
             logo: `https://ps.w.org/${slug}/assets/icon-128x128.png`,
             banner: `https://ps.w.org/${slug}/assets/banner-772x250.png`,
-            thumbnail: `https://bplugins.com/wp-content/themes/b-technologies/assets/images/products/${slug}.png`,
+            thumbnail: window.bp3dDashboard?.dir + '/admin/images/3d-viewer.png',
             video: 'https://youtu.be/ofC8XbdAuVE',
             isYoutube: true
         },

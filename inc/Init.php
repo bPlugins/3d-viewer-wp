@@ -38,7 +38,6 @@ class Init
         return [
             Base\EnqueueAssets::class,
             Base\Import::class,
-            Base\Ajax::class,
             Shortcode\Shortcode::class,
             Base\ExtendMimeType::class,
             Field\Viewer::class,
@@ -115,8 +114,6 @@ class Init
 
     /**
      * Resolve and require the file for a given class.
-     *
-     * Checks for a premium "Pro" version first if applicable.
      *
      */
     public static function require_file($class)

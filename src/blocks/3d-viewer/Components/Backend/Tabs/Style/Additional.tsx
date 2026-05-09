@@ -11,7 +11,6 @@ interface AdditionalData {
 
 interface AdditionalAttributes {
     additional: AdditionalData;
-    isPremium: boolean;
     [key: string]: unknown;
 }
 
@@ -21,8 +20,7 @@ interface AdditionalProps {
     setOpen: (open: boolean) => void;
 }
 
-const Additional: React.FC<AdditionalProps> = ({ attributes, setAttributes, setOpen }) => {
-    const { additional, isPremium } = attributes;
+const Additional: React.FC<AdditionalProps> = () => {
     return (
         <>
             <PanelBody title={__('Additional', "3d-viewer")} initialOpen={false}>

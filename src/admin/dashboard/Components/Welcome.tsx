@@ -4,21 +4,21 @@ import Changelog from '../../../../../bpl-tools/Admin/Changelog';
 import ProAds from '../../../../../bpl-tools/Admin/ProAds';
 
 interface WelcomeProps {
-    isPremium: boolean;
     [key: string]: any;
 }
 
 const Welcome: React.FC<WelcomeProps> = (props) => {
-    const { isPremium } = props;
 
     return <Overview {...props}>
         <div style={{
             display: 'grid',
-            gridTemplateColumns: isPremium ? '1fr' : 'repeat(auto-fill, minmax(min(480px, 100%), 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(480px, 100%), 1fr))',
             gap: '32px'
         }}>
+            {/* @ts-ignore */}
             <Changelog {...props} />
-            {!isPremium && <ProAds {...props} />}
+            {/* @ts-ignore */}
+            <ProAds {...props} />
         </div>
     </Overview>
 };

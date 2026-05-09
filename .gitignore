@@ -23,7 +23,7 @@ skills-lock.json
 bpluprint.json
 composer.lock
 fs-config.json
-gulffile.js
+gulpfile.js
 package-lock.json
 playwright.config.ts
 task-runner-config.json

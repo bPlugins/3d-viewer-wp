@@ -29,6 +29,7 @@ declare global {
         pagenow: any;
         model: any;
         appliedTextures: any;
+        bp3dDashboard: any
     }
 
     const wp: Window["wp"];

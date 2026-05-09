@@ -9,10 +9,6 @@ const Hotspots = () => {
     return <>
         {/* @ts-ignore */}
         <PanelBody className="bPlPanelBody hotspots" title={<><Title title={__("Hotspots", "3d-viewer")} Icon={AnnotationIcon} /> <PremiumBadge /></>} >
-
-            {/* <Notice status={"info"}>
-                {__("Hotspots/Annotations available in premium version", "3d-viewer")}
-            </Notice> */}
             <PremiumPanel title={__('Premium Feature', '3d-viewer')} description={__('Hotspots/Annotations available in premium version', '3d-viewer')} pricingUrl={pricingUrl} />
 
         </PanelBody >

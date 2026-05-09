@@ -31,7 +31,6 @@ interface StyleAttributes {
     styles: StylesConfig;
     woo?: boolean;
     currentViewer?: string;
-    isPremium?: boolean;
     progressBar?: boolean;
     [key: string]: unknown;
 }
@@ -124,38 +123,10 @@ const Style: React.FC<StyleProps> = ({ attributes, setAttributes, device }) => {
 
             {currentViewer === 'modelViewer' && (
                 <>
-                    {/* <BInfoControl
-                        Component={InlineMediaUpload}
-                        media={true}
-                        label={__('Background Image', "3d-viewer")}
-                        placeholder={__('Background Image', "3d-viewer")}
-                        value={bgImage}
-                        onChange={(bgImage: string) => {
-                            if (isPremium) {
-                                setAttributes({
-                                    styles: produce(styles, (draft: StylesConfig) => {
-                                        draft.bgImage = bgImage;
-                                    }),
-                                });
-                            } else {
-                                setOpen(true);
-                            }
-                        }}
-                        isPremium={isPremium}
-                        setOpen={setOpen}
-                    /> */}
                     <Notice status={"info"}>
                         {__("Set background image available in premium version", "3d-viewer")}
                     </Notice>
 
-                    {/* {progressBar && (
-                        <ColorControl
-                            label={__('ProgressBar Color', '3d-viewer')}
-                            value={progressBarColor || '#666'}
-                            defaultColor="#666"
-                            onChange={(progressBarColor: string) => setAttributes({ styles: { ...styles, progressBarColor } })}
-                        />
-                    )} */}
                 </>
             )}
         </PanelBody>

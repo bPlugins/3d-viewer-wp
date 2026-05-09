@@ -422,7 +422,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 // * Modal/popup
 // */
 
-.bp3dv-model-main {
+.bp3d-model-main {
   text-align: center;
   overflow: hidden;
   top: 0;
@@ -460,7 +460,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
   display: block;
 }
 
-.bp3dv-model-inner {
+.bp3d-model-inner {
   // -webkit-transform: translate(0, -25%);
   // -ms-transform: translate(0, -25%);
   transform: translate(0, -25%);
@@ -477,7 +477,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
   max-width: 90%;
 }
 
-.bp3dv-model-wrap {
+.bp3d-model-wrap {
   display: block;
   width: 100%;
   position: relative;
@@ -498,8 +498,8 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
   // overflow-y: auto;
 }
 
-.model-open .bp3dv-model-inner,
-.bp3dv-model-main:target {
+.model-open .bp3d-model-inner,
+.bp3d-model-main:target {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
@@ -508,7 +508,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 }
 
 .model-open .bg-overlay,
-.bp3dv-model-main:target {
+.bp3d-model-main:target {
   background: rgba(0, 0, 0, 0.8);
   z-index: 99;
   position: fixed;
@@ -542,7 +542,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 }
 
 @media screen and (min-width: 800px) {
-  .bp3dv-model-main:before {
+  .bp3d-model-main:before {
     content: "";
     display: inline-block;
     height: auto;
@@ -553,12 +553,12 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 }
 
 @media screen and (max-width: 799px) {
-  .bp3dv-model-inner {
+  .bp3d-model-inner {
     margin-top: 45px;
   }
 }
 
-.bp3dv_a_popup_opener {
+.bp3d_a_popup_opener {
   position: relative;
 
   &::before {
@@ -572,7 +572,7 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
   }
 }
 
-.bp3dv_play_icon::before {
+.bp3d_play_icon::before {
   position: absolute;
   top: 50%;
   left: 50%;

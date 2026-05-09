@@ -15,7 +15,7 @@ use BP3D\Woocommerce\Product;
 /**
  * Shortcode handler.
  *
- * Registers and renders the `[3d_viewer]` and `[3d_viewer_product]`
+ * Registers and renders the 
  * shortcodes for displaying 3D model viewers.
  */
 class Shortcode
@@ -30,7 +30,7 @@ class Shortcode
     }
 
     /**
-     * Render the [3d_viewer] shortcode.
+     * Render the  shortcode.
      *
      * @param  array<string, string>|string $atts  Shortcode attributes
      * @return string|false Rendered HTML or false on failure
@@ -111,7 +111,7 @@ class Shortcode
     }
 
     /**
-     * Render the [3d_viewer_product] shortcode.
+     * Render the shortcode.
      *
      * @param  array<string, string>|string $attrs  Shortcode attributes
      * @return string|false Rendered HTML or false on failure

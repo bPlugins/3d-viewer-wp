@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Modal/Popup for woocommerce product images:
      * open 3D model popup when click on the product image.
      */
-    document.querySelectorAll<HTMLElement>('.bp3dv-model-main')?.forEach((model) => {
+    document.querySelectorAll<HTMLElement>('.bp3d-model-main')?.forEach((model) => {
         const selector = model.dataset.selector;
 
         if (!selector || selector === '') {
@@ -59,11 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (clickableItem) {
             clickableItem = findParentUntilMultipleChildren(clickableItem);
             if (clickableItem?.innerHTML?.includes('<a')) {
-                clickableItem.classList.add('bp3dv_a_popup_opener');
+                clickableItem.classList.add('bp3d_a_popup_opener');
             }
 
             if (clickableItem?.innerHTML?.includes('<img') && window.location.host === 'reintest.be') {
-                clickableItem.classList.add('bp3dv_play_icon');
+                clickableItem.classList.add('bp3d_play_icon');
             }
 
             clickableItem?.addEventListener('click', (e: Event) => {

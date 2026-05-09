@@ -144,7 +144,6 @@ export interface BlockAttributes {
 	woo: boolean;
 
 	// Runtime-only (set programmatically, not in block.json)
-	isPremium?: boolean;
 	isBackend?: boolean;
 	preview?: boolean;
 }
