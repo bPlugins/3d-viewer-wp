@@ -103,8 +103,6 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
     });
   }, []);
 
-  console.log({ isBackend })
-
 
   return (
     <>

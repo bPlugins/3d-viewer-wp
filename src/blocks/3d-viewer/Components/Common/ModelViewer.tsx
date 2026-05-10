@@ -2,24 +2,19 @@ import { useEffect } from "react";
 
 // @ts-ignore
 import loadingImgSrc from './../../../../public/loading.webp';
-// import Hotspots from "./Hotspots";
-// import SliderController from "./SliderControllder";
 import ModelReader from "../../../../utils/ModelReader";
 import manageAttributes from "../../../../public/manageAttributes";
-// import manageAttributes from "../../../../public/manageAttributes.";
-// import ClipboardButton from "./ClicpboardButton";
 
 // interface
 interface ModelViewerProps {
     attributes: any;
-    setAttributes: (attributes: any) => void;
     modelSrc: string;
     viewerRef: any;
     setModelReader: (modelReader: ModelReader) => void;
     __: (key: string, textdomain?: string) => string;
 }
 
-const ModelViewer = ({ attributes, modelSrc, viewerRef, }: ModelViewerProps) => {
+const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
     const { loadingPercentage = false, uniqueId, model, models, multiple, loading, activeIndex = 0, mouseControl, isBackend } = attributes;
     const currentModel = model;
 
@@ -96,7 +91,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef, }: ModelViewerProps) => 
             };
         }
 
-    }, [viewerRef?.current])
+    }, [viewerRef?.current, mouseControl])
 
 
     if (!currentModel) return <></>
