@@ -11,7 +11,6 @@ import Welcome from './Welcome';
 import { demoInfo, pricingInfo } from '../utils/data';
 
 interface AppProps {
-    hasPro: boolean;
     [key: string]: any;
 }
 

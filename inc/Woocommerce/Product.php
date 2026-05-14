@@ -161,28 +161,8 @@ class Product
         foreach ($raw_models as $value) {
             $model = [
                 'modelUrl' => $value['model_src'] ?? '',
-                'useDecoder' => 'none',
                 'poster' => $value['poster_src'] ?? '',
-                'product_variant' => $value['product_variant'] ?? '',
-                'skyboxImage' => $value['skybox_image_src'] ?? '',
-                'environmentImage' => $value['environment_image_src'] ?? '',
-                'arEnabled' => isset($value['enable_ar']) && $value['enable_ar'] === '1',
-                'modelISOSrc' => $value['model_iso_src'] ?? '',
-                'exposure' => $value['exposure'] ?? '1.0',
-                'arPlacement' => $value['ar_placement'] ?? 'floor',
-                'arMode' => $value['ar_mode'] ?? 'webxr',
-                'hotspots' => $value['hotspots'] ?? '{}',
-                'variations' => [],
-                'initialView' => isset($value['initial_view'])
-                    ? json_decode($value['initial_view'], true)
-                    : [],
             ];
-
-            foreach ($variant_keys as $key) {
-                if (isset($value[$key])) {
-                    $model['variations'][$key] = $value[$key];
-                }
-            }
 
             $models[] = $model;
         }
@@ -212,10 +192,6 @@ class Product
 
         $class = Utils::getThemeClass();
 
-        if ($placement === 'shop-loop-item') {
-            $class .= ' productListItem';
-        }
-
         if ($placement === 'product-gallery-inline') {
             $class .= ' position_' . $meta('viewer_position');
         }
@@ -223,7 +199,6 @@ class Product
         $finalData['position'] = $meta('viewer_position');
         $finalData['is_not_compatible'] = !Utils::isCompatibleTheme();
         $finalData['placement'] = $placement;
-        $finalData['arLink'] = get_the_permalink();
         $finalData['show_model_instead_thumbnail'] = $meta('show_model_instead_thumbnail', false, true);
 
         /** @var array<string, mixed> $finalData */

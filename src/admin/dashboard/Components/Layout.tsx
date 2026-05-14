@@ -15,7 +15,6 @@ const navigation: NavigationItem[] = [
 ];
 
 interface LayoutProps {
-    hasPro: boolean;
     [key: string]: any;
 }
 

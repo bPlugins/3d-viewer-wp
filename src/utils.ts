@@ -1,5 +1,4 @@
-import { textureChannels } from './blocks/3d-viewer/data';
-import ModelReader from './utils/ModelReader';
+
 import { produce } from 'immer';
 
 // ─── Type Definitions ───────────────────────────────────────────────────────
@@ -348,51 +347,7 @@ export const createAndApplyTexture = async (
     }
 };
 
-/**
- * Applies pre-configured textures and factors to a model's materials.
- */
-export const applyTexture = async (
-    model: HTMLModelViewerElement,
-    appliedTextures: AppliedTextures
-): Promise<void> => {
-    const modelReader = new ModelReader(model);
-    (window as any).modelReader = modelReader;
-    const textures = await modelReader.getTextures();
-    const texturesArray = modelReader.getTexturesArray();
 
-    Object.keys(appliedTextures).forEach((materialName) => {
-        const material = model?.model?.getMaterialByName(materialName);
-
-        if (!material) {
-            return;
-        }
-
-        (textureChannels as TextureChannelItem[]).forEach((item) => {
-            const channel = item?.value || null;
-
-            if (!channel) {
-                return;
-            }
-
-            const { name, index } = appliedTextures[materialName]?.[channel]?.texture || {};
-            const textureImage = textures[texturesArray[index as number]] || textures[name as string];
-            const factor = appliedTextures[materialName]?.[channel]?.factor || null;
-
-            if (textureImage) {
-                createAndApplyTexture(model, material, channel, textureImage, name);
-            }
-
-            if (factor) {
-                if (channel === 'baseColor') {
-                    material.pbrMetallicRoughness.setBaseColorFactor(rgbaStringToFactor(factor as string));
-                }
-                if (channel === 'emissive') {
-                    material.setEmissiveFactor(rgbaStringToFactor(factor as string));
-                }
-            }
-        });
-    });
-};
 
 /**
  * Resets a material property (factor or texture) to its default value using Immer.

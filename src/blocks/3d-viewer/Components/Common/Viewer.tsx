@@ -21,12 +21,10 @@ interface ViewerInterface {
   __: any;
   setAttributes: any;
   viewerRef: any;
-  setModelReader: any;
-  modelReader?: any;
   containerRef: any;
 }
 
-const Viewer = ({ attributes, __, setAttributes, viewerRef, setModelReader, containerRef }: ViewerInterface) => {
+const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: ViewerInterface) => {
   const [isValid, setIsValid] = useState(false);
   const { uniqueId, model, models = [], fullscreen, cameraBtn, zoomInOutBtn, multiple, additional, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, activeIndex = 0, arLink, position } = attributes;
   const { isFullscreen, isPagination } = O3DVSettings;
@@ -92,7 +90,6 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, setModelReader, cont
     <div ref={containerRef} id={`${uniqueId}`} className={`modelViewerBlock b3dviewer position_${position}  ${woo ? "woocommerce" : ""} ${isPagination && multiple ? "modelPagination" : ""}`}>
       <Style attributes={attributes} />
 
-      {['shop-loop-item'].includes(placement) && <ShopLoopItemComponents container={containerRef} />}
 
       <div id={additional?.ID || "additional_id"} className={`${additional?.Class} b3dviewer-wrapper bp_model_parent align${align}`}>
 
@@ -100,7 +97,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, setModelReader, cont
           <>
             {currentViewer === "modelViewer" ? (
               <>
-                <ModelViewer {...{ attributes, setAttributes, modelSrc, viewerRef, setModelReader, __ }} />
+                <ModelViewer {...{ attributes, setAttributes, modelSrc, viewerRef, __ }} />
 
               </>
             ) : (

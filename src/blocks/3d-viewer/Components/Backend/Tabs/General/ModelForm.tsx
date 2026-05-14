@@ -1,7 +1,7 @@
 import { SelectControl, PanelBody } from "@wordpress/components";
 
 import { __ } from "@wordpress/i18n";
-import { BtnGroup, InlineMediaUpload, Notice } from '../../../../../../../../bpl-tools/Components'
+import { BtnGroup, InlineMediaUpload } from '../../../../../../../../bpl-tools/Components'
 
 
 import { modelViewers } from "../../../../data";

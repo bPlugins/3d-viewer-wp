@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import posx from "../../../../../public/images/envmaps/fishermans_bastion/posx.jpg";
 import posy from "../../../../../public/images/envmaps/fishermans_bastion/posy.jpg";
@@ -17,8 +17,8 @@ interface Basic3DViewerProps {
 
 const Basic3DViewer = (props: Basic3DViewerProps) => {
   const { attributes, modelSrc } = props;
-  const { styles, multiple, O3DVSettings = {}, model, isBackend } = attributes;
-  const { camera, mouseControl, zoom = true, showEdge = false } = O3DVSettings;
+  const { styles, O3DVSettings = {}, model, isBackend } = attributes;
+  const { mouseControl, zoom = true } = O3DVSettings;
   const currentModel = model;
 
   const [viewerLoaded, setViewerLoaded] = useState(false);
@@ -37,12 +37,9 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
 
       if (viewerRef.current === null) {
 
-        const defaultCamera = camera && !multiple ? { camera: new window.OV.Camera(new window.OV.Coord3D(...Object.values(camera.eye)), new window.OV.Coord3D(...Object.values(camera.center)), new window.OV.Coord3D(...Object.values(camera.up)), 45.0) } : {};
 
         instanceRef.current = new window.OV.EmbeddedViewer(parentDiv.current, {
-          ...defaultCamera,
           backgroundColor: new window.OV.RGBAColor(255, 255, 255, 255),
-          edgeSettings: new window.OV.EdgeSettings(showEdge, new window.OV.RGBColor(0, 0, 0), 1),
           environmentSettings: new window.OV.EnvironmentSettings([posx, negx, posy, negy, posz, negz], false),
         });
 

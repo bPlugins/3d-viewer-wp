@@ -175,19 +175,6 @@ class Settings
           'title' => __('Gallery Trigger Selector', '3d-viewer'),
           'desc' => __('Write here the gallery trigger selector', '3d-viewer'),
           'placeholder' => '.woocommerce-product-gallery__trigger',
-        ),
-        array(
-          'id' => 'custom_css',
-          'type' => 'code_editor',
-          'title' => __('Custom CSS', '3d-viewer'),
-          'desc' => __('Write here the custom css code', '3d-viewer'),
-          'settings' => array(
-            'mode' => 'css',
-            'theme' => 'monokai',
-            'indentWithTabs' => true,
-            'smartIndent' => true,
-            'lineNumbers' => true
-          ),
         )
       )
     ));

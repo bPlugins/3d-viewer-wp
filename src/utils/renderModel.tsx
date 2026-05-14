@@ -67,7 +67,7 @@ export const renderModel = ({
         );
         const root = createRoot(targetDom);
         root.render(<FrontEnd attributes={attributes} />);
-    } else if (position === 'merge_with_first_image' || attributes.placement === 'shop-loop-item') {
+    } else if (position === 'merge_with_first_image') {
         setTimeout(() => {
             const imageEl = document.querySelector('.woocommerce-product-gallery__image') as HTMLElement | null;
             const wrapperEl = targetDom.querySelector('.b3dviewer-wrapper') as HTMLElement | null;

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import jsonParse from './../../../wp-utils/v1/jsonParse';
 import Viewer from './../blocks/3d-viewer/Components/Common/Viewer';
 import modelRenderer from '../utils/modelRenderer';
@@ -91,8 +91,9 @@ interface FrontEndProps {
 }
 
 const FrontEnd: React.FC<FrontEndProps> = ({ attributes }) => {
-    const [modelReader, setModelReader] = useState<unknown>(null);
     const [attrs, setAttrs] = useState(attributes);
+
+    const viewerRef = useRef<any>(null);
 
     function __(text: string, _textdomain: string = ''): string {
         return text;
@@ -106,8 +107,7 @@ const FrontEnd: React.FC<FrontEndProps> = ({ attributes }) => {
             <Viewer
                 attributes={attrs}
                 __={__}
-                setModelReader={setModelReader}
-                modelReader={modelReader}
+                viewerRef={viewerRef}
                 setAttributes={setAttributes}
                 containerRef={containerRef}
             />
@@ -141,7 +141,8 @@ window.addEventListener('elementor/frontend/init', function () {
 
                     if (!attributes?.currentViewer || attributes.currentViewer === 'modelViewer') {
                         dom.setAttribute('data-rendered', 'true');
-                        render(<FrontEnd attributes={attributes} />, dom);
+                        const root = createRoot(dom);
+                        root.render(<FrontEnd attributes={attributes} />);
                         const Src = document.getElementById('bp3d-lib-model-viewer-js');
                         if (!Src) {
                             const script = document.createElement('script');
@@ -161,15 +162,18 @@ window.addEventListener('elementor/frontend/init', function () {
                                 script.src = (window as any)['bp3dBlock']?.o3dviewerSrc;
                                 document.head.appendChild(script);
                                 script.addEventListener('load', () => {
-                                    render(<FrontEnd attributes={attributes} />, dom);
+                                    const root = createRoot(dom);
+                                    root.render(<FrontEnd attributes={attributes} />);
                                 });
                             } else {
                                 Src.addEventListener('load', () => {
-                                    render(<FrontEnd attributes={attributes} />, dom);
+                                    const root = createRoot(dom);
+                                    root.render(<FrontEnd attributes={attributes} />);
                                 });
                             }
                         } else {
-                            render(<FrontEnd attributes={attributes} />, dom);
+                            const root = createRoot(dom);
+                            root.render(<FrontEnd attributes={attributes} />);
                         }
                     }
                 }

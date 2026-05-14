@@ -25,7 +25,6 @@ class Blocks
     public function register(): void
     {
         add_action('init', [$this, 'init'], 1);
-        add_action('rest_api_init', [$this, 'rest_api_init']);
         add_action('init', [$this, 'registerBlockAssets'], 0);
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
@@ -85,20 +84,6 @@ class Blocks
     {
         register_block_type(BP3D_PATH . 'build/blocks/3d-viewer');
         register_block_type(BP3D_PATH . '3d-viewer-block/build');
-    }
-
-    /**
-     * Register REST route for pipe check.
-     */
-    public function rest_api_init()
-    {
-        register_rest_route('bp3d/v1', '/pipe-check', [
-            'methods' => 'GET',
-            'callback' => [$this, 'pipeCheckCallback'],
-            'permission_callback' => function () {
-                return current_user_can('edit_posts');
-            },
-        ]);
     }
 
     /**

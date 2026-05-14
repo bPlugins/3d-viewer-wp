@@ -6,7 +6,6 @@ import './scss/themes/themes.scss';
 import './scss/themes/common.scss';
 import FrontEnd from './Components/FrontEnd';
 import manageIncompatibleTheme from '../utils/manageIncompatibleTheme';
-import handleShopLoopItemPlacement from '../utils/handleShopLoopItemPlacement';
 import './elementor';
 
 const { createRoot } = (window as any).ReactDOM;
@@ -71,14 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (placement === 'product-gallery-inline') {
             const root = createRoot(dom);
             root.render(<FrontEnd attributes={attributes} />);
-        } else if (placement === 'shop-loop-item') {
-            const root = createRoot(dom);
-            root.render(<FrontEnd attributes={attributes} />);
-            handleShopLoopItemPlacement(dom);
         } else if (placement === 'shortcode') {
-            const root = createRoot(dom);
-            root.render(<FrontEnd attributes={attributes} />);
-        } else if (placement === 'popup') {
             const root = createRoot(dom);
             root.render(<FrontEnd attributes={attributes} />);
         }

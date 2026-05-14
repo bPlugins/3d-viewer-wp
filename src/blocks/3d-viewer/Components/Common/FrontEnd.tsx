@@ -8,7 +8,6 @@ if (!Array.isArray(window.modelViewerMessages)) {
 }
 
 const FrontEnd = ({ attributes }: { attributes: any }) => {
-  const [modelReader, setModelReader] = useState(null);
   const [attrs, setAttrs] = useState(attributes);
 
   // eslint-disable-next-line no-unused-vars
@@ -22,7 +21,7 @@ const FrontEnd = ({ attributes }: { attributes: any }) => {
   const containerRef = useRef(null);
 
   if (attributes) {
-    return <Viewer {...{ attributes: attrs, viewerRef, __, modelReader, setAttributes, setModelReader, containerRef }} />;
+    return <Viewer {...{ attributes: attrs, viewerRef, __, setAttributes, containerRef }} />;
   }
 };
 

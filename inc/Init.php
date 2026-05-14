@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 /**
  * Plugin initialization and service container.
  *
- * Handles bootstrapping all plugin services, loading premium files,
+ * Handles bootstrapping all plugin services
  * and managing the singleton lifecycle.
  */
 class Init

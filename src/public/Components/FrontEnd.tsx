@@ -19,7 +19,6 @@ interface FrontEndProps {
 }
 
 const FrontEnd: React.FC<FrontEndProps> = ({ attributes }) => {
-    const [modelReader, setModelReader] = useState<unknown>(null);
     const [attrs, setAttrs] = useState<FrontEndAttributes>(attributes);
 
     function __(text: string, _textdomain: string = ''): string {
@@ -38,8 +37,6 @@ const FrontEnd: React.FC<FrontEndProps> = ({ attributes }) => {
                 attributes={attrs}
                 viewerRef={viewerRef}
                 __={__}
-                modelReader={modelReader}
-                setModelReader={setModelReader}
                 setAttributes={setAttributes}
             />
         );
@@ -49,8 +46,6 @@ const FrontEnd: React.FC<FrontEndProps> = ({ attributes }) => {
                 attributes={attrs}
                 viewerRef={viewerRef}
                 __={__}
-                modelReader={modelReader}
-                setModelReader={setModelReader}
                 setAttributes={setAttributes}
                 containerRef={containerRef}
             />

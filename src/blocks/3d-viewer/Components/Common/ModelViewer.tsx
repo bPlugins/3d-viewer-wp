@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 // @ts-ignore
 import loadingImgSrc from './../../../../public/loading.webp';
-import ModelReader from "../../../../utils/ModelReader";
 import manageAttributes from "../../../../public/manageAttributes";
 
 // interface
@@ -10,7 +9,6 @@ interface ModelViewerProps {
     attributes: any;
     modelSrc: string;
     viewerRef: any;
-    setModelReader: (modelReader: ModelReader) => void;
     __: (key: string, textdomain?: string) => string;
 }
 

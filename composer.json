@@ -1,5 +1,6 @@
 {
-  "name": "rajud/3d-viewer",
+  "name": "bPlugins/3d-viewer",
+  "version": "1.8.11",
   "autoload": {
     "psr-4": {
       "BP3D\\": "inc/"

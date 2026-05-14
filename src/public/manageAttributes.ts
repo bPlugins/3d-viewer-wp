@@ -61,24 +61,12 @@ const manageAttributes = (
             ? modelViewer.setAttribute('camera-orbit', `${rotateAlongX}deg ${rotateAlongY}deg 105%`)
             : modelViewer.removeAttribute('camera-orbit');
 
-        // modelViewer.setAttribute('reveal', preload || 'auto');
-        // modelViewer.dataset.animation = selectedAnimation || '';
-        // modelViewer.setAttribute('exposure', String(currentModel?.exposure || exposure));
-        // setDomAttribute(modelViewer, 'tone-mapping', currentModel?.toneMapping || toneMapping);
 
         if (!zoom) {
             modelViewer.setAttribute('disable-zoom', '');
         } else {
             modelViewer.removeAttribute('disable-zoom');
         }
-
-        // modelViewer.addEventListener('load', function () {
-        //     setDomAttribute(modelViewer, 'scale', `${zoomLevel} ${zoomLevel} ${zoomLevel}`);
-        // });
-
-        // if (modelViewer?.loaded) {
-        //     modelViewer.setAttribute('scale', `${zoomLevel} ${zoomLevel} ${zoomLevel}`);
-        // }
 
         setTimeout(() => {
             rotate

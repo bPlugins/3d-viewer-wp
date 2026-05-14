@@ -236,7 +236,7 @@ class PostTypeModelViewer
         $screen = get_current_screen();
 
         if ($screen && $screen->post_type === $this->post_type) {
-            return false;
+            return [];
         }
 
         return $metaboxes;

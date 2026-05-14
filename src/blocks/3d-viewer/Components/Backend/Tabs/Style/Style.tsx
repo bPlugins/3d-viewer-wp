@@ -9,7 +9,6 @@ import { ColorControl, Device, InlineMediaUpload, Notice } from '../../../../../
 import { produce } from 'immer';
 import StyleIcon from '../../../../../../icons/StyleIcon';
 import Title from '../../../../../../components/Title';
-import BInfoControl from '../../../../../../components/BInfoControl';
 
 interface ResponsiveValue {
     desktop?: string;
@@ -120,15 +119,6 @@ const Style: React.FC<StyleProps> = ({ attributes, setAttributes, device }) => {
                 label={__('Background Color', "3d-viewer")}
                 onChange={(bgColor: string) => setAttributes({ styles: { ...styles, bgColor } })}
             />
-
-            {currentViewer === 'modelViewer' && (
-                <>
-                    <Notice status={"info"}>
-                        {__("Set background image available in premium version", "3d-viewer")}
-                    </Notice>
-
-                </>
-            )}
         </PanelBody>
     );
 };

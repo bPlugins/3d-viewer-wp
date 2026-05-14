@@ -13,9 +13,6 @@ import O3DVOptions from "./Tabs/General/O3DVOptions";
 
 // import "./settings.scss";
 import Hotspots from "./Tabs/General/Hotspots";
-import Upgrade from "./Upgrade";
-import ProModal from "./ProModal";
-import { AdvertiseCard } from "../../../../../../bpl-tools/ProControls";
 // import AR from './Components/Tabs/General/AR';
 
 //settings typescript props
@@ -85,8 +82,6 @@ const Settings = ({ attributes, setAttributes, postId, postType }: SettingsProps
 
                   {currentViewer === "O3DViewer" && <O3DVOptions {...props} />}
 
-                  {currentViewer === 'modelViewer' && <Hotspots />}
-
                 </Panel>
               )}
               {tab.name === "style" && placement !== 'visual-editor' && (
@@ -98,10 +93,7 @@ const Settings = ({ attributes, setAttributes, postId, postType }: SettingsProps
           );
         }}
       </TabPanel>
-      <Additional {...props} />
 
-      {/* <AdvertiseCard planLink="https://bplugins.com/products/3d-viewer/pricing/" /> */}
-      <ProModal open={open} setOpen={setOpen} />
     </InspectorControls>
   );
 };

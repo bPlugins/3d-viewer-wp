@@ -19,7 +19,6 @@ interface EditProps {
 const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: EditProps) => {
   const [isValid, setIsValid] = useState(true);
   const { uniqueId, model, placement } = attributes;
-  const [modelReader, setModelReader] = useState(null);
   const viewerRef = useRef();
 
   //generate new unique ID
@@ -53,9 +52,9 @@ const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: Edi
 
       {!isSelected && <div className="modelViewerIsSelected"></div>}
       <>
-        <Settings {...{ modelReader, setModelReader, attributes, setAttributes, viewerRef }} />
+        <Settings {...{ attributes, setAttributes, viewerRef }} />
 
-        {modelSrc && isValid && <Viewer {...{ modelReader, setModelReader, viewerRef, attributes, setAttributes, __, containerRef }} />}
+        {modelSrc && isValid && <Viewer {...{ viewerRef, attributes, setAttributes, __, containerRef }} />}
         {modelSrc && !isValid && <h2>{__("3D file is not valid", "3d-viewer")}</h2>}
         {!modelSrc && (
           <div className="upload3d">

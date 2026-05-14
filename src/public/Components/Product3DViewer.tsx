@@ -23,8 +23,6 @@ interface Product3DViewerProps {
     attributes: Product3DViewerAttributes;
     viewerRef: RefObject<HTMLElement | null>;
     __: (text: string, textdomain?: string) => string;
-    modelReader: unknown;
-    setModelReader: (reader: unknown) => void;
     setAttributes: (attrs: Partial<Product3DViewerAttributes>) => void;
     [key: string]: unknown;
 }

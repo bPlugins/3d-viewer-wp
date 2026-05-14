@@ -17,7 +17,6 @@ if (!class_exists('BP3DAdmin')) {
         {
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
             add_action('admin_menu', [$this, 'register_admin_menus'], 15);
-            add_action('admin_head', [$this, 'render_admin_styles']);
         }
 
         /**
@@ -67,7 +66,7 @@ if (!class_exists('BP3DAdmin')) {
          */
         public function register_admin_menus()
         {
-        
+
 
             add_submenu_page(
                 'edit.php?post_type=bp3d-model-viewer',
@@ -87,34 +86,9 @@ if (!class_exists('BP3DAdmin')) {
         {
             $info = wp_json_encode([
                 'version' => BP3D_VERSION,
-                'hasPro' => file_exists(BP3D_PATH . '/inc/Base/LicenseActivation.php')
             ]);
             ?>
             <div id="bp3dAdminDashboard" data-info="<?php echo esc_attr($info); ?>"></div>
-            <?php
-        }
-
-    
-
-        /**
-         * Output admin head styles for pricing link.
-         */
-        public function render_admin_styles()
-        {
-            ?>
-            <style>
-                .fs-submenu-item.\33 d-viewer.pricing.upgrade-mode {
-                    background: #146ef5;
-                    border-radius: 3px;
-                    color: #fff;
-                    display: inline-block;
-                    padding: 9px 20px 9px 18px;
-                }
-
-                .menu-icon-bp3d-model-viewer ul li:has(a[href$="3d-viewer-affiliation"]) {
-                    display: none;
-                }
-            </style>
             <?php
         }
     }

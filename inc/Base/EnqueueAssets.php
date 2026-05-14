@@ -48,7 +48,6 @@ class EnqueueAssets
             'assetsUrl' => BP3D_DIR . '/public',
         ]);
 
-        $this->renderCustomCss();
     }
 
     /**
@@ -58,9 +57,8 @@ class EnqueueAssets
     {
         global $post;
 
-        $post_type = isset($post->post_type) ? $post->post_type
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            : (isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'] ?? '')) : null);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $post_type = isset($post->post_type) ? $post->post_type : (isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'] ?? '')) : null);
 
         // Admin script & styles
         wp_register_script('bp3d-admin-script', BP3D_DIR . 'build/admin.js', ['jquery'], BP3D_VERSION, true);
@@ -75,15 +73,4 @@ class EnqueueAssets
 
     }
 
-    /**
-     * Output custom CSS from plugin settings in the footer.
-     */
-    public function renderCustomCss()
-    {
-        $settings = \BP3D\Helper\Utils::getSettings('_bp3d_settings_', []);
-
-        $css = wp_strip_all_tags($settings('custom_css'));
-        $css = wp_kses($css, []);
-        wp_add_inline_style('bp3d-frontend', $css);
-    }
 }

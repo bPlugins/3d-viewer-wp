@@ -4,7 +4,6 @@ const slug = '3d-viewer';
 
 interface DashboardInfoInput {
     version: string;
-    hasPro: boolean;
     licenseActiveNonce: string;
 }
 
@@ -14,7 +13,6 @@ interface DashboardInfo {
     description: string;
     slug: string;
     version: string;
-    hasPro: boolean;
     displayOurPlugins: boolean;
     media: {
         logo: string;
@@ -32,7 +30,7 @@ interface DashboardInfo {
     freemius: {
         product_id: number;
         plan_id: number;
-        public_key: string;
+        // public_key: string;
     };
     licenseActiveNonce: string;
     changelogs: Array<{
@@ -48,7 +46,7 @@ interface DashboardInfo {
 }
 
 export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
-    const { version, hasPro, licenseActiveNonce } = info;
+    const { version, licenseActiveNonce } = info;
 
     return {
         name: `3D Viewer`,
@@ -56,7 +54,6 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         description: 'Easily display interactive 3D models on the web. Supported File type .glb, .gltf, .obj, .3ds, .stl, .ply, .off, .3dm, .fbx, .dae, .wrl, .3mf, .amf, .ifc, .brep, .step, .iges, .fcstd, .bim',
         slug,
         version,
-        hasPro,
         displayOurPlugins: true,
         media: {
             logo: `https://ps.w.org/${slug}/assets/icon-128x128.png`,
@@ -74,7 +71,7 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         freemius: {
             product_id: 8795,
             plan_id: 14970,
-            public_key: 'pk_5e6ce3f226c86e3b975b59ed84d6a'
+            // public_key: 'pk_5e6ce3f226c86e3b975b59ed84d6a'
         },
         licenseActiveNonce,
         changelogs: [

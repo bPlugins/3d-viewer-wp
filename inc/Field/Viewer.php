@@ -107,26 +107,6 @@ class Viewer
           'desc' => __('Upload or Select 3d Poster Image.  if you don\'t want to use just leave it empty', '3d-viewer'),
           'dependency' => array('currentViewer', '==', 'modelViewer'),
         ),
-        array(
-          'type' => 'content',
-          'content' => '
-                    <div class="bp3d-pro-notice-box">
-                        <h4 class="bp3d-pro-notice-title">🚀 Get More with Premium Version</h4>
-                        <p class="bp3d-pro-notice-desc">The following features are available in the Premium Version:</p>
-                        <ul class="bp3d-pro-notice-list">
-                            <li><strong>Multiple Models:</strong> Enables multiple models in a single viewer, allowing users to switch between different 3D models.</li>
-                            <li><strong>HDRI Skybox Images:</strong> Sets a skybox image that appears as the background and provides environmental lighting for the model.</li>
-                            <li><strong>Environment Image:</strong> Sets an environment image to improve lighting and reflections on the model.</li>
-                            <li><strong>Exposure:</strong> Adjusts the brightness of the model scene. Higher values make the model brighter.</li>
-                            <li><strong>Ton Mapping:</strong> Controls how colors and brightness are mapped for rendering. Use neutral for balanced output, or try other modes for different looks.</li>
-                            <li><strong>AR:</strong> Enables AR (Augmented Reality) so visitors can view the 3D model in their real environment on supported devices.</li>
-                            <li><strong>Apply Textures:</strong> Allows you to apply and customize textures on supported 3D models. This feature is experimental and may vary depending on the model.</li>
-                        </ul>
-                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
-                    </div>
-                ',
-          'dependency' => array('currentViewer', '==', 'modelViewer'),
-        ),
       )
     ));
   }
@@ -216,29 +196,7 @@ class Viewer
           'default' => true,
           // 'class'    => 'bp3d-readonly',
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
-        ),
-        array(
-          'type' => 'content',
-          'content' => '
-                    <div class="bp3d-pro-notice-box">
-                        <h4 class="bp3d-pro-notice-title">🚀 Get More with Premium Version</h4>
-                        <p class="bp3d-pro-notice-desc">The following features are available in the Premium Version:</p>
-                        <ul class="bp3d-pro-notice-list">
-                            <li><strong>Background Image:</strong> Sets a skybox image that appears as the background and provides environmental lighting for the model.</li>
-                            <li><strong>Shadow:</strong> Adds realistic shadows beneath the model to improve depth and realism.</li>
-                            <li><strong>Auto Rotate:</strong> Automatically rotates the 3D model without user interaction. Great for showcasing products.</li>
-                            <li><strong>Variant Selector:</strong> Enables model variants if your 3D file supports multiple variations.</li>
-                            <li><strong>Animation Selector:</strong> Enables animation selector if the model contains animations.</li>
-                            <li><strong>Zoom In/Out Button:</strong> Displays zoom in and zoom out buttons on the viewer interface.</li>
-                            <li><strong>Camera Button:</strong> Displays a camera button that lets users capture the current view of the model.</li>
-                            <li><strong>Lock Left-Right, Up-Down Rotation:</strong> Prevents the model from rotating along the X and Y axis.</li>
-                            <li><strong>Set Initial Zoom:</strong> Sets the default zoom level of the model. Higher values zoom in closer.</li>
-                        </ul>
-                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
-                    </div>
-                ',
-          'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
-        ),
+        )
       )
     ));
   }
@@ -292,20 +250,6 @@ class Viewer
           'desc' => __("Sets the background color of the 3D viewer. Use transparent or any valid CSS color value.", "3d-viewer"),
           'default' => 'transparent',
           // 'class' => 'bp3d-readonly',
-        ),
-        array(
-          'type' => 'content',
-          'content' => '
-                    <div class="bp3d-pro-notice-box">
-                        <h4 class="bp3d-pro-notice-title">🚀 Get More with Premium Version</h4>
-                        <p class="bp3d-pro-notice-desc">The following features are available in the Premium Version:</p>
-                        <ul class="bp3d-pro-notice-list">
-                            <li><strong>Background Image:</strong> Set background image of the 3D model.</li>
-                        </ul>
-                        <a href="' . admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing') . '" target="_blank" class="bp3d-pro-notice-button">Get Premium Version</a>
-                    </div>
-                ',
-          'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
         ),
       )
     ));

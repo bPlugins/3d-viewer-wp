@@ -10,7 +10,6 @@ if ($attributes['currentViewer'] == 'modelViewer') {
     wp_enqueue_script('bp3d-lib-o3dviewer');
 }
 
-$attributes = \BP3D\Helper\Utils::removeProAttributes($attributes);
 
 $attributes = apply_filters('bp3d_gutenberg_model_attribute', $attributes);
 

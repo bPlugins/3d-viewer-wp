@@ -5,7 +5,7 @@
  * Plugin Name: 3D Viewer – Display Interactive 3D Models
  * Plugin URI:  https://bplugins.com/
  * Description: Easily display interactive 3D models on the web. Supported File type .glb, .gltf,obj 3ds stl ply off 3dm fbx dae wrl 3mf amf ifc brep step iges fcstd bim
- * Version: 1.8.10
+ * Version: 1.8.11
  * Author: bPlugins
  * Author URI: http://bplugins.com
  * Requires PHP: 7.4
@@ -35,7 +35,7 @@ if (function_exists('bp3d_fs')) {
     if (defined('WP_DEBUG') && WP_DEBUG === true) {
         define('BP3D_VERSION', time());
     } else {
-        define('BP3D_VERSION', '1.8.10');
+        define('BP3D_VERSION', '1.8.11');
     }
 
     defined('BP3D_DIR') or define('BP3D_DIR', plugin_dir_url(__FILE__));
@@ -61,9 +61,7 @@ if (function_exists('bp3d_fs')) {
                     'public_key' => 'pk_5e6ce3f226c86e3b975b59ed84d6a',
                     'is_premium' => false,
                     // If your plugin is a serviceware, set this option to false.
-                    'has_premium_version' => true,
                     'has_addons' => false,
-                    'has_paid_plans' => true,
                     'has_affiliation' => 'selected',
                     'menu' => array(
                         'slug' => 'edit.php?post_type=bp3d-model-viewer',
