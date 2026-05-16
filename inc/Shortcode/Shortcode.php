@@ -87,8 +87,7 @@ class Shortcode
         $finalData = apply_filters('bp3d_classic_model_attribute', $finalData);
         $model_url = $finalData['model']['modelUrl'] ?? '';
 
-        wp_add_inline_script('bp3d-frontend', '')
-            ?>
+        ?>
 
         <div class="modelViewerBlock" data-attributes='<?php echo esc_attr(wp_json_encode($finalData)); ?>'>
             <div class="bp3d_backup_view" style="display: none;height:350px;">

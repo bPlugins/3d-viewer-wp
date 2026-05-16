@@ -36,7 +36,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
             const percentageEl = viewerRef.current.querySelector(".percentage");
             const loaderEl = viewerRef.current.querySelector(".bp3d_loader");
             const progress = (event: any) => {
-                percentageEl.innerHTML = parseInt(event.detail.totalProgress) * 100 + "%";
+                percentageEl.textContent = parseInt(event.detail.totalProgress) * 100 + "%";
                 if (event.detail.totalProgress === 1) {
                     percentageEl.style.cssText = "display: none";
 

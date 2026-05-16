@@ -253,14 +253,12 @@ class ModelViewer extends \Elementor\Widget_Base
 
     /**
      * Create a settings accessor closure.
-     *
-     * @return \Closure(string, mixed=, bool=, string|null=): mixed
      */
     public function bp3d_get_settings(): \Closure
     {
         $settings = $this->get_settings_for_display();
 
-        return function (string $key, mixed $default = false, bool $is_boolean = false, ?string $key2 = null) use ($settings): mixed {
+        return function ($key, $default = false, $is_boolean = false, $key2 = null) use ($settings) {
             if (isset($settings[$key], $settings[$key][$key2])) {
                 return $is_boolean ? ($settings[$key][$key2] === 'yes') : $settings[$key][$key2];
             }

@@ -178,7 +178,7 @@ class Product
      * @param  bool   $popup      Whether this is a popup rendering
      * @return string Rendered HTML (when $return is true)
      */
-    public function get_3d_model_html(bool $return = true, string $placement = 'block', bool $popup = false): string
+    public function get_3d_model_html($return = true, $placement = 'block'): string
     {
         global $product;
 

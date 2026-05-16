@@ -86,15 +86,6 @@ class Blocks
         register_block_type(BP3D_PATH . '3d-viewer-block/build');
     }
 
-    /**
-     * Handle pipe check REST API callback.
-     *
-     * @return \WP_REST_Response
-     */
-    public function pipeCheckCallback(): \WP_REST_Response
-    {
-        return new \WP_REST_Response(['status' => 'ok'], 200);
-    }
 
     /**
      * Enqueue block editor assets with localized data.
@@ -119,7 +110,7 @@ class Blocks
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'siteUrl' => site_url(),
-            'assetsUrl' => BP3D_DIR . '/public',
+            'assetsUrl' => BP3D_DIR . 'public',
             'presets' => $presets,
             'editUrl' => admin_url('post.php?post='),
             '_wpnonce' => wp_create_nonce('wp_ajax'),

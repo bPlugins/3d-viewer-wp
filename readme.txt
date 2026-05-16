@@ -2,9 +2,9 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
 Tested up to: 6.9
-Stable tag: 1.8.11
+Stable tag: 1.8.12
 Requires PHP: 7.4
-Requires at least: 5.8
+Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -248,13 +248,6 @@ The bundle also includes the following sub-dependencies:
 * Three.js r174 – MIT – [https://github.com/mrdoob/three.js](https://github.com/mrdoob/three.js)
 * Lit 3.2.1 / LitElement 4.1.1 – BSD-3-Clause – [https://github.com/lit/lit](https://github.com/lit/lit)
 
-= bpl-tools =
-* **Source:** [https://github.com/bPlugins/bpl-tools](https://github.com/bPlugins/bpl-tools)
-* **GitHub:** [https://github.com/bPlugins/bpl-tools](https://github.com/bPlugins/bpl-tools)
-* **License:** GPL-2.0-or-later – [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
-* **Purpose:** Shared utility library providing admin dashboard components and common Gutenberg editor controls.
-* **External Services:** When the user opens the dashboard, the components may request `https://api.bplugins.com/wp-json/bpl/v1/products/{pluginId}` (live pricing and feature data for the Pricing and Feature Comparison tabs) and `https://api.wordpress.org/plugins/info/1.2/` (the list of bPlugins products shown on the "Our Plugins" tab). The Freemius Checkout iframe (`https://checkout.freemius.com`) is opened only when the user clicks a "Buy" button. Full details: [bpl-tools README](https://github.com/bPlugins/bpl-tools#external-requests--why-they-are-made). 
-
 
 = bpl-tools =
 * Source / GitHub: https://github.com/bPlugins/bpl-tools
@@ -290,6 +283,10 @@ Yes, we have build in Elementor widget and shortcode both.
 
 
 == Changelog ==
+
+= 1.8.12 - 16 May, 2026  =
+Update: Overall code quality and strengthened security protocols.
+Update: Required WordPress version updated.
 
 = 1.8.11 - 13 May, 2026  =
 Update: Removed Custom CSS Field from Settings

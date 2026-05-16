@@ -45,7 +45,7 @@ class EnqueueAssets
 
         wp_localize_script('bp3d-public', 'bp3dAssetsUrl', [
             'siteUrl' => site_url(),
-            'assetsUrl' => BP3D_DIR . '/public',
+            'assetsUrl' => BP3D_DIR . 'public',
         ]);
 
     }
@@ -63,8 +63,6 @@ class EnqueueAssets
         // Admin script & styles
         wp_register_script('bp3d-admin-script', BP3D_DIR . 'build/admin.js', ['jquery'], BP3D_VERSION, true);
         wp_register_style('bp3d-admin-style', BP3D_DIR . 'admin/css/admin-style.css', [], BP3D_VERSION);
-        wp_register_style('bp3d-readonly-style', BP3D_DIR . 'admin/css/readonly.css', [], BP3D_VERSION);
-
         if (in_array($post_type, ['bp3d-model-viewer', 'product'], true)) {
             wp_enqueue_style('bp3d-admin-style');
             wp_enqueue_style('bp3d-readonly-style');

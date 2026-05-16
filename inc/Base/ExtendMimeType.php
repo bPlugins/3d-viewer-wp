@@ -11,7 +11,6 @@ class ExtendMimeType
 
     public function register()
     {
-        global $wp_version;
         add_filter('upload_mimes', [$this, 'bplugins_stp_mime_types']);
         add_filter('wp_check_filetype_and_ext', [$this, 'bplugins_stp_add_allow_upload_extension_exception'], 10, 5);
     }
@@ -59,7 +58,6 @@ class ExtendMimeType
             'wrl' => 'model/vrml',
             '3mf' => 'application/vnd.ms-3mfdocument',
             'mtl' => 'model/mtl',
-            'bin' => 'application/octet-stream',
             'hdr' => 'image/vnd.radiance',
             'usdz' => 'model/vnd.pixar.usd',
         ];

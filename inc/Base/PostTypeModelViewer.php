@@ -36,7 +36,6 @@ class PostTypeModelViewer
         add_filter('post_updated_messages', [$this, 'customizeUpdateMessage']);
         add_action('admin_head-post.php', [$this, 'hidePublishingActions']);
         add_action('admin_head-post-new.php', [$this, 'hidePublishingActions']);
-        add_filter('gettext', [$this, 'changePublishButtonText'], 10, 2);
         add_action('edit_form_after_title', [$this, 'renderShortcodeArea']);
         add_filter('post_row_actions', [$this, 'removeRowActions'], 10, 2);
         add_action('admin_init', [$this, 'setMetaData']);
@@ -166,7 +165,6 @@ class PostTypeModelViewer
             'show_ui' => true,
             'menu_icon' => BP3D_DIR . 'admin/images/logo.svg',
             'query_var' => true,
-            'rewrite' => ['slug' => '3d-viewer'],
             'capability_type' => 'post',
             'has_archive' => false,
             'hierarchical' => false,
@@ -197,17 +195,7 @@ class PostTypeModelViewer
         </style>';
     }
 
-    /**
-     * Change the "Publish" button text to "Save".
-     */
-    public function changePublishButtonText($translation, $text)
-    {
-        if ($this->post_type === get_post_type() && $text === 'Publish') {
-            return 'Save';
-        }
 
-        return $translation;
-    }
 
     /**
      * Remove "View" and "Quick Edit" row actions for this post type.
