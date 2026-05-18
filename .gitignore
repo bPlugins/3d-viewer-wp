@@ -28,4 +28,3 @@ package-lock.json
 playwright.config.ts
 task-runner-config.json
 pnpm-lock.yaml
-readme.md

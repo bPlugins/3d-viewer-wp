@@ -7,13 +7,9 @@ import { useState } from "@wordpress/element";
 import ModelForm from "./Tabs/General/ModelForm";
 import _Style from "./Tabs/Style/Style";
 const Style = _Style as unknown as React.FC<any>;
-import Additional from "./Tabs/Style/Additional";
 import Options from "./Tabs/General/Options";
 import O3DVOptions from "./Tabs/General/O3DVOptions";
 
-// import "./settings.scss";
-import Hotspots from "./Tabs/General/Hotspots";
-// import AR from './Components/Tabs/General/AR';
 
 //settings typescript props
 interface SettingsProps {

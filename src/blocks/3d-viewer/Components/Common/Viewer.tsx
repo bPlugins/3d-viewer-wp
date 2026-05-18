@@ -6,7 +6,7 @@ import Style from "./Style";
 import Basic3DViewer from "./Basic3DViewer";
 
 import ShopLoopItemComponents from "./ShopLoopItemComponents";
-// import ARQRCode from "./ARQRCode";
+
 import { Camera, Close, Fullscreen, Minus, Plus } from "./icons";
 import downloadImageFromDataUrl from "../../../../utils/downloadImageFromDataUrl";
 import openFullscreen from "../../../../utils/openFullscreen";
@@ -143,21 +143,11 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
           {currentViewer === 'modelViewer' && <>
             {cameraBtn && <Camera className="control-btn cameraBtn" onClick={() => downloadImageFromDataUrl(viewerRef.current.toDataURL(), 'model.png')} />}
             {/* {currentModel?.arEnabled &&
-              <ARQRCode {...{ viewerRef, arLink, placement }} />
             } */}
           </>}
         </div>
-        {/* Controls End */}
-
-        {/* Thumbnails for woocommerce product */}
       </div>
-      {/* {woo && ((currentViewer === 'modelViewer' && attributes.isPagination) || (currentViewer === 'O3DViewer' && isPagination)) && (
-        <div className="modelThumbs">
-          {models.map((item: { poster: string }, index: number) => {
-            return <>{item.poster && <img className={`thumbsItem ${index === activeIndex ? "selected" : ""}`} onClick={() => setAttributes({ activeIndex: index })} src={item.poster} />}</>;
-          })}
-        </div>
-      )} */}
+
 
     </div>
   </>

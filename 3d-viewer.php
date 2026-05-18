@@ -55,12 +55,10 @@ if (function_exists('bp3d_fs')) {
             $bp3d_fs = fs_dynamic_init(array(
                 'id' => '8795',
                 'slug' => '3d-viewer',
-                'premium_slug' => '3d-viewer-premium',
                 'type' => 'plugin',
                 'public_key' => 'pk_5e6ce3f226c86e3b975b59ed84d6a',
                 'is_premium' => false,
                 // If your plugin is a serviceware, set this option to false.
-                'has_addons' => false,
                 'has_affiliation' => 'selected',
                 'menu' => array(
                     'slug' => 'edit.php?post_type=bp3d-model-viewer',
