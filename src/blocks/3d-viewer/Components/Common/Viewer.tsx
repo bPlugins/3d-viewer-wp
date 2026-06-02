@@ -26,12 +26,13 @@ interface ViewerInterface {
 
 const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: ViewerInterface) => {
   const [isValid, setIsValid] = useState(false);
-  const { uniqueId, model, models = [], fullscreen, cameraBtn, zoomInOutBtn, multiple, additional, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, activeIndex = 0, arLink, position } = attributes;
-  const { isFullscreen, isPagination } = O3DVSettings;
+  const { uniqueId, model, models = [], fullscreen, cameraBtn, zoomInOutBtn, additional, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, activeIndex = 0, position } = attributes;
+  const { isFullscreen } = O3DVSettings;
 
   const modelSrc = model?.modelUrl;
 
   const currentModel = model;
+
 
 
 
@@ -42,7 +43,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
     } catch (error) {
       setIsValid(false);
     }
-  }, [uniqueId, model, models, multiple, modelSrc]);
+  }, [uniqueId, model, models, modelSrc]);
 
 
 
@@ -87,7 +88,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
 
 
   return (<>
-    <div ref={containerRef} id={`${uniqueId}`} className={`modelViewerBlock b3dviewer position_${position}  ${woo ? "woocommerce" : ""} ${isPagination && multiple ? "modelPagination" : ""}`}>
+    <div ref={containerRef} id={`${uniqueId}`} className={`modelViewerBlock b3dviewer position_${position}  ${woo ? "woocommerce" : ""}`}>
       <Style attributes={attributes} />
 
 

@@ -1,8 +1,8 @@
 === 3D Viewer – Display Interactive 3D Models ===
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
-Tested up to: 6.9
-Stable tag: 1.8.12
+Tested up to: 7.0
+Stable tag: 1.8.13
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -204,6 +204,28 @@ e.g.
 You can find the source code, report bugs, and contribute to the development of this plugin on our GitHub repository: 
 [**3D Viewer on GitHub**](https://github.com/bPlugins/3d-viewer-wp)
 
+== External Services ==
+
+This plugin connects to the following external services. Connections are made only from the plugin's admin dashboard pages and are not triggered for your site's visitors on the front end.
+
+= bPlugins API =
+
+* **Service:** bPlugins product API – `https://api.bplugins.com`
+* **What it does:** When you open the plugin's dashboard, the plugin requests product information (such as the plugin's own details and other plugins by bPlugins) so it can display product cards, version information, and upgrade options.
+* **What data is sent:** A request is made to the bPlugins API endpoint with the product identifier (e.g. `https://api.bplugins.com/wp-json/bpl/v1/products/{id}`). No personal data or site content is sent as part of this request.
+* **When:** Only while an administrator is viewing the plugin's dashboard in wp-admin.
+* **Terms of Service:** [https://bplugins.com/terms-of-service/](https://bplugins.com/terms-of-service/)
+* **Privacy Policy:** [https://bplugins.com/privacy-policy/](https://bplugins.com/privacy-policy/)
+
+= WordPress.org Plugins API =
+
+* **Service:** WordPress.org Plugins Info API – `https://api.wordpress.org`
+* **What it does:** The dashboard queries the public WordPress.org Plugins API to list other plugins published by the author (titles, icons, ratings, active installs, etc.).
+* **What data is sent:** A public, read-only query request (e.g. `https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&request[author]=bplugins`). No personal data is sent.
+* **When:** Only while an administrator is viewing the plugin's dashboard in wp-admin.
+* **Terms of Service:** [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
+* **Privacy Policy:** [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
+
 == Third-Party Libraries ==
 
 This plugin bundles the following third-party JavaScript/PHP libraries.
@@ -283,6 +305,9 @@ Yes, we have build in Elementor widget and shortcode both.
 
 
 == Changelog ==
+
+= 1.8.13 - 01 June, 2026  =
+Update: Tested with WordPress 7.0 and Updated Product Meta Field
 
 = 1.8.12 - 16 May, 2026  =
 Update: Overall code quality and strengthened security protocols.

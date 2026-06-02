@@ -113,7 +113,6 @@ class Blocks
             'assetsUrl' => BP3D_DIR . 'public',
             'presets' => $presets,
             'editUrl' => admin_url('post.php?post='),
-            '_wpnonce' => wp_create_nonce('wp_ajax'),
             'ajaxURL' => admin_url('admin-ajax.php'),
             'admin_url' => admin_url()
         ]);

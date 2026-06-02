@@ -20,6 +20,7 @@ function closeFullscreen(): void {
             wrapper.classList.remove('fullscreen');
         }
     }
+ 
 }
 
 export default closeFullscreen;

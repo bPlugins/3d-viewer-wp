@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 clickableItem.classList.add('bp3d_a_popup_opener');
             }
 
-            if (clickableItem?.innerHTML?.includes('<img') && window.location.host === 'reintest.be') {
+            if (clickableItem?.innerHTML?.includes('<img')) {
                 clickableItem.classList.add('bp3d_play_icon');
             }
 

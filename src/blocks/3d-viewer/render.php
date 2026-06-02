@@ -10,15 +10,14 @@ if ($attributes['currentViewer'] == 'modelViewer') {
     wp_enqueue_script('bp3d-lib-o3dviewer');
 }
 
-
-$attributes = apply_filters('bp3d_gutenberg_model_attribute', $attributes);
+$bp3d_attributes = apply_filters('bp3d_gutenberg_model_attribute', $attributes);
 
 ?>
 
-<div id="<?php echo esc_attr($id) ?>" data-attributes="<?php echo esc_attr(wp_json_encode($attributes)) ?>"
+<div id="<?php echo esc_attr($id) ?>" data-attributes="<?php echo esc_attr(wp_json_encode($bp3d_attributes)) ?>"
     class="wp-block-b3dviewer-modelviewer">
     <div class="bp3d_backup_view" style="display: none;height:350px;">
-        <model-viewer camera-controls src="<?php echo esc_url($attributes['model']['modelUrl'] ?? '') ?>"
+        <model-viewer camera-controls src="<?php echo esc_url($bp3d_attributes['model']['modelUrl'] ?? '') ?>"
             style="height: 350px;"></model-viewer>
     </div>
 </div>

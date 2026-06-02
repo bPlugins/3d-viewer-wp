@@ -219,6 +219,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'default' => ['unit' => '%', 'size' => 100],
             'selectors' => [
                 '{{WRAPPER}} .b3dviewer model-viewer' => 'width: {{SIZE}}{{UNIT}};margin:0 auto;max-width:100%;',
+                '{{WRAPPER}} .b3dviewer .bp_model_parent' => 'width: {{SIZE}}{{UNIT}} !important;margin:0 auto;max-width:100%;',
             ],
         ]);
 
@@ -244,6 +245,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'type' => \Elementor\Controls_Manager::COLOR,
             'selectors' => [
                 '{{WRAPPER}} .b3dviewer model-viewer' => 'background: {{VALUE}}',
+                '{{WRAPPER}} .b3dviewer .bp_model_parent' => 'background: {{VALUE}}',
             ],
         ]);
 

@@ -4,6 +4,8 @@
 
 namespace BP3D\Woocommerce;
 
+use BP3D\Helper\Utils;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -48,6 +50,10 @@ class ProductMeta
      */
     private function getFields(): array
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading post ID to render the metabox, no form data is processed.
+        $post_id = isset($_GET['post']) ? absint(wp_unslash($_GET['post'])) : get_the_ID();
+        $meta = Utils::getPostMeta($post_id, '_bp3d_product_');
+        $models = $meta('bp3d_models', [], false);
         return [
             // Support link header
             [
@@ -59,32 +65,23 @@ class ProductMeta
                     . '<cite style="color:#2271b1; font-weight: bold">The premium version also supports the following formats: obj, stl, 3dm, 3ds, 3mf, amf, bim, brep, dae, fbx, fcstd, gltf, ifc, iges, step, off, ply, and wrl.</cite>',
             ],
 
-            // 3D Models group
             [
-                'id' => 'bp3d_models',
-                'type' => 'group',
-                'title' => esc_html__('Product 3D Models', '3d-viewer'),
-                'desc' => 'Click on + icon to add 3d files, if you add multiple 3d files, we will show them as a slider. <cite style="color:#2271b1; font-weight: bold">Multiple Files Support Only In Pro Version</cite>',
-                'button_title' => __('Add New Model', '3d-viewer'),
-                'max' => 1,
-                'fields' => [
-                    [
-                        'id' => 'model_src',
-                        'type' => 'upload',
-                        'title' => esc_html__('3D Source', '3d-viewer'),
-                        'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
-                        'desc' => esc_html__('Upload / Paste Model url. Supported file type: glb, glTF', '3d-viewer'),
-                        'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
-                    ],
-                    [
-                        'id' => 'poster_src',
-                        'type' => 'upload',
-                        'title' => __('3D Poster', '3d-viewer'),
-                        'subtitle' => __('Upload Poster Or Input Valid poster/image url', '3d-viewer'),
-                        'placeholder' => 'You Can Paste here Poster/image url',
-                        'desc' => __('This image will display until the model is either loaded or fails to load.', '3d-viewer'),
-                    ]
-                ],
+                'id' => 'bp3d_model_src',
+                'type' => 'upload',
+                'title' => esc_html__('3D Source', '3d-viewer'),
+                'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
+                'desc' => esc_html__('Upload / Paste Model url. Supported file type: glb, glTF', '3d-viewer'),
+                'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
+                'default' => $models[0]['model_src'] ?? '',
+            ],
+            [
+                'id' => 'bp3d_poster_src',
+                'type' => 'upload',
+                'title' => __('3D Poster', '3d-viewer'),
+                'subtitle' => __('Upload Poster Or Input Valid poster/image url', '3d-viewer'),
+                'placeholder' => 'You Can Paste here Poster/image url',
+                'desc' => __('This image will display until the model is either loaded or fails to load.', '3d-viewer'),
+                'default' => $models[0]['poster_src'] ?? '',
             ],
 
             // Viewer position

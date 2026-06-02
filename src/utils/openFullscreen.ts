@@ -24,6 +24,9 @@ function openFullscreen(element: HTMLElement | null): void {
             wrapper.classList.add('fullscreen');
         }
     }
+    setTimeout(() => {
+        (window as any).dispatchEvent(new Event('resize'));
+    }, 100);
 }
 
 export default openFullscreen;

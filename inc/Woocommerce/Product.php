@@ -40,7 +40,7 @@ class Product
      */
     public static function getProductAttributes(array $modelData = []): array
     {
-        if (!is_array($modelData) || empty($modelData['bp3d_models']) || !is_array($modelData['bp3d_models'])) {
+        if (!is_array($modelData)) {
             return [];
         }
 
@@ -55,11 +55,9 @@ class Product
 
         $get_option = Utils::getSettings('_bp3d_settings_');
 
-        // Gather product variant attribute keys
-        $variant_keys = self::getVariantKeys($product);
-
-        // Build models array
-        $models = self::buildModelsArray($modelData['bp3d_models'], $variant_keys);
+        $model_src = $modelData['bp3d_model_src'] ?? $modelData['bp3d_models']['0']['model_src'] ?? '';
+        $poster = $modelData['bp3d_poster_src'] ?? $modelData['bp3d_models']['0']['poster_src'] ?? '';
+        
 
         return [
             'align' => 'center',
@@ -72,10 +70,10 @@ class Product
                 'isPagination' => $meta('show_thumbs', false, true),
             ],
             'currentViewer' => $meta('currentViewer', 'modelViewer'),
-            'multiple' => true,
+            'multiple' => false,
             'model' => [
-                'modelUrl' => $models[0]['modelUrl'] ?? '',
-                'poster' => $models[0]['poster'] ?? '',
+                'modelUrl' => $model_src,
+                'poster' => $poster,
             ],
             'models' => [],
             'show_model_instead_thumbnail' => $meta('show_model_instead_thumbnail', false, true),
@@ -85,8 +83,8 @@ class Product
             'shadow' => $get_option('3d_shadow_intensity', '1', false),
             'autoRotate' => $get_option('bp_3d_rotate', false, true),
             'rotateDelay' => (int) $get_option('3d_rotate_delay', 200),
-            'isPagination' => $meta('show_thumbs', false, true),
-            'isNavigation' => $meta('show_arrows', false, true),
+            'isPagination' => false,
+            'isNavigation' => true,
             'hotspotStyle' => $meta('hotspot_style', 'style-1'),
             'preload' => 'auto',
             'rotationPerSecond' => $get_option('3d_rotate_speed', 20),
@@ -148,29 +146,6 @@ class Product
     }
 
     /**
-     * Build the formatted models array from raw model data.
-     *
-     * @param  array<int, array<string, mixed>> $raw_models   Raw model entries
-     * @param  array<int, string>               $variant_keys Variant attribute keys
-     * @return array<int, array<string, mixed>>
-     */
-    private static function buildModelsArray(array $raw_models, array $variant_keys): array
-    {
-        $models = [];
-
-        foreach ($raw_models as $value) {
-            $model = [
-                'modelUrl' => $value['model_src'] ?? '',
-                'poster' => $value['poster_src'] ?? '',
-            ];
-
-            $models[] = $model;
-        }
-
-        return $models;
-    }
-
-    /**
      * Render the 3D model viewer HTML for a WooCommerce product.
      *
      * @param  bool   $return     True to return HTML, false to echo
@@ -185,7 +160,7 @@ class Product
         if (!$product || !$product->get_id()) {
             return '';
         }
-
+        
         $meta = Utils::getPostMeta($product->get_id(), '_bp3d_product_');
         $modelData = $meta('all');
         $finalData = self::getProductAttributes($modelData);

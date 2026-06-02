@@ -56,8 +56,9 @@ class SingleProduct
         }
 
         $models = $meta('bp3d_models', []);
+        $model_src = $meta('bp3d_model_src') ?? $models['0']['model_src'] ?? '';
 
-        if (is_array($models) && count($models) < 1) {
+        if ($model_src === '') {
             return;
         }
 
@@ -203,6 +204,7 @@ class SingleProduct
      */
     public function renderModel(): void
     {
+        
         Product::instance()->get_3d_model_html(false, 'product-gallery');
     }
 }
