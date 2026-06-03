@@ -1,24 +1,7 @@
 export interface ManageAttributesConfig {
-    exposure?: string | number;
-    selectedAnimation?: string;
-    autoRotate?: boolean;
-    rotateDelay?: number;
-    rotationPerSecond?: string | number;
     preload?: string;
     zoom?: boolean;
-    environmentImage?: string;
-    zoomLevel?: number;
-    lockXAxisRotation?: boolean;
-    lockYAxisRotation?: boolean;
-    toneMapping?: string;
-    multiple?: boolean;
-    useEnvironmentAsSkybox?: boolean;
     mouseControl?: boolean;
-    autoplay?: boolean;
-    shadow?: boolean;
-    rotate?: boolean;
-    rotateAlongX?: string | number;
-    rotateAlongY?: string | number;
     loading?: string;
     [key: string]: unknown;
 }
@@ -28,8 +11,6 @@ interface CurrentModel {
     skyboxImage?: string;
     useEnvironmentAsSkybox?: boolean;
     skyboxHeight?: string;
-    exposure?: string | number;
-    toneMapping?: string;
     [key: string]: unknown;
 }
 
@@ -44,22 +25,17 @@ const manageAttributes = (
     if (!modelViewer) return;
 
     const {
-        preload,
         zoom,
-        zoomLevel = 1,
     } = attributes;
 
 
     setTimeout(() => {
-        const { mouseControl, rotate, rotateAlongX, rotateAlongY, loading } = attributes;
+        const { mouseControl, loading = 'eager' } = attributes;
 
         mouseControl ? modelViewer.setAttribute('camera-controls', '') : modelViewer.removeAttribute('camera-controls');
 
         loading ? modelViewer.setAttribute('loading', loading) : modelViewer.removeAttribute('loading');
 
-        rotate
-            ? modelViewer.setAttribute('camera-orbit', `${rotateAlongX}deg ${rotateAlongY}deg 105%`)
-            : modelViewer.removeAttribute('camera-orbit');
 
 
         if (!zoom) {
@@ -68,11 +44,6 @@ const manageAttributes = (
             modelViewer.removeAttribute('disable-zoom');
         }
 
-        setTimeout(() => {
-            rotate
-                ? modelViewer?.setAttribute('camera-orbit', `${rotateAlongX}deg ${rotateAlongY}deg 105%`)
-                : modelViewer?.removeAttribute('camera-orbit');
-        }, 500);
     }, 10);
 };
 

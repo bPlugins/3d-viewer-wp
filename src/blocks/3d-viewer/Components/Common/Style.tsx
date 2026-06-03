@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 
 const Style = ({ attributes }: { attributes: any }) => {
-    const { styles, uniqueId, woo, progressBar, additional } = attributes;
-    const { progressBarColor, thumbSize = "70px" } = styles;
+    const { styles, uniqueId, woo, progressBar } = attributes; 
+    const { progressBarColor = '#666', thumbSize = "70px" } = styles;
 
     const [CSS, setCSS] = useState(null);
 
@@ -61,10 +61,9 @@ const Style = ({ attributes }: { attributes: any }) => {
         #${uniqueId} .slide-number span{
             font-size: calc(${thumbSize} * 0.8);
         }
-        ${additional?.CSS}
     `.replaceAll(/\n?\s\s/g, "");
         setCSS(CSS);
-    }, [uniqueId, styles, additional, progressBar]);
+    }, [uniqueId, styles, progressBar]);
 
     return <style>{CSS}</style>;
 };

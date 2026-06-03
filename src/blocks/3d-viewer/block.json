@@ -108,9 +108,6 @@
         "thumbSize": "90px"
       }
     },
-    "stylesheet": {
-      "type": "string"
-    },
     "woo": {
       "type": "boolean",
       "default": false

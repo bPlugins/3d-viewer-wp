@@ -145,10 +145,11 @@ class SingleProduct
 
         wp_enqueue_script('bp3d-public');
 
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WooCommerce hook, must keep its name for compatibility.
         $columns = apply_filters('woocommerce_product_thumbnails_columns', 4);
         $post_thumbnail_id = $product->get_image_id();
-        $wrapper_classes = apply_filters(
-            'woocommerce_single_product_image_gallery_classes',
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WooCommerce hook, must keep its name for compatibility.
+        $wrapper_classes = apply_filters('woocommerce_single_product_image_gallery_classes',
             [
                 'woocommerce-product-gallery',
                 'woocommerce-product-gallery--' . ($post_thumbnail_id ? 'with-images' : 'without-images'),
@@ -184,7 +185,9 @@ class SingleProduct
                         $html .= '</div>';
                     }
 
-                    echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.Security.EscapeOutput.OutputNotEscaped -- Core WooCommerce hook; output escaped by WooCommerce.
+                    echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id);
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WooCommerce hook, must keep its name for compatibility.
                     do_action('woocommerce_product_thumbnails');
                     ?>
                 </figure>

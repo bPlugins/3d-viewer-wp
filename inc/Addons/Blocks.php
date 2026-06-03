@@ -108,17 +108,7 @@ class Blocks
         }
 
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'siteUrl' => site_url(),
-            'assetsUrl' => BP3D_DIR . 'public',
-            'presets' => $presets,
-            'editUrl' => admin_url('post.php?post='),
-            'ajaxURL' => admin_url('admin-ajax.php'),
             'admin_url' => admin_url()
-        ]);
-
-        wp_localize_script('b3dviewer-preset-editor-script', 'bp3dPreset', [
-            '_nonce' => wp_create_nonce('wp_ajax_pb3d_preset'),
         ]);
 
         wp_enqueue_script_module('bp3d-lib-model-viewer');

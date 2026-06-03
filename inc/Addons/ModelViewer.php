@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
  *
  * Provides a full-featured Elementor widget for embedding 3D models
  * with controls for viewer type, rotation, shadows, animations,
- * exposure, dimensions, backgrounds, and more.
+ * dimensions, backgrounds, and more.
  */
 class ModelViewer extends \Elementor\Widget_Base
 {
@@ -151,13 +151,6 @@ class ModelViewer extends \Elementor\Widget_Base
             'type' => \Elementor\Controls_Manager::DIVIDER,
         ]);
 
-
-
-        $this->add_control('hr_after_angle', [
-            'type' => \Elementor\Controls_Manager::DIVIDER,
-            'condition' => ['multiple!' => 'yes', 'rotate' => 'yes'],
-        ]);
-
         // Feature toggles
         $this->add_control('fullscreen', [
             'label' => esc_html__('Fullscreen Button', '3d-viewer'),
@@ -284,11 +277,8 @@ class ModelViewer extends \Elementor\Widget_Base
         $finalData = [
             'align' => 'center',
             'uniqueId' => 'b3dviewer' . uniqid(),
-            'multiple' => false,
             'O3DVSettings' => [
                 'isFullscreen' => true,
-                'isPagination' => false,
-                'isNavigation' => false,
                 'camera' => null,
                 'mouseControl' => true,
             ],
@@ -298,25 +288,13 @@ class ModelViewer extends \Elementor\Widget_Base
                 'useDecoder' => $settings['useDecoder'] ?? 'none',
             ],
             'currentViewer' => $settings['currentViewer'] ?? 'modelViewer',
-            'models' => [],
             'lazyLoad' => ($settings['lazy_load'] ?? '') === 'yes',
-            'autoplay' => false,
-            'shadow' => false,
-            'autoRotate' => true,
             'zoom' => true,
-            'isPagination' => false,
-            'isNavigation' => false,
             'preload' => 'auto',
-            'rotationPerSecond' => '30',
             'mouseControl' => ($settings['mouseControls'] ?? '') === 'yes',
             'fullscreen' => ($settings['fullscreen'] ?? '') === 'yes',
-            'variant' => false,
             'loadingPercentage' => (bool) ($settings['loadingPercentage'] ?? false),
             'progressBar' => ($settings['progressBar'] ?? '') === 'yes',
-            'rotate' => false,
-            'rotateAlongX' => 0,
-            'rotateAlongY' => 0,
-            'exposure' => 1,
             'styles' => [
                 'width' => '100%',
                 'height' => $get_settings('height', '500', false, 'size') . $get_settings('height', 'px', false, 'unit'),
@@ -324,10 +302,6 @@ class ModelViewer extends \Elementor\Widget_Base
                 'bgImage' => $settings['backgroundImage']['url'] ?? '',
                 'progressBarColor' => '#666',
             ],
-            'stylesheet' => null,
-            'additional' => ['ID' => '', 'Class' => '', 'CSS' => ''],
-            'animation' => false,
-            'selectedAnimation' => '',
         ];
 
         if ($finalData['currentViewer'] === 'O3DViewer') {

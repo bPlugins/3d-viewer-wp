@@ -26,15 +26,12 @@ interface ViewerInterface {
 
 const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: ViewerInterface) => {
   const [isValid, setIsValid] = useState(false);
-  const { uniqueId, model, models = [], fullscreen, cameraBtn, zoomInOutBtn, additional, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, activeIndex = 0, position } = attributes;
+  const { uniqueId, model, fullscreen, cameraBtn = false, zoomInOutBtn = false, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, position } = attributes;
   const { isFullscreen } = O3DVSettings;
 
   const modelSrc = model?.modelUrl;
 
   const currentModel = model;
-
-
-
 
   useEffect(() => {
     try {
@@ -43,7 +40,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
     } catch (error) {
       setIsValid(false);
     }
-  }, [uniqueId, model, models, modelSrc]);
+  }, [uniqueId, model, modelSrc]);
 
 
 
@@ -92,7 +89,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
       <Style attributes={attributes} />
 
 
-      <div id={additional?.ID || "additional_id"} className={`${additional?.Class} b3dviewer-wrapper bp_model_parent align${align}`}>
+      <div className={`b3dviewer-wrapper bp_model_parent align${align}`}>
 
         {modelSrc && isValid && (
           <>
@@ -104,20 +101,12 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
             ) : (
               <>
                 {/* {__("This format does not support this plugin", "3d-viewer")} */}
-                <Basic3DViewer {...{ setAttributes, __, modelSrc, currentItem: activeIndex, model: modelSrc, attributes }} />
+                <Basic3DViewer {...{ setAttributes, __, modelSrc, model: modelSrc, attributes }} />
               </>
             )}
           </>
         )}
 
-        {modelSrc === "" && models[activeIndex].poster && (
-          <>
-            {/* {woo && models.length > 1 && <SliderController currentItem={activeIndex} setCurrentItem={(index: number) => setAttributes({ activeIndex: index })} models={models} />} */}
-            <img src={models[activeIndex].poster} />
-          </>
-        )}
-
-        {/* Controls Start */}
 
         <div className="position-top-right">
           <Close className="control-btn fullscreen-close" onClick={closeFullscreen} />

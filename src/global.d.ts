@@ -51,7 +51,6 @@ declare module 'react' {
                 'ar-modes'?: string;
                 'ar-placement'?: string;
                 'ar-scale'?: string;
-                exposure?: number | string;
                 'shadow-intensity'?: string;
                 'shadow-softness'?: string;
                 'skybox-image'?: string;
@@ -81,7 +80,6 @@ declare module 'react' {
                 'ar-modes'?: string;
                 'ar-placement'?: string;
                 'ar-scale'?: string;
-                exposure?: number | string;
                 'shadow-intensity'?: string;
                 'shadow-softness'?: string;
                 'skybox-image'?: string;

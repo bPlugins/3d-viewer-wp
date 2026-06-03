@@ -110,22 +110,6 @@ class ProductMeta
                 'default' => 'transparent',
             ],
 
-
-            // Custom angle values
-            [
-                'id' => 'angle_property',
-                'type' => 'spacing',
-                'title' => esc_html__('Custom Angle Values', '3d-viewer'),
-                'subtitle' => esc_html__('Set The Custom values for Model. Default Values are ("X=0deg Y=75deg Z=105%")', '3d-viewer'),
-                'desc' => esc_html__('Set Your Desire Values. (X= Horizontal Position, Y= Vertical Position, Z= Zoom Level/Position)', '3d-viewer'),
-                'default' => ['top' => '0', 'right' => '75', 'bottom' => '105'],
-                'left' => false,
-                'show_units' => false,
-                'top_icon' => 'Deg',
-                'right_icon' => 'Deg',
-                'bottom_icon' => '%',
-                'dependency' => ['bp_model_angle', '==', '1'],
-            ],
         ];
     }
 }

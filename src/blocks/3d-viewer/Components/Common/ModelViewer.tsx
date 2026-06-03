@@ -13,7 +13,7 @@ interface ModelViewerProps {
 }
 
 const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
-    const { loadingPercentage = false, uniqueId, model, models, multiple, loading, activeIndex = 0, mouseControl, isBackend } = attributes;
+    const { loadingPercentage = false, uniqueId, model, loading, activeIndex = 0, mouseControl, isBackend } = attributes;
     const currentModel = model;
 
     const modelPoster = currentModel?.poster?.replace(/https?:/, window.location.protocol)
@@ -96,7 +96,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
 
     return (
         <>
-            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={viewerRef} data-js-focus-visible data-decoder={multiple ? models[0]?.decoder : model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model"  >
+            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={viewerRef} data-js-focus-visible data-decoder={ model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model"  >
 
                 <span slot="interaction-prompt" style={{ display: 'none' }}></span>
 

@@ -21,7 +21,6 @@ class EnqueueAssets
     public function register(): void
     {
         add_action('admin_enqueue_scripts', [$this, 'enqueueBackendFiles']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueFrontEndFiles']);
         add_filter('script_loader_tag', [$this, 'addModuleTypeAttribute'], 10, 3);
     }
 
@@ -37,18 +36,7 @@ class EnqueueAssets
         return '<script type="module" id="bp3d-lib-model-viewer-js" src="' . esc_url($src) . '"></script>';
     }
 
-    /**
-     * Enqueue frontend scripts with localized data.
-     */
-    public function enqueueFrontEndFiles()
-    {
 
-        wp_localize_script('bp3d-public', 'bp3dAssetsUrl', [
-            'siteUrl' => site_url(),
-            'assetsUrl' => BP3D_DIR . 'public',
-        ]);
-
-    }
 
     /**
      * Register and enqueue backend admin scripts and styles.

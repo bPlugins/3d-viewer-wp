@@ -15,7 +15,7 @@ const modelRenderer = (params: ModelRendererParams): void => {
         return;
     }
 
-    const modelViewer = wrapper.querySelector('3d-viewer') as HTMLModelViewerElement | null;
+    const modelViewer = wrapper.querySelector('model-viewer') as HTMLModelViewerElement | null;
     if (!modelViewer) return;
 
     if (modelViewer.src) {
