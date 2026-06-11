@@ -76,14 +76,10 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         licenseActiveNonce,
         changelogs: [
             {
-                version: '1.8.9 - 5 May 2026',
+                version: '1.8.13 - 1 June 2026',
                 type: 'update',
                 list: [
-                    'Update: Updated Codestar Framework for better stability.',
-                    'Update: Removed restricted "Locked Fields" to improve user flexibility',
-                    'New: Added Zoom In/Out controls to the Classic Shortcode Generator.',
-                    'New: Added Camera controls to the Classic Shortcode Generator.',
-                    'Improved: Overall code quality and strengthened security protocols.'
+                    'Update: Tested with WordPress 7.0 and Updated Product Meta Field',
                 ]
             },
         ],
