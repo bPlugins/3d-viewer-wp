@@ -5,7 +5,7 @@ import { useBlockProps } from "@wordpress/block-editor";
 
 import Settings from "./settings";
 import Viewer from "../Common/Viewer";
-import { InlineMediaUpload } from "../../../../../../bpl-tools/Components";
+import { InlineMediaUpload } from "../../../../../../bpl-tools/Components/MediaControl/MediaControl";
 import { BlockAttributes } from "../../types";
 
 interface EditProps {

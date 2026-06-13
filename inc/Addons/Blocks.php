@@ -107,8 +107,15 @@ class Blocks
             ];
         }
 
+        $settings = get_option('_bp3d_settings_', []);
+        $allowed_mimes = isset($settings['allowed_mime_types']) ? $settings['allowed_mime_types'] : [];
+        if (!is_array($allowed_mimes)) {
+            $allowed_mimes = [];
+        }
+
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
-            'admin_url' => admin_url()
+            'admin_url' => admin_url(),
+            'allowedMimeTypes' => $allowed_mimes
         ]);
 
         wp_enqueue_script_module('bp3d-lib-model-viewer');

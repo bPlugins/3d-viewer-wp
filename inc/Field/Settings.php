@@ -47,6 +47,29 @@ class Settings
     \CSF::createSection($this->prefix, array(
       'title' => __('General Settings', '3d-viewer'),
       'fields' => array(
+        array(
+          'id' => 'allowed_mime_types',
+          'type' => 'checkbox',
+          'title' => __('Allowed Mime Types', '3d-viewer'),
+          'desc' => __('Select which 3D model file types can be uploaded to the media library. By default, all extended mime types are disabled.', '3d-viewer'),
+          'options' => array(
+            'glb' => 'GLB (.glb)',
+            'gltf' => 'GLTF (.gltf)',
+            'obj' => 'OBJ (.obj)',
+            '3ds' => '3DS (.3ds)',
+            'step' => 'STEP (.step)',
+            'stl' => 'STL (.stl)',
+            'fbx' => 'FBX (.fbx)',
+            '3dml' => '3DML (.3dml)',
+            'dae' => 'DAE (.dae)',
+            'wrl' => 'WRL (.wrl)',
+            '3mf' => '3MF (.3mf)',
+            'mtl' => 'MTL (.mtl)',
+            'hdr' => 'HDR (.hdr)',
+            'usdz' => 'USDZ (.usdz)',
+          ),
+          'default' => array(),
+        ),
         // Delete data on uninstall
         array(
           'id' => 'delete_data_on_uninstall',
@@ -57,8 +80,6 @@ class Settings
           'text_off' => __('No', '3d-viewer'),
           'default' => false,
         ),
-
-
       ) // End fields
     ));
     $this->woocommerce();

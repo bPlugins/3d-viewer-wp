@@ -65,7 +65,7 @@ export const modelViewers = (placement: string): ViewerOption[] => {
         return [
             { label: 'Support only .glb, .glTF', value: 'modelViewer', icon: 'Lite' },
             {
-                label: 'Support .obj, .3ds, .stl, .ply, .gltf, .off, .3dm, .fbx, .dae, .wrl, .3mf, amf, ifc, .brep, .step, .iges, .fcstd, and .bim  file types',
+                label: 'Support .obj, .3ds, .stl, .ply, .gltf, .off, .3dm, .fbx, .dae, .wrl, .3mf, amf, ifc, .step, .iges, .fcstd, and .bim  file types',
                 value: 'O3DViewer',
                 icon: 'Advanced',
             },

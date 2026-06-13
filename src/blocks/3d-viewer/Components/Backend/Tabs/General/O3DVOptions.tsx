@@ -1,7 +1,7 @@
 import { PanelBody, ToggleControl, } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 import BInfoControl from "../../../../../../components/BInfoControl";
-import { Notice } from "../../../../../../../../bpl-tools/Components";
+import Notice from "../../../../../../../../bpl-tools/Components/Notice";
 
 interface O3DVOptionsProps {
   attributes: any;

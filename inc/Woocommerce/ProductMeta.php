@@ -54,7 +54,66 @@ class ProductMeta
         $post_id = isset($_GET['post']) ? absint(wp_unslash($_GET['post'])) : get_the_ID();
         $meta = Utils::getPostMeta($post_id, '_bp3d_product_');
         $models = $meta('bp3d_models', [], false);
-        return [
+
+        $model_src = '';
+        if (isset($models[0]['model_src'])) {
+            $model_src = $models[0]['model_src'];
+        } else {
+            $meta_raw = get_post_meta($post_id, '_bp3d_product_', true);
+            $model_src = isset($meta_raw['bp3d_model_src']) ? (is_array($meta_raw['bp3d_model_src']) ? ($meta_raw['bp3d_model_src']['url'] ?? '') : $meta_raw['bp3d_model_src']) : '';
+        }
+
+        $settings = get_option('_bp3d_settings_', []);
+        $allowed_mimes = isset($settings['allowed_mime_types']) ? $settings['allowed_mime_types'] : [];
+        if (!is_array($allowed_mimes)) {
+            $allowed_mimes = [];
+        }
+
+        $fields = [];
+
+        $show_notice = false;
+        $notice_content = '';
+
+        if (empty($allowed_mimes)) {
+            $show_notice = true;
+            $notice_content = sprintf(
+                /* translators: %s: URL to the settings page. */
+                __('<strong>Notice:</strong> All 3D file formats are currently disabled for upload. Please enable the formats you need in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+            );
+        } elseif (!empty($model_src)) {
+            $ext = strtolower(pathinfo($model_src, PATHINFO_EXTENSION));
+            $supported = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
+            if (in_array($ext, $supported, true) && !in_array($ext, $allowed_mimes, true)) {
+                $show_notice = true;
+                $notice_content = sprintf(
+                    /* translators: 1: 3D file extension, 2: URL to the settings page. */
+                    __('<strong>Warning:</strong> The uploaded 3D model format (.%1$s) is currently disabled. Please enable it in the <a href="%2$s" target="_blank">3D Viewer Settings</a> to ensure it loads properly.', '3d-viewer'),
+                    strtoupper($ext),
+                    admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+                );
+            }
+        }
+
+        if ($show_notice) {
+            $fields[] = [
+                'type'    => 'notice',
+                'style'   => 'danger',
+                'content' => $notice_content,
+            ];
+        } else {
+            $fields[] = [
+                'type'    => 'notice',
+                'style'   => 'info',
+                'content' => sprintf(
+                    /* translators: %s: URL to the settings page. */
+                    __('Allowed 3D file formats are managed in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                    admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+                ),
+            ];
+        }
+
+        $fields = array_merge($fields, [
             // Support link header
             [
                 'id' => 'meta_heading',
@@ -110,6 +169,8 @@ class ProductMeta
                 'default' => 'transparent',
             ],
 
-        ];
+        ]);
+
+        return $fields;
     }
 }

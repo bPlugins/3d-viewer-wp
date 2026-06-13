@@ -5,7 +5,7 @@ import Title from "../../../../../../components/Title";
 import SettingsIcon from "../../../../../../icons/SettingsIcon";
 import BInfoControl from "../../../../../../components/BInfoControl";
 import { helpText } from "../../../../../../utils/constant";
-import { Badge, Notice } from "../../../../../../../../bpl-tools/Components";
+import Notice from "../../../../../../../../bpl-tools/Components/Notice";
 
 interface OptionsProps {
   attributes: any;

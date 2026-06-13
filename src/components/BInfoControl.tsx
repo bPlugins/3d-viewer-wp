@@ -1,5 +1,4 @@
 import { ToggleControl } from "@wordpress/components";
-import { BControlPro } from "../../../bpl-tools/ProControls";
 import Label from "./Label";
 
 interface BInfoControlProps {

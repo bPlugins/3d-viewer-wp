@@ -48,7 +48,10 @@ class PostTypeModelViewer
      */
     public function setMetaData(): void
     {
-        if (get_option('model_viewer_import_ver', '0') >= $this->import_ver) {
+        $legacy_ver = get_option('model_viewer_import_ver');
+        $import_ver = get_option('bp3d_model_viewer_import_ver', $legacy_ver ? $legacy_ver : '0');
+
+        if ($import_ver >= $this->import_ver) {
             return;
         }
 
@@ -62,13 +65,22 @@ class PostTypeModelViewer
             $query->the_post();
             $id = get_the_ID();
 
-            if (!get_post_meta($id, 'isGutenberg', true)) {
-                update_post_meta($id, 'isGutenberg', false);
+            $is_gutenberg_meta = get_post_meta($id, '_bp3d_is_gutenberg', true);
+            if ($is_gutenberg_meta === '') {
+                $legacy_meta = get_post_meta($id, 'isGutenberg', true);
+                if ($legacy_meta !== '') {
+                    update_post_meta($id, '_bp3d_is_gutenberg', $legacy_meta);
+                } else {
+                    update_post_meta($id, '_bp3d_is_gutenberg', '0');
+                }
             }
         }
 
         wp_reset_postdata();
-        update_option('model_viewer_import_ver', $this->import_ver);
+        update_option('bp3d_model_viewer_import_ver', $this->import_ver);
+        if ($legacy_ver) {
+            delete_option('model_viewer_import_ver');
+        }
     }
 
     /**
@@ -82,10 +94,15 @@ class PostTypeModelViewer
 
         $option = get_option('_bp3d_settings_', []);
         $gutenberg_enabled = $option['gutenberg_enabled'] ?? false;
-        $is_gutenberg = (bool) get_post_meta($post->ID, 'isGutenberg', true);
+        
+        $is_gutenberg_meta = get_post_meta($post->ID, '_bp3d_is_gutenberg', true);
+        if ($is_gutenberg_meta === '') {
+            $is_gutenberg_meta = get_post_meta($post->ID, 'isGutenberg', true);
+        }
+        $is_gutenberg = (bool) $is_gutenberg_meta;
 
         if ($gutenberg_enabled && $post->post_status === 'auto-draft') {
-            update_post_meta($post->ID, 'isGutenberg', true);
+            update_post_meta($post->ID, '_bp3d_is_gutenberg', '1');
             return true;
         }
 

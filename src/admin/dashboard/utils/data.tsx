@@ -76,10 +76,14 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         licenseActiveNonce,
         changelogs: [
             {
-                version: '1.8.13 - 1 June 2026',
+                version: '1.8.13 - 01 June, 2026',
                 type: 'update',
                 list: [
-                    'Update: Tested with WordPress 7.0 and Updated Product Meta Field',
+                    'Update: Tested with WordPress 7.0 and Updated Product Meta Field.',
+                    'Update: Prefixed isGutenberg meta key and configuration options for standards compliance.',
+                    'Fixed: Hardened file extension exception checks against double-extension script uploads.',
+                    'New: Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.',
+                    'New: Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.',
                 ]
             },
         ],

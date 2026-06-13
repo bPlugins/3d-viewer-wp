@@ -57,7 +57,11 @@ class Shortcode
         }
 
         $post_type = get_post_type($id);
-        $isGutenberg = get_post_meta($id, 'isGutenberg', true);
+        
+        $isGutenberg = get_post_meta($id, '_bp3d_is_gutenberg', true);
+        if ($isGutenberg === '') {
+            $isGutenberg = get_post_meta($id, 'isGutenberg', true);
+        }
 
         if (!in_array($post_type, ['bp3d-model-viewer', 'product'], true)) {
             return false;

@@ -33,6 +33,7 @@ class EnqueueAssets
             return $tag;
         }
 
+        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Modifying tag of an already enqueued script.
         return '<script type="module" id="bp3d-lib-model-viewer-js" src="' . esc_url($src) . '"></script>';
     }
 

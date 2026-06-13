@@ -5,8 +5,8 @@ import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import { PanelBody, PanelRow } from '@wordpress/components';
 import BUnitControl from '../../../../../../components/BUnitControl/BUnitControl';
-import { ColorControl, Device, InlineMediaUpload, Notice } from '../../../../../../../../bpl-tools/Components';
-import { produce } from 'immer';
+import { ColorControl } from '../../../../../../../../bpl-tools/Components/ColorControl/ColorControl';
+import Device from '../../../../../../../../bpl-tools/Components/Device/Device';
 import StyleIcon from '../../../../../../icons/StyleIcon';
 import Title from '../../../../../../components/Title';
 

@@ -1,7 +1,8 @@
-import { SelectControl, PanelBody } from "@wordpress/components";
+import { SelectControl, PanelBody, Notice } from "@wordpress/components";
 
 import { __ } from "@wordpress/i18n";
-import { BtnGroup, InlineMediaUpload } from '../../../../../../../../bpl-tools/Components'
+import BtnGroup from '../../../../../../../../bpl-tools/Components/BtnGroup/BtnGroup'
+import { InlineMediaUpload } from '../../../../../../../../bpl-tools/Components/MediaControl/MediaControl'
 
 
 import { modelViewers } from "../../../../data";
@@ -20,8 +21,54 @@ interface ModelFormProps {
 const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
   const { model, currentViewer, O3DVSettings, placement } = attributes;
 
+  const settingsUrl = window.bp3dBlock?.admin_url + 'edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings';
+  const allowedMimeTypes = window.bp3dBlock?.allowedMimeTypes || [];
+  const modelUrl = model?.modelUrl || '';
+
+  let showNotice = false;
+  let noticeMessage = '';
+
+  if (allowedMimeTypes.length === 0) {
+    showNotice = true;
+    noticeMessage = __("All 3D file formats are currently disabled for upload. Please enable them in settings.", "3d-viewer");
+  } else if (modelUrl) {
+    const ext = modelUrl.split('.').pop()?.toLowerCase();
+    const allMimes = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
+    if (ext && allMimes.includes(ext) && !allowedMimeTypes.includes(ext)) {
+      showNotice = true;
+      noticeMessage = `The uploaded 3D model format (.${ext.toUpperCase()}) is currently disabled. Please enable it in settings.`;
+    }
+  }
+
   return (
     <PanelBody title={<Title title={__("Model", "3d-viewer")} Icon={ThreeDIcons} /> as unknown as string} initialOpen={placement !== 'visual-editor'} className="bPlPanelBody">
+
+      {showNotice ? (
+        <div style={{
+          padding: '10px 12px',
+          borderLeft: '4px solid #d63638',
+          background: '#fff',
+          boxShadow: '0 1px 1px 0 rgba(0,0,0,.1)',
+          marginBottom: '15px',
+          fontSize: '12px',
+          lineHeight: '1.4'
+        }}>
+          <span style={{ color: '#d63638', fontWeight: 'bold' }}>{__("Notice: ", "3d-viewer")}</span>
+          {noticeMessage}
+          {' '}
+          <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
+            {__("Enable in settings", "3d-viewer")}
+          </a>.
+        </div>
+      ) : (
+        <div style={{ fontSize: '11px', color: '#666', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#46b450' }}></span>
+          {__("Allowed 3D formats managed in ", "3d-viewer")}
+          <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
+            {__("Settings", "3d-viewer")}
+          </a>.
+        </div>
+      )}
 
       <BInfoControl Component={BtnGroup} value={currentViewer} label={__("3D Viewer", "3d-viewer")} options={modelViewers(placement)} onChange={(value) => setAttributes({ currentViewer: value })} isTextIcon={true} info={helpText.viewerType} />
 

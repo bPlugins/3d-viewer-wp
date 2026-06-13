@@ -301,7 +301,11 @@ Yes, we have build in Elementor widget and shortcode both.
 == Changelog ==
 
 = 1.8.13 - 01 June, 2026  =
-Update: Tested with WordPress 7.0 and Updated Product Meta Field
+Update: Tested with WordPress 7.0 and Updated Product Meta Field.
+Update: Prefixed isGutenberg meta key and configuration options for standards compliance.
+Fixed: Hardened file extension exception checks against double-extension script uploads.
+New: Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.
+New: Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.
 
 = 1.8.12 - 16 May, 2026  =
 Update: Overall code quality and strengthened security protocols.

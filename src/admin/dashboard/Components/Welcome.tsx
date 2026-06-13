@@ -1,7 +1,7 @@
 import React from 'react';
-import Overview from '../../../../../bpl-tools/Admin/Overview';
-import Changelog from '../../../../../bpl-tools/Admin/Changelog';
-import ProAds from '../../../../../bpl-tools/Admin/ProAds';
+import Overview from '../../../../../bpl-tools/ModernAdmin/Overview';
+import Changelog from '../../../../../bpl-tools/ModernAdmin/Changelog';
+import ProAds from '../../../../../bpl-tools/ModernAdmin/ProAds';
 
 interface WelcomeProps {
     [key: string]: any;
