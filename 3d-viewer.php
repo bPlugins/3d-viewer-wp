@@ -132,7 +132,25 @@ if (function_exists('bp3d_fs')) {
         BP3D::get_instance();
     }
 
+    $bpem_bootstrap = BP3D_PATH . 'vendor/bp-extension-manager/bootstrap.php';
+    if (file_exists($bpem_bootstrap)) {
+        require_once $bpem_bootstrap;
+    }
+
+    add_action('bpem_loaded', function () {
+        if (class_exists('\\BPEM\\Manager')) {
+            \BPEM\Manager::boot(array(
+                'slug' => '3d-viewer',           // unique; namespaces everything
+                'name' => '3D Viewer',
+                'version' => (string) BP3D_VERSION,
+                'menu_parent' => 'edit.php?post_type=bp3d-model-viewer',
+                'freemius' => function_exists('bp3d_fs') ? bp3d_fs() : null,
+                'max_plan_id' => 'max',
+                'catalog_url' => plugins_url('/public/extensions.json', __FILE__),
+                'menu_badge' => true,
+                'menu_badge_persist' => true
+            ));
+        }
+    });
+
 }
-
-
-

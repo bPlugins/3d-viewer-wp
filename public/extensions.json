@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "host": "3d-viewer-premium",
+  "extensions": [
+    {
+      "id": "wc-3d-model-viewer-pro",
+      "name": "WC 3D Model Viewer",
+      "version": "1.0.0",
+      "is_paid": true,
+      "price_label": "$29/yr",
+      "plugin_file": "wc-3d-model-viewer-pro/wc-3d-model-viewer.php",
+      "download_url": "https://bplugins.com/wp-content/uploads/2026/06/wc-3d-model-viewer-pro.1.0.0.zip",
+      "homepage_url" : "https://bplugins.com/products/woocommerce-3d-model-viewer"
+    }
+
+  ]
+}

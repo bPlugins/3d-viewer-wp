@@ -10,7 +10,7 @@
     "cp": "cp ./languages/3d-viewer.pot ./languages/3d-viewer-en_US.po",
     "build": "wp-scripts build --webpack-copy-php && npm run i18n && find . -name '.DS_Store' -delete && npm run zip",
     "sync": "browser-sync start -p 'http://localhost/freemius' --files '**/*.php' 'dist/*.js' 'dist/*.css'",
-    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc languages public vendor 3d-viewer.php readme.txt composer.json uninstall.php",
+    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc lib languages public vendor 3d-viewer.php readme.txt composer.json uninstall.php",
     "clean": "find . -name '.DS_Store' -type f -delete",
     "preview": "npm-run-all --parallel sync start",
     "bundle": "gulp bundle && gulp zip",

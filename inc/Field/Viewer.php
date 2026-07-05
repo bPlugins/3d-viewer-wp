@@ -168,6 +168,7 @@ class Viewer
 
     \CSF::createSection($this->prefix, array(
       'title' => __('Model', '3d-viewer'),
+      'icon' => 'fas fa-cube',
       'fields' => $fields
     ));
   }
@@ -176,6 +177,7 @@ class Viewer
   {
     \CSF::createSection($this->prefix, array(
       'title' => __('Settings', '3d-viewer'),
+      'icon' => 'fas fa-sliders-h',
       'fields' => array(
         array(
           'id' => 'bp_camera_control',
@@ -266,6 +268,7 @@ class Viewer
   {
     \CSF::createSection($this->prefix, array(
       'title' => __('Style', '3d-viewer'),
+      'icon' => 'fas fa-paint-brush',
       'fields' => array(
         array(
           'id' => 'bp_3d_width',

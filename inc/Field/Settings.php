@@ -46,6 +46,7 @@ class Settings
     ));
     \CSF::createSection($this->prefix, array(
       'title' => __('General Settings', '3d-viewer'),
+      'icon' => 'fas fa-cog',
       'fields' => array(
         array(
           'id' => 'allowed_mime_types',
@@ -93,6 +94,7 @@ class Settings
 
     \CSF::createSection($this->prefix, array(
       'title' => __('Woocommerce Settings', '3d-viewer'),
+      'icon' => 'fas fa-shopping-cart',
       'fields' => array(
         array(
           'id' => '3d_woo_switcher',
@@ -160,6 +162,7 @@ class Settings
   {
     \CSF::createSection($this->prefix, array(
       'title' => __('Woocommerce Selectors', '3d-viewer'),
+      'icon' => 'fas fa-crosshairs',
       'fields' => array(
         // 3D Model Options
         array(
@@ -205,6 +208,7 @@ class Settings
   {
     \CSF::createSection($this->prefix, array(
       'title' => __('Shortcode Generator', '3d-viewer'),
+      'icon' => 'fas fa-code',
       'fields' => array(
         // 3D Model Options
         array(
