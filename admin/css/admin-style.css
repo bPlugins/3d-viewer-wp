@@ -348,13 +348,23 @@
   color: #fff !important;
 }
 /* --- Live model preview (metabox) --- */
+.csf-metabox > .bp3d-model-preview {
+  position: sticky;
+  top: 40px;
+  z-index: 5;
+  margin: 0 0 16px;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+}
+
 .bp3d-model-preview {
   position: relative;
   margin-top: 6px;
 }
 
 .bp3d-model-preview__label {
-  display: inline-block;
+  display: block;
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 600;

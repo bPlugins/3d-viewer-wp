@@ -111,14 +111,6 @@ class Viewer
 
     $fields = array_merge($fields, array(
         array(
-          'type'     => 'callback',
-          'function' => array($this, 'render_preview'),
-          'args'     => \BP3D\Helper\Utils::buildViewerAttributes(
-              \BP3D\Helper\Utils::return_function($meta),
-              $post_id
-          ),
-        ),
-        array(
           'id' => 'currentViewer',
           'type' => 'button_set',
           'title' => __('Viewer.', '3d-viewer'),
@@ -179,35 +171,6 @@ class Viewer
       'icon' => 'fas fa-cube',
       'fields' => $fields
     ));
-  }
-
-  /**
-   * Render the live model preview container for the metabox.
-   *
-   * The container is hydrated and kept in sync by the admin preview
-   * script (build/admin-preview.js), which mounts the same React viewer
-   * used on the frontend.
-   *
-   * @param array<string, mixed>|null $attributes Initial viewer attributes.
-   */
-  public function render_preview($attributes = null)
-  {
-    $attributes = is_array($attributes) ? $attributes : array();
-    $has_model  = !empty($attributes['model']['modelUrl']);
-    ?>
-    <div class="bp3d-model-preview">
-      <span class="bp3d-model-preview__label"><?php esc_html_e('Live Preview', '3d-viewer'); ?></span>
-      <div
-        id="bp3d-model-preview-root"
-        class="bp3d-model-preview__stage"
-        data-attributes="<?php echo esc_attr(wp_json_encode($attributes)); ?>"
-      >
-        <p class="bp3d-model-preview__empty"<?php echo $has_model ? ' style="display:none;"' : ''; ?>>
-          <?php esc_html_e('Select a 3D source above to see a live preview.', '3d-viewer'); ?>
-        </p>
-      </div>
-    </div>
-    <?php
   }
 
   public function settings()

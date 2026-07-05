@@ -29,7 +29,8 @@ function boolVal(id: string, def: boolean): boolean {
 
 /**
  * Build the viewer attributes object from the current metabox field values.
- * Mirrors Utils::buildViewerAttributes() on the PHP side.
+ * Mirrors Utils::buildViewerAttributes() on the PHP side, reading live values
+ * from every section so the preview reflects all settings.
  */
 function readAttributes(): Record<string, any> {
     const currentViewer = fieldVal('currentViewer') || 'modelViewer';
@@ -39,6 +40,7 @@ function readAttributes(): Record<string, any> {
         model: {
             modelUrl: fieldVal('bp_3d_src', 'url'),
             poster: fieldVal('bp_3d_poster', 'url'),
+            decoder: fieldVal('bp_3d_decoder') || 'none',
         },
         align: fieldVal('bp_3d_align') || 'center',
         uniqueId: 'bp3dPreview',
@@ -64,17 +66,13 @@ function readAttributes(): Record<string, any> {
         styles: {
             width: (fieldVal('bp_3d_width', 'width') || '100') + (fieldVal('bp_3d_width', 'unit') || '%'),
             height: (fieldVal('bp_3d_height', 'height') || '320') + (fieldVal('bp_3d_height', 'unit') || 'px'),
-            bgColor: fieldVal('bp_model_bg'),
+            bgColor: fieldVal('bp_model_bg') || 'transparent',
         },
     };
 }
 
-interface PreviewAppProps {
-    initial: Record<string, any>;
-}
-
-const PreviewApp: React.FC<PreviewAppProps> = ({ initial }) => {
-    const [attrs, setAttrs] = useState<Record<string, any>>(initial);
+const PreviewApp: React.FC = () => {
+    const [attrs, setAttrs] = useState<Record<string, any>>(() => readAttributes());
     const viewerRef = useRef<any>(null);
     const containerRef = useRef<HTMLElement>(null);
 
@@ -89,60 +87,80 @@ const PreviewApp: React.FC<PreviewAppProps> = ({ initial }) => {
         };
 
         // CSF updates fields via jQuery .trigger('change') (media select, color,
-        // sliders, switchers), which native listeners miss — bind through jQuery.
+        // sliders, switchers), which native listeners can miss — bind through
+        // jQuery when available, and keep a native fallback.
         const $ = (window as any).jQuery;
-        const events = 'change.bp3dPreview input.bp3dPreview';
+        const events = 'change.bp3dPreview keyup.bp3dPreview csf.change.bp3dPreview';
 
         if ($) {
             $(document).on(events, `[name^="${META_PREFIX}"]`, sync);
-        } else {
-            document.addEventListener('change', sync);
-            document.addEventListener('input', sync);
         }
+        document.addEventListener('change', sync, true);
+        document.addEventListener('input', sync, true);
 
         return () => {
             window.cancelAnimationFrame(frame);
             if ($) {
-                $(document).off(events, `[name^="${META_PREFIX}"]`);
-            } else {
-                document.removeEventListener('change', sync);
-                document.removeEventListener('input', sync);
+                $(document).off('.bp3dPreview');
             }
+            document.removeEventListener('change', sync, true);
+            document.removeEventListener('input', sync, true);
         };
     }, []);
 
-    if (!attrs?.model?.modelUrl) {
-        return (
-            <p className="bp3d-model-preview__empty">
-                {__('Select a 3D source above to see a live preview.')}
-            </p>
-        );
-    }
-
     return (
-        <Viewer
-            attributes={attrs}
-            __={__}
-            viewerRef={viewerRef}
-            setAttributes={setAttributes}
-            containerRef={containerRef}
-        />
+        <div className="bp3d-model-preview">
+            <span className="bp3d-model-preview__label">{__('Live Preview')}</span>
+            <div className="bp3d-model-preview__stage">
+                {attrs?.model?.modelUrl ? (
+                    <Viewer
+                        attributes={attrs}
+                        __={__}
+                        viewerRef={viewerRef}
+                        setAttributes={setAttributes}
+                        containerRef={containerRef}
+                    />
+                ) : (
+                    <p className="bp3d-model-preview__empty">
+                        {__('Select a 3D source in the Model tab to see a live preview.')}
+                    </p>
+                )}
+            </div>
+        </div>
     );
 };
 
+/**
+ * Inject an always-visible preview panel at the top of the CSF metabox so it
+ * stays in view no matter which settings tab/section is active.
+ */
+function mountPreview(): boolean {
+    const anchor = document.querySelector(`[name^="${META_PREFIX}"]`);
+    const metabox = anchor ? anchor.closest('.csf-metabox') : null;
+
+    if (!metabox || metabox.querySelector('#bp3d-model-preview-root')) {
+        return !!metabox;
+    }
+
+    const mount = document.createElement('div');
+    mount.id = 'bp3d-model-preview-root';
+    metabox.insertBefore(mount, metabox.firstChild);
+
+    createRoot(mount).render(<PreviewApp />);
+    return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    const root = document.getElementById('bp3d-model-preview-root');
-    if (!root) {
+    if (mountPreview()) {
         return;
     }
 
-    let initial: Record<string, any> = {};
-    try {
-        initial = JSON.parse(root.dataset.attributes || '{}');
-    } catch (e) {
-        initial = {};
-    }
-    initial = { ...initial, ...readAttributes() };
-
-    createRoot(root).render(<PreviewApp initial={initial} />);
+    // CSF markup may not be ready yet on some screens — retry briefly.
+    let tries = 0;
+    const timer = window.setInterval(() => {
+        tries += 1;
+        if (mountPreview() || tries > 20) {
+            window.clearInterval(timer);
+        }
+    }, 150);
 });
