@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { createRoot } from 'react-dom/client';
 
 import Viewer from '../../blocks/3d-viewer/Components/Common/Viewer';
+
+// Use WordPress's bundled ReactDOM (React 18) rather than importing
+// `react-dom/client`, which would bundle the incompatible React 19 copy from
+// node_modules and crash against WP's window.React. Mirrors frontend.tsx.
+const { createRoot } = (window as any).ReactDOM;
 
 const META_PREFIX = '_bp3dimages_';
 
@@ -130,37 +134,76 @@ const PreviewApp: React.FC = () => {
     );
 };
 
+const LOG = '[3D Viewer preview]';
+
 /**
- * Inject an always-visible preview panel at the top of the CSF metabox so it
- * stays in view no matter which settings tab/section is active.
+ * Locate the best container to inject the preview into. Prefers the CSF
+ * metabox wrapper, then the surrounding postbox, then the fields' parent.
+ */
+function findContainer(): HTMLElement | null {
+    const anchor = document.querySelector(`[name^="${META_PREFIX}"]`);
+    if (!anchor) {
+        return null;
+    }
+    return (
+        anchor.closest('.csf-metabox') ||
+        anchor.closest('.postbox') ||
+        (anchor.closest('.csf-wrapper') as HTMLElement | null) ||
+        (anchor.parentElement as HTMLElement | null)
+    );
+}
+
+/**
+ * Inject an always-visible preview panel at the top of the metabox so it stays
+ * in view no matter which settings tab/section is active.
  */
 function mountPreview(): boolean {
-    const anchor = document.querySelector(`[name^="${META_PREFIX}"]`);
-    const metabox = anchor ? anchor.closest('.csf-metabox') : null;
+    if (document.getElementById('bp3d-model-preview-root')) {
+        return true;
+    }
 
-    if (!metabox || metabox.querySelector('#bp3d-model-preview-root')) {
-        return !!metabox;
+    const container = findContainer();
+    if (!container) {
+        return false;
     }
 
     const mount = document.createElement('div');
     mount.id = 'bp3d-model-preview-root';
-    metabox.insertBefore(mount, metabox.firstChild);
+    container.insertBefore(mount, container.firstChild);
 
-    createRoot(mount).render(<PreviewApp />);
+    try {
+        createRoot(mount).render(<PreviewApp />);
+        // eslint-disable-next-line no-console
+        console.log(`${LOG} mounted into`, container.className || container.id);
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(`${LOG} failed to render`, err);
+        mount.textContent = 'Model preview failed to load — see console.';
+    }
     return true;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
     if (mountPreview()) {
         return;
     }
 
-    // CSF markup may not be ready yet on some screens — retry briefly.
+    // Metabox markup may not be ready yet on some screens — retry briefly.
     let tries = 0;
     const timer = window.setInterval(() => {
         tries += 1;
-        if (mountPreview() || tries > 20) {
+        if (mountPreview() || tries > 40) {
             window.clearInterval(timer);
+            if (tries > 40) {
+                // eslint-disable-next-line no-console
+                console.warn(`${LOG} no metabox found for "${META_PREFIX}" fields`);
+            }
         }
     }, 150);
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
