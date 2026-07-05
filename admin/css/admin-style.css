@@ -347,3 +347,42 @@
   box-shadow: 0 6px 18px rgba(35, 119, 242, 0.3);
   color: #fff !important;
 }
+/* --- Live model preview (metabox) --- */
+.bp3d-model-preview {
+  position: relative;
+  margin-top: 6px;
+}
+
+.bp3d-model-preview__label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.bp3d-model-preview__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding: 10px;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  overflow: hidden;
+}
+
+.bp3d-model-preview__stage .modelViewerBlock,
+.bp3d-model-preview__stage .b3dviewer-wrapper {
+  width: 100%;
+}
+
+.bp3d-model-preview__empty {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+}

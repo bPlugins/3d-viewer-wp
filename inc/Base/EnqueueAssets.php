@@ -58,6 +58,31 @@ class EnqueueAssets
             wp_enqueue_script('bp3d-admin-script');
         }
 
+        // Live model preview inside the metabox (bp3d-model-viewer edit screen only).
+        if ($post_type === 'bp3d-model-viewer' && in_array($hook_suffix, ['post.php', 'post-new.php'], true)) {
+            if (!wp_script_is('bp3d-lib-model-viewer', 'registered')) {
+                wp_register_script('bp3d-lib-model-viewer', BP3D_DIR . 'public/js/model-viewer.latest.min.js', [], BP3D_VERSION, true);
+            }
+            if (!wp_script_is('bp3d-lib-o3dviewer', 'registered')) {
+                wp_register_script('bp3d-lib-o3dviewer', BP3D_DIR . 'public/js/o3dv.min.js', [], BP3D_VERSION, true);
+            }
+            wp_enqueue_script('bp3d-lib-model-viewer');
+            wp_enqueue_script('bp3d-lib-o3dviewer');
+
+            wp_enqueue_style('bp3d-admin-preview', BP3D_DIR . 'build/admin-preview.css', [], BP3D_VERSION);
+            wp_enqueue_script(
+                'bp3d-admin-preview',
+                BP3D_DIR . 'build/admin-preview.js',
+                ['react', 'react-dom'],
+                BP3D_VERSION,
+                true
+            );
+            wp_localize_script('bp3d-admin-preview', 'bp3dPreview', [
+                'modelViewerSrc' => BP3D_DIR . 'public/js/model-viewer.latest.min.js',
+                'o3dviewerSrc' => BP3D_DIR . 'public/js/o3dv.min.js',
+            ]);
+        }
+
     }
 
 }

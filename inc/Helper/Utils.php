@@ -204,4 +204,50 @@ class Utils
 
         return self::return_function($settings);
     }
+
+    /**
+     * Build the full viewer attributes array from a meta accessor.
+     *
+     * Shared between the frontend renderer (shortcode/block) and the
+     * editor preview so both stay in sync.
+     *
+     * @param  \Closure    $meta  Meta accessor closure (see getPostMeta)
+     * @param  string|int  $id    Post ID
+     * @return array<string, mixed>
+     */
+    public static function buildViewerAttributes(\Closure $meta, $id): array
+    {
+        return [
+            'model' => [
+                'modelUrl' => $meta('bp_3d_src', [], false, 'url'),
+                'poster' => $meta('bp_3d_poster', [], false, 'url'),
+            ],
+            'align' => $meta('bp_3d_align', 'center'),
+            'uniqueId' => 'model' . $id,
+            'currentViewer' => $meta('currentViewer', 'modelViewer'),
+            'O3DVSettings' => [
+                'isFullscreen' => $meta('bp_3d_fullscreen', '1', true),
+                'camera' => null,
+                'mouseControl' => $meta('bp_camera_control', '1', true),
+                'zoom' => $meta('bp_3d_zooming', '1', true),
+            ],
+            'lazyLoad' => $meta('bp_3d_loading', 'lazy') === 'lazy',
+            'loading' => $meta('bp_3d_loading'),
+            'zoom' => $meta('bp_3d_zooming', '1', true),
+            'preload' => 'auto',
+            'mouseControl' => $meta('bp_camera_control', '1', true),
+            'fullscreen' => $meta('bp_3d_fullscreen', '1', true),
+            'zoomInOutBtn' => $meta('bp_3d_zoom_in_out_btn', '0', true),
+            'cameraBtn' => $meta('bp_3d_camera_btn', '0', true),
+            'loadingPercentage' => $meta('bp_model_progress_percent', '0', true),
+            'progressBar' => $meta('bp_3d_progressbar', '0', true),
+            'woo' => false,
+            'placement' => 'shortcode',
+            'styles' => [
+                'width' => $meta('bp_3d_width', '100', false, 'width') . $meta('bp_3d_width', '%', false, 'unit'),
+                'height' => $meta('bp_3d_height', '100', false, 'height') . $meta('bp_3d_height', '%', false, 'unit'),
+                'bgColor' => $meta('bp_model_bg'),
+            ],
+        ];
+    }
 }

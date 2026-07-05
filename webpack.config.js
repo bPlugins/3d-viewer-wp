@@ -18,6 +18,7 @@ const entry = {
     frontend: "./src/public/frontend.tsx", // woocommerce
     dashboard: "./src/admin/dashboard/admin.tsx",
     admin: "./src/admin/index.ts",
+    "admin-preview": "./src/admin/preview/index.tsx",
 };
 
 module.exports = {
