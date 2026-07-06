@@ -276,6 +276,7 @@ class PostTypeModelViewer
                         stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </div>
+            <div id="bp3d-preview-btn-root" style="margin-left: auto; display: flex; align-items: center;"></div>
         </div>
         <?php
     }

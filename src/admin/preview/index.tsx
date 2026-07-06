@@ -1,13 +1,36 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Viewer from '../../blocks/3d-viewer/Components/Common/Viewer';
 
 // Use WordPress's bundled ReactDOM (React 18) rather than importing
 // `react-dom/client`, which would bundle the incompatible React 19 copy from
 // node_modules and crash against WP's window.React. Mirrors frontend.tsx.
-const { createRoot } = (window as any).ReactDOM;
+const { createRoot, createPortal } = (window as any).ReactDOM;
 
 const META_PREFIX = '_bp3dimages_';
+const COLLAPSE_KEY = 'bp3d_preview_collapsed';
+
+// ── Inline SVG icons (small, self-contained) ──────────────────────────
+
+const CubeIcon = () => (
+    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="m262.671 40.888c-4.624-2.621-10.288-2.597-14.89.06l-121.551 70.177 129.841 74.964 129.885-75.34z" />
+        <path d="m111.236 277.451c0 5.358 2.858 10.307 7.497 12.986l122.361 70.645v-149.012l-129.859-74.974z" />
+        <path d="m400.942 277.451v-140.726l-129.858 75.325v149.032l122.361-70.645c4.64-2.679 7.497-7.628 7.497-12.986z" />
+    </svg>
+);
+
+const RefreshIcon = () => (
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+    </svg>
+);
+
+const ChevronIcon = () => (
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+    </svg>
+);
 
 /**
  * Read a single CSF field value from the metabox DOM.
@@ -48,7 +71,7 @@ function readAttributes(): Record<string, any> {
         },
         align: fieldVal('bp_3d_align') || 'center',
         uniqueId: 'bp3dPreview',
-        isBackend: true,
+        isBackend: false,
         currentViewer,
         O3DVSettings: {
             isFullscreen: boolVal('bp_3d_fullscreen', true),
@@ -77,11 +100,27 @@ function readAttributes(): Record<string, any> {
 
 const PreviewApp: React.FC = () => {
     const [attrs, setAttrs] = useState<Record<string, any>>(() => readAttributes());
+    const [collapsed, setCollapsed] = useState<boolean>(() => {
+        try { return localStorage.getItem(COLLAPSE_KEY) === '1'; } catch { return false; }
+    });
     const viewerRef = useRef<any>(null);
     const containerRef = useRef<HTMLElement>(null);
 
     const __ = (text: string): string => text;
     const setAttributes = (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
+
+    const toggleCollapse = useCallback(() => {
+        setCollapsed((prev) => {
+            const next = !prev;
+            try { localStorage.setItem(COLLAPSE_KEY, next ? '1' : '0'); } catch { /* no-op */ }
+            return next;
+        });
+    }, []);
+
+    const refreshPreview = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+        setAttrs(readAttributes());
+    }, []);
 
     useEffect(() => {
         let frame = 0;
@@ -112,69 +151,161 @@ const PreviewApp: React.FC = () => {
         };
     }, []);
 
+    const hasModel = !!attrs?.model?.modelUrl;
+
     return (
-        <div className="bp3d-model-preview">
-            <span className="bp3d-model-preview__label">{__('Live Preview')}</span>
-            <div className="bp3d-model-preview__stage">
-                {attrs?.model?.modelUrl ? (
-                    <Viewer
-                        attributes={attrs}
-                        __={__}
-                        viewerRef={viewerRef}
-                        setAttributes={setAttributes}
-                        containerRef={containerRef}
-                    />
-                ) : (
-                    <p className="bp3d-model-preview__empty">
-                        {__('Select a 3D source in the Model tab to see a live preview.')}
-                    </p>
+        <div className={`bp3d-model-preview${collapsed ? ' bp3d-model-preview--collapsed' : ''}`}>
+            {/* Header bar */}
+            <div className="bp3d-model-preview__header" onClick={toggleCollapse}>
+                <span className="bp3d-model-preview__icon">
+                    <CubeIcon />
+                </span>
+                <span className="bp3d-model-preview__title">{__('Live Preview')}</span>
+                {hasModel && (
+                    <span className="bp3d-model-preview__badge">{__('Live')}</span>
                 )}
+                <span className="bp3d-model-preview__actions">
+                    <button
+                        type="button"
+                        className="bp3d-model-preview__btn bp3d-model-preview__btn--refresh"
+                        title={__('Refresh Preview')}
+                        onClick={refreshPreview}
+                    >
+                        <RefreshIcon />
+                    </button>
+                    <button
+                        type="button"
+                        className="bp3d-model-preview__btn bp3d-model-preview__btn--toggle"
+                        title={collapsed ? __('Expand Preview') : __('Collapse Preview')}
+                        onClick={(e) => { e.stopPropagation(); toggleCollapse(); }}
+                    >
+                        <ChevronIcon />
+                    </button>
+                </span>
+            </div>
+
+            {/* Collapsible body */}
+            <div className="bp3d-model-preview__body">
+                <div className="bp3d-model-preview__stage">
+                    {hasModel ? (
+                        <Viewer
+                            attributes={attrs}
+                            __={__}
+                            viewerRef={viewerRef}
+                            setAttributes={setAttributes}
+                            containerRef={containerRef}
+                        />
+                    ) : (
+                        <div className="bp3d-model-preview__empty">
+                            <span className="bp3d-model-preview__empty-icon">
+                                <CubeIcon />
+                            </span>
+                            <span className="bp3d-model-preview__empty-text">
+                                <strong>{__('No model selected')}</strong><br />
+                                {__('Upload a 3D model in the Model tab to see a live preview here.')}
+                            </span>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
+    );
+};
+
+const PreviewPopupButton: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [attrs, setAttrs] = useState<Record<string, any>>(() => readAttributes());
+    const viewerRef = useRef<any>(null);
+    const containerRef = useRef<HTMLElement>(null);
+
+    const openPopup = () => {
+        setAttrs(readAttributes());
+        setIsOpen(true);
+    };
+
+    const closePopup = () => {
+        setIsOpen(false);
+    };
+
+    const __ = (text: string): string => text;
+    const setAttributes = (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
+
+    const hasModel = !!attrs?.model?.modelUrl;
+
+    return (
+        <>
+            <button
+                type="button"
+                className="button button-large button-secondary bp3d-preview-popup-trigger"
+                onClick={openPopup}
+            >
+                <span className="dashicons dashicons-visibility"></span>
+                {__('Preview')}
+            </button>
+
+            {isOpen && createPortal(
+                <div className="bp3d-modal-overlay" onClick={closePopup}>
+                    <div className="bp3d-modal-container" onClick={(e) => e.stopPropagation()}>
+                        <div className="bp3d-modal-header">
+                            <span className="bp3d-modal-title">
+                                <span className="dashicons dashicons-cube" style={{ marginRight: '8px', color: '#2377f2', fontSize: '20px', width: '20px', height: '20px' }}></span>
+                                {__('Model Live Preview')}
+                            </span>
+                            <button className="bp3d-modal-close" onClick={closePopup}>
+                                &times;
+                            </button>
+                        </div>
+                        <div className="bp3d-modal-body">
+                            {hasModel ? (
+                                <Viewer
+                                    attributes={attrs}
+                                    __={__}
+                                    viewerRef={viewerRef}
+                                    setAttributes={setAttributes}
+                                    containerRef={containerRef}
+                                />
+                            ) : (
+                                <div className="bp3d-model-preview__empty">
+                                    <span className="bp3d-model-preview__empty-icon">
+                                        <CubeIcon />
+                                    </span>
+                                    <span className="bp3d-model-preview__empty-text">
+                                        <strong>{__('No model selected')}</strong><br />
+                                        {__('Upload a 3D model in the Model tab to see the preview.')}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+        </>
     );
 };
 
 const LOG = '[3D Viewer preview]';
 
 /**
- * Locate the best container to inject the preview into. Prefers the CSF
- * metabox wrapper, then the surrounding postbox, then the fields' parent.
- */
-function findContainer(): HTMLElement | null {
-    const anchor = document.querySelector(`[name^="${META_PREFIX}"]`);
-    if (!anchor) {
-        return null;
-    }
-    return (
-        anchor.closest('.csf-metabox') ||
-        anchor.closest('.postbox') ||
-        (anchor.closest('.csf-wrapper') as HTMLElement | null) ||
-        (anchor.parentElement as HTMLElement | null)
-    );
-}
-
-/**
- * Inject an always-visible preview panel at the top of the metabox so it stays
- * in view no matter which settings tab/section is active.
+ * Inject the preview panel into the #bp3d-model-preview-root container
+ * rendered by the CSF Preview callback field.
  */
 function mountPreview(): boolean {
-    if (document.getElementById('bp3d-model-preview-root')) {
-        return true;
-    }
-
-    const container = findContainer();
-    if (!container) {
+    const mount = document.getElementById('bp3d-model-preview-root');
+    if (!mount) {
         return false;
     }
 
-    const mount = document.createElement('div');
-    mount.id = 'bp3d-model-preview-root';
-    container.insertBefore(mount, container.firstChild);
+    // Prevent multiple mounts
+    if (mount.dataset.mounted === 'true') {
+        return true;
+    }
+    mount.dataset.mounted = 'true';
 
     try {
         createRoot(mount).render(<PreviewApp />);
         // eslint-disable-next-line no-console
-        console.log(`${LOG} mounted into`, container.className || container.id);
+        console.log(`${LOG} mounted inside CSF Preview section`);
     } catch (err) {
         // eslint-disable-next-line no-console
         console.error(`${LOG} failed to render`, err);
@@ -183,8 +314,33 @@ function mountPreview(): boolean {
     return true;
 }
 
+/**
+ * Inject the preview popup trigger button into the #bp3d-preview-btn-root container.
+ */
+function mountPreviewButton(): boolean {
+    const mount = document.getElementById('bp3d-preview-btn-root');
+    if (!mount) {
+        return false;
+    }
+
+    // Prevent multiple mounts
+    if (mount.dataset.mounted === 'true') {
+        return true;
+    }
+    mount.dataset.mounted = 'true';
+
+    try {
+        createRoot(mount).render(<PreviewPopupButton />);
+    } catch (err) {
+        console.error(`${LOG} failed to render preview button`, err);
+    }
+    return true;
+}
+
 function init() {
-    if (mountPreview()) {
+    const p = mountPreview();
+    const b = mountPreviewButton();
+    if (p && b) {
         return;
     }
 
@@ -192,7 +348,9 @@ function init() {
     let tries = 0;
     const timer = window.setInterval(() => {
         tries += 1;
-        if (mountPreview() || tries > 40) {
+        const mountedP = mountPreview();
+        const mountedB = mountPreviewButton();
+        if ((mountedP && mountedB) || tries > 40) {
             window.clearInterval(timer);
             if (tries > 40) {
                 // eslint-disable-next-line no-console
@@ -207,3 +365,5 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+

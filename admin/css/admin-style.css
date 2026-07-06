@@ -347,30 +347,163 @@
   box-shadow: 0 6px 18px rgba(35, 119, 242, 0.3);
   color: #fff !important;
 }
-/* --- Live model preview (metabox) --- */
-.csf-metabox > .bp3d-model-preview {
-  position: sticky;
-  top: 40px;
-  z-index: 5;
-  margin: 0 0 16px;
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+/* ========================================
+   Live model preview (metabox) — redesign
+   ======================================== */
+
+/* Live preview container styling inside CSF field */
+#bp3d-model-preview-root {
+  width: 100%;
 }
 
+/* --- Preview panel card --- */
 .bp3d-model-preview {
   position: relative;
-  margin-top: 6px;
+  border-radius: 0px !important;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
 }
 
-.bp3d-model-preview__label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 12px;
+.bp3d-model-preview:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* When inside CSF metabox without layout wrapper, keep legacy sticky behavior */
+.csf-metabox > .bp3d-model-preview {
+  margin: 0 0 16px;
+}
+
+/* --- Header bar --- */
+.bp3d-model-preview__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.bp3d-model-preview__header:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e8ecff 100%);
+}
+
+.bp3d-model-preview__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 0px !important;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.bp3d-model-preview__icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.bp3d-model-preview__title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  letter-spacing: 0.01em;
+}
+
+.bp3d-model-preview__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 0px !important;
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7280;
+}
+
+.bp3d-model-preview__badge::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16a34a;
+  animation: bp3d-pulse 2s ease-in-out infinite;
+}
+
+/* --- Header action buttons --- */
+.bp3d-model-preview__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bp3d-model-preview__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.bp3d-model-preview__btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+}
+
+.bp3d-model-preview__btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.bp3d-model-preview__btn--refresh svg {
+  transition: transform 0.3s ease;
+}
+
+.bp3d-model-preview__btn--refresh:hover svg {
+  transform: rotate(90deg);
+}
+
+.bp3d-model-preview__btn--toggle svg {
+  transition: transform 0.25s ease;
+}
+
+.bp3d-model-preview--collapsed .bp3d-model-preview__btn--toggle svg {
+  transform: rotate(-90deg);
+}
+
+/* --- Stage (preview viewport) --- */
+.bp3d-model-preview__body {
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease;
+  max-height: 800px;
+  opacity: 1;
+}
+
+.bp3d-model-preview--collapsed .bp3d-model-preview__body {
+  max-height: 0;
+  opacity: 0;
 }
 
 .bp3d-model-preview__stage {
@@ -378,11 +511,17 @@
   align-items: center;
   justify-content: center;
   min-height: 320px;
-  padding: 10px;
-  border: 1px dashed #d1d5db;
-  border-radius: 8px;
+  padding: 12px;
+  margin: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 0px !important;
   background: #f9fafb;
   overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.bp3d-model-preview__stage:hover {
+  border-color: #c7d2fe;
 }
 
 .bp3d-model-preview__stage .modelViewerBlock,
@@ -390,9 +529,186 @@
   width: 100%;
 }
 
+/* --- Empty state --- */
 .bp3d-model-preview__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 30px 20px;
   margin: 0;
-  color: #9ca3af;
+  text-align: center;
+}
+
+.bp3d-model-preview__empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 0px !important;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  animation: bp3d-float 3s ease-in-out infinite;
+}
+
+.bp3d-model-preview__empty-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: #818cf8;
+}
+
+.bp3d-model-preview__empty-text {
   font-size: 13px;
-  font-style: italic;
+  color: #94a3b8;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+.bp3d-model-preview__empty-text strong {
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* --- Animations --- */
+@keyframes bp3d-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes bp3d-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* --- Preview Popup Modal Redesign --- */
+.bp3d-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  animation: bp3d-fade-in 0.25s ease-out;
+}
+
+.bp3d-modal-container {
+  width: 90%;
+  max-width: 850px;
+  background: #ffffff;
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: bp3d-scale-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.bp3d-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bp3d-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.bp3d-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  font-weight: 300;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s ease;
+}
+
+.bp3d-modal-close:hover {
+  color: #ef4444;
+}
+
+.bp3d-modal-body {
+  padding: 20px;
+  background: #ffffff;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal animation keyframes */
+@keyframes bp3d-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bp3d-scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Remove radius from Shortcode row & preview trigger button --- */
+.bp3d_shortcode_area_after_title,
+.bp3d_shortcode_area_after_title * {
+  border-radius: 0px !important;
+}
+
+.bp3d-preview-popup-trigger {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border-color: #146ef5 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  background: #146ef5 !important;
+  border-radius: 0px !important;
+  height: 32px !important;
+  line-height: 30px !important;
+  transition: all 0.2s ease !important;
+}
+
+.bp3d-preview-popup-trigger:hover,
+.bp3d-preview-popup-trigger:focus,
+.bp3d-preview-popup-trigger:active {
+  background: #0957ca !important;
+  color: #ffffff !important;
+  border-color: #0957ca !important;
+  box-shadow: none !important;
+}
+
+.bp3d-preview-popup-trigger .dashicons {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  line-height: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  color: #ffffff !important;
+}
+
+.bp3d-preview-popup-trigger .dashicons::before {
+  color: #ffffff !important;
 }

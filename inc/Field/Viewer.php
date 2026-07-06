@@ -46,6 +46,7 @@ class Viewer
     $this->model();
     $this->settings();
     $this->style();
+    $this->preview();
   }
 
   public function model()
@@ -315,6 +316,22 @@ class Viewer
           'default' => 'transparent',
           // 'class' => 'bp3d-readonly',
         ),
+      )
+    ));
+  }
+
+  public function preview()
+  {
+    \CSF::createSection($this->prefix, array(
+      'title' => __('Preview', '3d-viewer'),
+      'icon' => 'fas fa-eye',
+      'fields' => array(
+        array(
+          'type'    => 'callback',
+          'function' => function() {
+            echo '<div id="bp3d-model-preview-root"></div>';
+          }
+        )
       )
     ));
   }

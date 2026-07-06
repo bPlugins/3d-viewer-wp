@@ -190,7 +190,7 @@ e.g.
 1. Upload `plugin-directory` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Use shortcode in page, post or in widgets.
-4. If you want player in your theme php, Place `<?php echo do_shortcode('YOUR_SHORTCODE'); ?>` in your templates
+4. If you want player in your theme PHP, Place `<?php echo do_shortcode('YOUR_SHORTCODE'); ?>` in your templates
 
 
 == Source Code ==
@@ -338,11 +338,11 @@ Update: Freemius SDK
 Fixed: Remove unknown anchor link
 
 = 1.8.5 - 10 Mar, 2026  =
-Fixed: Stl File does not work
+Fixed: STL File does not work
 Fixed: Does not work on Elementor Page Builder
 
 = 1.8.4 - 28 Feb, 2026  =
-New: 4 step Setup Wizard after installation.
+New: 4-step Setup Wizard after installation.
 Fixed: WooCommerce variation not working.
 Fixed: Shadow not working.
 Fixed: Rotation Delay not working.
