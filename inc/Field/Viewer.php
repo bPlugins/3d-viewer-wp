@@ -57,13 +57,13 @@ class Viewer
 
     $model_url = '';
     if (isset($meta['bp_3d_src'])) {
-        $model_url = is_array($meta['bp_3d_src']) ? ($meta['bp_3d_src']['url'] ?? '') : $meta['bp_3d_src'];
+      $model_url = is_array($meta['bp_3d_src']) ? ($meta['bp_3d_src']['url'] ?? '') : $meta['bp_3d_src'];
     }
 
     $settings = get_option('_bp3d_settings_', []);
     $allowed_mimes = isset($settings['allowed_mime_types']) ? $settings['allowed_mime_types'] : [];
     if (!is_array($allowed_mimes)) {
-        $allowed_mimes = [];
+      $allowed_mimes = [];
     }
 
     $fields = array();
@@ -72,100 +72,100 @@ class Viewer
     $notice_content = '';
 
     if (empty($allowed_mimes)) {
+      $show_notice = true;
+      $notice_content = sprintf(
+        /* translators: %s: URL to the settings page. */
+        __('<strong>Notice:</strong> All 3D file formats are currently disabled for upload. Please enable the formats you need in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+        admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+      );
+    } elseif (!empty($model_url)) {
+      $ext = strtolower(pathinfo($model_url, PATHINFO_EXTENSION));
+      $supported = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
+      if (in_array($ext, $supported, true) && !in_array($ext, $allowed_mimes, true)) {
         $show_notice = true;
         $notice_content = sprintf(
-            /* translators: %s: URL to the settings page. */
-            __('<strong>Notice:</strong> All 3D file formats are currently disabled for upload. Please enable the formats you need in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
-            admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+          /* translators: 1: 3D file extension, 2: URL to the settings page. */
+          __('<strong>Warning:</strong> The uploaded 3D model format (.%1$s) is currently disabled. Please enable it in the <a href="%2$s" target="_blank">3D Viewer Settings</a> to ensure it loads properly.', '3d-viewer'),
+          strtoupper($ext),
+          admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
         );
-    } elseif (!empty($model_url)) {
-        $ext = strtolower(pathinfo($model_url, PATHINFO_EXTENSION));
-        $supported = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
-        if (in_array($ext, $supported, true) && !in_array($ext, $allowed_mimes, true)) {
-            $show_notice = true;
-            $notice_content = sprintf(
-                /* translators: 1: 3D file extension, 2: URL to the settings page. */
-                __('<strong>Warning:</strong> The uploaded 3D model format (.%1$s) is currently disabled. Please enable it in the <a href="%2$s" target="_blank">3D Viewer Settings</a> to ensure it loads properly.', '3d-viewer'),
-                strtoupper($ext),
-                admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
-            );
-        }
+      }
     }
 
     if ($show_notice) {
-        $fields[] = array(
-            'type'    => 'notice',
-            'style'   => 'danger',
-            'content' => $notice_content,
-        );
+      $fields[] = array(
+        'type' => 'notice',
+        'style' => 'danger',
+        'content' => $notice_content,
+      );
     } else {
-        $fields[] = array(
-            'type'    => 'notice',
-            'style'   => 'info',
-            'content' => sprintf(
-                /* translators: %s: URL to the settings page. */
-                __('Allowed 3D file formats are managed in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
-                admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
-            ),
-        );
+      $fields[] = array(
+        'type' => 'notice',
+        'style' => 'info',
+        'content' => sprintf(
+          /* translators: %s: URL to the settings page. */
+          __('Allowed 3D file formats are managed in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+          admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
+        ),
+      );
     }
 
     $fields = array_merge($fields, array(
-        array(
-          'id' => 'currentViewer',
-          'type' => 'button_set',
-          'title' => __('Viewer.', '3d-viewer'),
-          'subtitle' => __('Choose Viewer', '3d-viewer'),
-          'desc' => __("Choose between Lite and Advanced viewer modes. Lite is optimized for GLB and GLTF files with strong performance and essential features. Advanced supports almost all 3D file types but offers a more streamlined feature set.", "3d-viewer"),
-          'multiple' => false,
-          'options' => array(
-            'modelViewer' => 'Lite',
-            'O3DViewer' => 'Advanced',
-          ),
-          'default' => 'modelViewer'
+      array(
+        'id' => 'currentViewer',
+        'type' => 'button_set',
+        'title' => __('Viewer.', '3d-viewer'),
+        'subtitle' => __('Choose Viewer', '3d-viewer'),
+        'desc' => __("Choose between Lite and Advanced viewer modes. Lite is optimized for GLB and GLTF files with strong performance and essential features. Advanced supports almost all 3D file types but offers a more streamlined feature set.", "3d-viewer"),
+        'multiple' => false,
+        'options' => array(
+          'modelViewer' => 'Lite',
+          'O3DViewer' => 'Advanced',
         ),
-        array(
-          'id' => 'bp_3d_src',
-          'type' => 'media',
-          'button_title' => __('Upload Source', '3d-viewer'),
-          'title' => __('3D Source', '3d-viewer'),
-          'subtitle' => __('Choose 3D Model', '3d-viewer'),
-          'desc' => __("Specifies the URL of the 3D model file to be displayed in the viewer.", "3d-viewer"),
+        'default' => 'modelViewer'
+      ),
+      array(
+        'id' => 'bp_3d_src',
+        'type' => 'media',
+        'button_title' => __('Upload Source', '3d-viewer'),
+        'title' => __('3D Source', '3d-viewer'),
+        'subtitle' => __('Choose 3D Model', '3d-viewer'),
+        'desc' => __("Specifies the URL of the 3D model file to be displayed in the viewer.", "3d-viewer"),
+      ),
+      // use decoder
+      array(
+        'id' => 'bp_3d_decoder',
+        'type' => 'select',
+        'title' => __('Decoder', '3d-viewer'),
+        'subtitle' => __('Choose Decoder', '3d-viewer'),
+        'desc' => __("Choose Decoder to decode the 3D model.", "3d-viewer"),
+        'options' => array(
+          'none' => __('None', '3d-viewer'),
+          'draco' => __('Draco', '3d-viewer'),
         ),
-        // use decoder
-        array(
-          'id' => 'bp_3d_decoder',
-          'type' => 'select',
-          'title' => __('Decoder', '3d-viewer'),
-          'subtitle' => __('Choose Decoder', '3d-viewer'),
-          'desc' => __("Choose Decoder to decode the 3D model.", "3d-viewer"),
-          'options' => array(
-            'none' => __('None', '3d-viewer'),
-            'draco' => __('Draco', '3d-viewer'),
-          ),
-          'default' => 'none',
-          'dependency' => array('currentViewer', '==', 'modelViewer'),
-        ),
-        // upload field if decoder is draco
-        array(
-          'id' => 'bp_3d_decoder_draco_file',
-          'type' => 'media',
-          'button_title' => __('Upload Decoder File', '3d-viewer'),
-          'title' => __('Draco File', '3d-viewer'),
-          'subtitle' => __('Upload Decoder File', '3d-viewer'),
-          'desc' => __("Upload Decoder File to decode the 3D model.", "3d-viewer"),
-          'dependency' => array('bp_3d_decoder|currentViewer', '==|==', 'draco|modelViewer'),
-        ),
-        array(
-          'id' => 'bp_3d_poster',
-          'type' => 'media',
-          'button_title' => __('Upload Poster', '3d-viewer'),
-          'title' => __('3D Poster Image', '3d-viewer'),
-          'subtitle' => __('Display a poster until loaded', '3d-viewer'),
-          'desc' => __('Upload or Select 3d Poster Image.  if you don\'t want to use just leave it empty', '3d-viewer'),
-          'dependency' => array('currentViewer', '==', 'modelViewer'),
-        ),
-      ));
+        'default' => 'none',
+        'dependency' => array('currentViewer', '==', 'modelViewer'),
+      ),
+      // upload field if decoder is draco
+      array(
+        'id' => 'bp_3d_decoder_draco_file',
+        'type' => 'media',
+        'button_title' => __('Upload Decoder File', '3d-viewer'),
+        'title' => __('Draco File', '3d-viewer'),
+        'subtitle' => __('Upload Decoder File', '3d-viewer'),
+        'desc' => __("Upload Decoder File to decode the 3D model.", "3d-viewer"),
+        'dependency' => array('bp_3d_decoder|currentViewer', '==|==', 'draco|modelViewer'),
+      ),
+      array(
+        'id' => 'bp_3d_poster',
+        'type' => 'media',
+        'button_title' => __('Upload Poster', '3d-viewer'),
+        'title' => __('3D Poster Image', '3d-viewer'),
+        'subtitle' => __('Display a poster until loaded', '3d-viewer'),
+        'desc' => __('Upload or Select 3d Poster Image.  if you don\'t want to use just leave it empty', '3d-viewer'),
+        'dependency' => array('currentViewer', '==', 'modelViewer'),
+      ),
+    ));
 
     \CSF::createSection($this->prefix, array(
       'title' => __('Model', '3d-viewer'),
@@ -190,6 +190,7 @@ class Viewer
           'default' => true,
 
         ),
+
         array(
           'id' => 'bp_3d_zooming',
           'type' => 'switcher',
@@ -202,6 +203,7 @@ class Viewer
           'default' => true,
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
         ),
+
         array(
           'id' => 'bp_3d_fullscreen',
           'type' => 'switcher',
@@ -222,6 +224,7 @@ class Viewer
           'text_off' => __('NO', '3d-viewer'),
           'default' => true,
         ),
+
         array(
           'id' => 'bp_3d_camera_btn',
           'type' => 'switcher',
@@ -260,7 +263,20 @@ class Viewer
           'default' => true,
           // 'class'    => 'bp3d-readonly',
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
-        )
+        ),
+        array(
+          'id' => '3d_exposure',
+          'type' => 'slider',
+          'min' => 0.1,
+          'max' => 5,
+          'step' => 0.1,
+          'title' => __('Exposure', '3d-viewer'),
+          'subtitle' => __('Brightness for Model', '3d-viewer'),
+          'desc' => __("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer"),
+          'default' => '1',
+          'dependency' => array('bp_3d_model_type|currentViewer', '!=|==', 'mcycle|modelViewer', 'all')
+
+        ) // End fields
       )
     ));
   }
@@ -327,8 +343,8 @@ class Viewer
       'icon' => 'fas fa-eye',
       'fields' => array(
         array(
-          'type'    => 'callback',
-          'function' => function() {
+          'type' => 'callback',
+          'function' => function () {
             echo '<div id="bp3d-model-preview-root"></div>';
           }
         )

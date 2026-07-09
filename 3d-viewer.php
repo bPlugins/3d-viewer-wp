@@ -109,6 +109,8 @@ if (function_exists('bp3d_fs')) {
                 }
                 add_action('plugins_loaded', array($this, 'plugins_loaded'));
                 add_action('init', [$this, 'load_plugin_textdomain']);
+                add_filter('fs_is_update_check_enabled', '__return_false');
+
             }
 
             public function load_plugin_textdomain()
@@ -148,9 +150,14 @@ if (function_exists('bp3d_fs')) {
                 'max_plan_id' => 'max',
                 'catalog_url' => plugins_url('/public/extensions.json', __FILE__),
                 'menu_badge' => true,
-                'menu_badge_persist' => true
+                'menu_badge_persist' => true,
+                'bundled_modules_dir' => __DIR__ . '/modules',
+                // 'enable_extensions' => false
+
             ));
         }
     });
 
 }
+
+

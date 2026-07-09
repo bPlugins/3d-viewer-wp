@@ -85,7 +85,9 @@ if (!class_exists('BP3DAdmin')) {
         public function render_dashboard_page()
         {
             $info = wp_json_encode([
-                'version' => BP3D_VERSION,
+                'version'   => BP3D_VERSION,
+                'adminUrl'  => rtrim(admin_url(), '/'),
+                'isPremium' => function_exists('bp3d_fs') && bp3d_fs()->can_use_premium_code(),
             ]);
             ?>
             <div id="bp3dAdminDashboard" data-info="<?php echo esc_attr($info); ?>"></div>

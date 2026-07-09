@@ -4,7 +4,9 @@ const slug = '3d-viewer';
 
 interface DashboardInfoInput {
     version: string;
-    licenseActiveNonce: string;
+    adminUrl?: string;
+    isPremium?: boolean;
+    licenseActiveNonce?: string;
 }
 
 interface DashboardInfo {
@@ -13,6 +15,8 @@ interface DashboardInfo {
     description: string;
     slug: string;
     version: string;
+    adminUrl: string;
+    isPremium: boolean;
     displayOurPlugins: boolean;
     media: {
         logo: string;
@@ -32,13 +36,7 @@ interface DashboardInfo {
         plan_id: number;
         // public_key: string;
     };
-    licenseActiveNonce: string;
-    changelogs: Array<{
-        version: string;
-        type: string;
-        list: string[];
-    }>;
-    proFeatures: string[];
+    licenseActiveNonce?: string;
     startButton: {
         label: string;
         url: string;
@@ -46,7 +44,7 @@ interface DashboardInfo {
 }
 
 export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
-    const { version, licenseActiveNonce } = info;
+    const { version, adminUrl = '', isPremium = false, licenseActiveNonce } = info;
 
     return {
         name: `3D Viewer`,
@@ -54,6 +52,8 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         description: 'Easily display interactive 3D models on the web. Supported File type .glb, .gltf, .obj, .3ds, .stl, .ply, .off, .3dm, .fbx, .dae, .wrl, .3mf, .amf, .ifc, .brep, .step, .iges, .fcstd, .bim',
         slug,
         version,
+        adminUrl,
+        isPremium,
         displayOurPlugins: true,
         media: {
             logo: `https://ps.w.org/${slug}/assets/icon-128x128.png`,
@@ -74,33 +74,101 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
             // public_key: 'pk_5e6ce3f226c86e3b975b59ed84d6a'
         },
         licenseActiveNonce,
-        changelogs: [
-            {
-                version: '1.8.13 - 01 June, 2026',
-                type: 'update',
-                list: [
-                    'Update: Tested with WordPress 7.0 and Updated Product Meta Field.',
-                    'Update: Prefixed isGutenberg meta key and configuration options for standards compliance.',
-                    'Fixed: Hardened file extension exception checks against double-extension script uploads.',
-                    'New: Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.',
-                    'New: Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.',
-                ]
-            },
-        ],
-        proFeatures: [
-            'Adjust lighting, shadow intensity, and exposure.',
-            'Enable or disable auto-rotate, fullscreen, and autoplay.',
-            'Set Initial View.',
-            'Display Hotspots/Annotations on 3D model.',
-            'Lock X/Y Axis Rotation.',
-            'AR Feature'
-        ],
         startButton: {
             label: 'Start Now',
-            url: `wp-admin/post-new.php?post_type=bp3d-model-viewer`
+            url: `${adminUrl}/post-new.php?post_type=bp3d-model-viewer`
         }
     }
 };
+
+// ── Welcome page icons ─────────────────────────────────────────────────
+const gutenbergTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 512 512'><path d='M448 96V416H192V320l-64 64L64 320v96H32c-17.7 0-32-14.3-32-32V128c0-17.7 14.3-32 32-32H448zM192 96V224h96V96H192z' /></svg>;
+const shortcodeTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 640 512'><path d='M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z' /></svg>;
+const elementorTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 448 512'><path d='M427 0H21C9.4 0 0 9.4 0 21v470c0 11.6 9.4 21 21 21h406c11.6 0 21-9.4 21-21V21c0-11.6-9.4-21-21-21zM147 355h-38V157h38v198zm113 0h-38V157h38v198zm113 0h-38V157h38v198z' /></svg>;
+
+/**
+ * Welcome-only data — spread onto <Welcome /> alongside dashboardInfo props.
+ * Called with adminUrl so Getting Started steps can build dynamic editor links.
+ */
+export const welcomeInfo = (adminUrl: string = '') => ({
+
+    // ── Hero card keyword chips ────────────────────────────────────────
+    keywords: ['GLB', 'GLTF', 'OBJ', 'STL', 'FBX', 'PLY', '3DS'],
+    keywordsLabel: 'Formats',
+
+    // ── Getting Started tabbed steps ───────────────────────────────────
+    gettingStarted: {
+        tabs: [
+            {
+                key: 'gutenberg',
+                label: 'Gutenberg',
+                icon: gutenbergTabIcon,
+                steps: [
+                    {
+                        num: 1,
+                        title: 'Add the Block',
+                        body: 'In the block editor, click <strong>+</strong> or type <strong>/3D Model Viewer</strong> to insert the block.',
+                        link: { url: `${adminUrl}/post-new.php?post_type=page`, label: 'Open Editor' }
+                    },
+                    { num: 2, title: 'Upload & Configure', body: 'Add your 3D file (<code>.glb</code>, <code>.gltf</code>, <code>.obj</code>, and more) and adjust size, camera controls, auto-rotate, and lighting right in the block sidebar.' },
+                    { num: 3, title: 'Publish', body: 'Preview the interactive model, then publish your post or page.' }
+                ]
+            },
+            {
+                key: 'elementor',
+                label: 'Elementor',
+                icon: elementorTabIcon,
+                steps: [
+                    { num: 1, title: 'Add the Widget', body: 'Edit any page with Elementor, search the widget panel for <strong>Model Viewer</strong>, and drag it onto your layout.' },
+                    { num: 2, title: 'Upload & Configure', body: 'Add your 3D file (<code>.glb</code>, <code>.gltf</code>, <code>.obj</code>, and more) and adjust size, camera controls, and auto-rotate in the widget settings.' },
+                    { num: 3, title: 'Publish', body: 'Fine-tune the layout, then click <strong>Publish</strong>.' }
+                ]
+            },
+            {
+                key: 'shortcode',
+                label: 'Shortcode',
+                icon: shortcodeTabIcon,
+                steps: [
+                    {
+                        num: 1,
+                        title: 'Create a 3D Model',
+                        body: 'Go to <strong>3D Viewer &rsaquo; Add New</strong>, upload your file, and publish the model.',
+                        link: { url: `${adminUrl}/post-new.php?post_type=bp3d-model-viewer`, label: 'Add New Model' }
+                    },
+                    { num: 2, title: 'Copy the Shortcode', body: 'Use the <strong>Copy Shortcode</strong> button on the model edit screen (or the <strong>ShortCode</strong> column in the models list) to grab its <code>[3d_viewer id="…"]</code> code.' },
+                    { num: 3, title: 'Paste & Publish', body: 'Paste the shortcode into any post, page, or widget, then update to view your interactive 3D model.' }
+                ]
+            }
+        ]
+    },
+
+    // ── Changelogs (badge-prefixed list items) ─────────────────────────
+    changelogs: [
+        {
+            version: '1.8.13 - 01 June, 2026',
+            type: 'update',
+            list: [
+                '<strong>Update:</strong> Tested with WordPress 7.0 and Updated Product Meta Field.',
+                '<strong>Update:</strong> Prefixed isGutenberg meta key and configuration options for standards compliance.',
+                '<strong>Fix:</strong> Hardened file extension exception checks against double-extension script uploads.',
+                '<strong>New:</strong> Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.',
+                '<strong>New:</strong> Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.',
+            ]
+        },
+    ],
+    changelogsLimit: 6,
+    changelogsReadMoreLabel: 'View More Changelogs',
+
+    // ── Pro upsell bullets (free users only) ───────────────────────────
+    proFeatures: [
+        'Adjust lighting, shadow intensity, and exposure.',
+        'Enable or disable auto-rotate, fullscreen, and autoplay.',
+        'Set Initial View.',
+        'Display Hotspots/Annotations on 3D model.',
+        'Lock X/Y Axis Rotation.',
+        'AR Feature'
+    ],
+});
 
 interface DemoItem {
     title: string;
