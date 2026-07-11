@@ -1,4 +1,4 @@
-import { SelectControl, PanelBody, Notice } from "@wordpress/components";
+import { SelectControl, PanelBody, ToggleControl } from "@wordpress/components";
 
 import { __ } from "@wordpress/i18n";
 import BtnGroup from '../../../../../../../../bpl-tools/Components/BtnGroup/BtnGroup'
@@ -113,11 +113,40 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
       )}
 
       {currentViewer === 'modelViewer' && <>
-        {/* <Notice status="info">
-          {__("Use Multople models, HDR skybox image, Enviroment Image, Exposure, Ton Mapping and AR in premmium version", "3d-viewer")}
-        </Notice> */}
         <hr />
-        <PremiumPanel title={__('Premium Features', '3d-viewer')} description={__('Multople models, HDR skybox image, Enviroment Image, Exposure, Ton Mapping, AR and Apply Textures available in premmium version', '3d-viewer')} pricingUrl={pricingUrl} />
+        <BInfoControl label={__("Enable AR", "3d-viewer")} Component={ToggleControl} checked={model?.arEnabled} onChange={() => setAttributes({ model: { ...model, arEnabled: !model.arEnabled } })} info={helpText.arEnabled} />
+        {model?.arEnabled && (
+          <>
+            <BInfoControl Component={InlineMediaUpload} types={['model']} value={model?.modelISOSrc} placeholder={__("3D Model for iOS (Optional)", "3d-viewer")} onChange={(modelISOSrc) => setAttributes({ model: { ...model, modelISOSrc } })} label={__("3D Model (iOS)", "3d-viewer")} info={helpText.modeliSOSrc} />
+
+            <BInfoControl Component={SelectControl} label={__("AR Placement", "3d-viewer")}
+              options={[
+                { label: "Floor", value: "floor" },
+                { label: "Wall", value: "wall" },
+              ]}
+              value={model?.arPlacement}
+              onChange={(arPlacement) => setAttributes({ model: { ...model, arPlacement } })}
+              info={helpText.arPlacement}
+              __next40pxDefaultSize={true}
+              __nextHasNoMarginBottom={true}
+            />
+
+            <BInfoControl Component={SelectControl} label={__("AR Mode", "3d-viewer")}
+              options={[
+                { label: "webxr", value: "webxr" },
+                { label: "Scene Viewer", value: "scene-viewer" },
+                { label: "Quick Look", value: "quick-look" },
+              ]}
+              value={model?.arMode}
+              onChange={(arMode) => setAttributes({ model: { ...model, arMode } })}
+              info={helpText.arMode}
+              __next40pxDefaultSize={true}
+              __nextHasNoMarginBottom={true}
+            />
+          </>
+        )}
+        <hr />
+        <PremiumPanel title={__('Premium Features', '3d-viewer')} description={__('Multople models, HDR skybox image, Enviroment Image, Ton Mapping and Apply Textures available in premmium version', '3d-viewer')} pricingUrl={pricingUrl}><></></PremiumPanel>
       </>}
 
     </PanelBody>

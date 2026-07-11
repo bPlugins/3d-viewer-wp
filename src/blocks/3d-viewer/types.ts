@@ -93,6 +93,11 @@ export interface BlockAttributes {
 	stylesheet?: string;
 	placement: string;
 
+	// Exposure
+	exposure: number;
+
+	shadow: boolean;
+
 	// WooCommerce
 	woo: boolean;
 

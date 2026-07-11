@@ -145,16 +145,18 @@ export const welcomeInfo = (adminUrl: string = '') => ({
     // ── Changelogs (badge-prefixed list items) ─────────────────────────
     changelogs: [
         {
-            version: '1.8.13 - 01 June, 2026',
-            type: 'update',
+            version: '1.9.0 - 11 July, 2026',
+            type: 'new',
             list: [
-                '<strong>Update:</strong> Tested with WordPress 7.0 and Updated Product Meta Field.',
-                '<strong>Update:</strong> Prefixed isGutenberg meta key and configuration options for standards compliance.',
-                '<strong>Fix:</strong> Hardened file extension exception checks against double-extension script uploads.',
-                '<strong>New:</strong> Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.',
-                '<strong>New:</strong> Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.',
+                '<strong>New:</strong> Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.',
+                '<strong>New:</strong> Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.',
+                '<strong>New:</strong> Added Exposure and Shadow Intensity controls for the Model Viewer.',
+                '<strong>New:</strong> Added a live 3D model preview panel to the editor metabox.',
+                '<strong>New:</strong> Added an Extensions catalog and manager to the admin dashboard.',
+                '<strong>Update:</strong> Refactored the admin dashboard with section icons and an improved layout.',
+                '<strong>Fixed:</strong> Resolved 3D viewer resize and preview crash issues.',
             ]
-        },
+        }
     ],
     changelogsLimit: 6,
     changelogsReadMoreLabel: 'View More Changelogs',

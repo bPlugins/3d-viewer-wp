@@ -30,9 +30,30 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
         manageAttributes(viewerRef.current, currentModel, attributes);
     }, [uniqueId, attributes, activeIndex]);
 
+    // handle ar feature
+    useEffect(() => {
+        if (currentModel && viewerRef.current) {
+            setTimeout(() => {
+                const { arEnabled, arPlacement = "floor", arMode = "quick-look", modelISOSrc } = currentModel || {};
+                if (arEnabled) {
+                    viewerRef.current.setAttribute("ar", "");
+                    viewerRef.current.setAttribute("ar-placement", arPlacement);
+                    viewerRef.current.setAttribute("ar-modes", arMode + " " + "webxr scene-viewer quick-look".replace(arMode, '')?.replace("  ", " "));
+                    if (modelISOSrc) {
+                        viewerRef.current.setAttribute("ios-src", modelISOSrc);
+                    }
+                    viewerRef.current?.removeAttribute("ar-status");
+                } else {
+                    viewerRef.current?.removeAttribute("ar");
+                    viewerRef.current?.removeAttribute("ar-placement");
+                    viewerRef.current?.removeAttribute("ar-mode");
+                }
+            }, 100);
+        }
+    }, [currentModel, viewerRef.current]);
+
     useEffect(() => {
         if (viewerRef?.current) {
-
             const percentageEl = viewerRef.current.querySelector(".percentage");
             const loaderEl = viewerRef.current.querySelector(".bp3d_loader");
             const progress = (event: any) => {
@@ -96,9 +117,10 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
 
     return (
         <>
-            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={viewerRef} data-js-focus-visible data-decoder={ model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model"  >
+            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={viewerRef} data-js-focus-visible data-decoder={model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model" ar={currentModel.arEnabled || false} ar-placement={currentModel.arPlacement || 'floor'} >
 
                 <span slot="interaction-prompt" style={{ display: 'none' }}></span>
+                <span slot="ar-button"></span>
 
 
                 <button type="button" slot="poster" id="default-poster" aria-label="A 3D model" style={modelPoster ? { backgroundImage: ` url("${modelPoster}")` } : {}}></button>

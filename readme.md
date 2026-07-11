@@ -1,6 +1,6 @@
 # 3D Viewer – Display Interactive 3D Models
 
-[![Version](https://img.shields.io/badge/version-1.8.12-blue.svg)](https://wordpress.org/plugins/3d-viewer/)
+[![Version](https://img.shields.io/badge/version-1.9.0-blue.svg)](https://wordpress.org/plugins/3d-viewer/)
 [![WordPress](https://img.shields.io/badge/WordPress-6.5%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)

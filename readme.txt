@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
 Tested up to: 7.0
-Stable tag: 1.8.13
+Stable tag: 1.9.0
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -299,6 +299,14 @@ Yes, we have build in Elementor widget and shortcode both.
 
 
 == Changelog ==
+
+= 1.9.0 - 11 July, 2026  =
+New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
+New: Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.
+New: Added Exposure and Shadow Intensity controls for the Model Viewer.
+New: Added a live 3D model preview panel to the editor metabox.
+New: Added an Extensions catalog and manager to the admin dashboard.
+Update: Refactored the admin dashboard with section icons and an improved layout.
 
 = 1.8.13 - 01 June, 2026  =
 Update: Tested with WordPress 7.0 and Updated Product Meta Field.

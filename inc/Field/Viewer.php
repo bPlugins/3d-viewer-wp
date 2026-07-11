@@ -274,8 +274,64 @@ class Viewer
           'subtitle' => __('Brightness for Model', '3d-viewer'),
           'desc' => __("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer"),
           'default' => '1',
-          'dependency' => array('bp_3d_model_type|currentViewer', '!=|==', 'mcycle|modelViewer', 'all')
+          'dependency' => array('currentViewer', '==', 'modelViewer', 'all')
 
+        ),
+        array(
+          'id' => '3d_shadow_intensity',
+          'type' => 'spinner',
+          'title' => __('shadow Intensity', '3d-viewer'),
+          'subtitle' => __('Shadow Intensity for Model', '3d-viewer'),
+          'desc' => __("Controls how dark or light the model’s shadow appears. Higher values create darker, more visible shadows.", "3d-viewer"),
+          'min' => 0,
+          'max' => 1,
+          'step' => 0.1,
+          'default' => 1,
+          'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
+        ),
+        array(
+          'id' => 'bp_3d_enable_ar',
+          'type' => 'switcher',
+          'title' => __('Enable AR', '3d-viewer'),
+          'desc' => __("Enables AR (Augmented Reality) so visitors can view the 3D model in their real environment on supported devices.", "3d-viewer"),
+          'text_on' => 'Yes',
+          'text_off' => 'No',
+          'default' => false,
+          'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
+        ),
+        array(
+          'id' => 'model_iso_src',
+          'type' => 'upload',
+          'title' => __('3D Source for iOS (Optional)', '3d-viewer'),
+          'subtitle' => __('Upload Model Or Input Valid Model url', '3d-viewer'),
+          'desc' => __("Specifies the iOS-specific model file (.usdz) used for viewing the 3D model in AR on Apple devices.", "3d-viewer"),
+          'placeholder' => 'You Can Paste here Model url',
+          'dependency' => ['bp_3d_enable_ar|currentViewer', '==|==', '1|modelViewer', 'all']
+        ),
+        array(
+          'id' => 'ar_placement',
+          'type' => 'button_set',
+          'title' => __('AR Placement', '3d-viewer'),
+          'desc' => __("Defines how the model is placed in AR. Choose 'floor' to place the model on the ground or 'wall' to attach it to a vertical surface.", "3d-viewer"),
+          'options' => array(
+            'floor' => 'Floor',
+            'wall' => 'Wall',
+          ),
+          'default' => 'floor',
+          'dependency' => ['bp_3d_enable_ar|currentViewer', '==|==', '1|modelViewer', 'all']
+        ),
+        array(
+          'id' => 'ar_mode',
+          'type' => 'button_set',
+          'title' => __('AR Mode', '3d-viewer'),
+          'desc' => __("Selects the AR viewing mode. 'Quick Look' is used for iOS devices, while other modes enable AR on supported Android devices.", "3d-viewer"),
+          'options' => array(
+            'webxr' => 'WebXR',
+            'scene-viewer' => 'Scene Viewer',
+            'quick-look' => 'Quick Look',
+          ),
+          'default' => 'webxr',
+          'dependency' => ['bp_3d_enable_ar|currentViewer', '==|==', '1|modelViewer', 'all']
         ) // End fields
       )
     ));

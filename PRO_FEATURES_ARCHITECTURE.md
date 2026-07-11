@@ -258,14 +258,14 @@ This entire tab (`elements()` method) exists only in Pro:
 
 ### 7.1 Block Attributes (block.json / types.ts)
 
-#### Free Block Attributes
+#### Free Block Attributes (TypeScript)
 ```typescript
 uniqueId, model, currentViewer, attributes, O3DVSettings,
 lazyLoad, preload, zoom, zoomInOutBtn, mouseControl, fullscreen,
 cameraBtn, loadingPercentage, progressBar, styles, placement, woo
 ```
 
-#### Pro-Only Block Attributes
+#### Pro-Only Block Attributes (TypeScript)
 ```typescript
 multiple, models[],              // Multi-model support
 autoplay, animation, selectedAnimation, // Playback
@@ -283,6 +283,57 @@ additional: { ID, Class, CSS }, // Custom CSS/ID/Class
 stylesheet,                      // Inline CSS
 isPremium, activeIndex           // Premium flag
 ```
+
+#### 7.1.1 block.json Attributes Comparison Table
+
+This table details the exact attributes, types, and defaults defined in `src/blocks/3d-viewer/block.json` for both versions.
+
+| Attribute | Free Type & Default | Premium Type & Default | Description |
+|---|---|---|---|
+| **uniqueId** | `string` ("uniqueId") | `string` ("uniqueId") | Unique ID for the block instance |
+| **multiple** | *N/A (Pro Only)* | `boolean` (false) | Enables cycling between multiple models |
+| **model** | `object` (skyboxImage/environmentImage/arEnabled/arPlacement/arMode/arScale) | `object` (skyboxImage/environmentImage/arEnabled/arPlacement/arMode/arScale) | Model settings for simple mode |
+| **models** | *N/A (Pro Only)* | `array` (array of modelUrl/poster/useDecoder) | Array of model items for cycle mode |
+| **currentViewer** | `string` ("modelViewer") | `string` ("modelViewer") | Viewer backend: 'modelViewer' or 'O3DViewer' |
+| **attributes** | `object` (`{ "tonMapping": "neutral" }`) | `object` (`{ "tonMapping": "neutral" }`) | Tone mapping settings |
+| **O3DVSettings** | `object` (isFullscreen/isPagination/isNavigation/camera/mouseControl/showEdge/zoom) | `object` (isFullscreen/isPagination/isNavigation/camera/mouseControl/showEdge/zoom) | Online 3D Viewer custom settings |
+| **lazyLoad** | `boolean` (true) | `string` ("auto") | Lazy loading behavior (Note the type difference!) |
+| **preload** | `string` ("auto") | `string` ("auto") | Preload/reveal setting |
+| **autoplay** | *N/A (Pro Only)* | `boolean` (true) | Autoplay animation of models |
+| **shadow** | *N/A (Pro Only)* | `boolean` (true) | Enables shadow projection |
+| **rotate** | `boolean` (false) | `boolean` (false) | Apply camera orbit values |
+| **autoRotate** | *N/A (Pro Only)* | `boolean` (false) | Automatically rotate model |
+| **zoom** | `boolean` (true) | `boolean` (true) | Allows interactive zoom |
+| **zoomInOutBtn** | `boolean` (false) | `boolean` (false) | Displays zoom +/- buttons in UI |
+| **isPagination** | *N/A (Pro Only)* | `boolean` (false) | Shows pagination thumbnails |
+| **isNavigation** | *N/A (Pro Only)* | `boolean` (true) | Shows cycle navigation arrows |
+| **rotationPerSecond** | *N/A (Pro Only)* | `number` (20) | Rotation speed in degrees per second |
+| **rotateDelay** | *N/A (Pro Only)* | `number` (2000) | Delay in milliseconds before auto-rotation |
+| **mouseControl** | `boolean` (true) | `boolean` (true) | Enable mouse interaction controls |
+| **fullscreen** | `boolean` (true) | `boolean` (true) | Enable fullscreen toggle button |
+| **cameraBtn** | `boolean` (false) | `boolean` (false) | Enable camera snapshot button |
+| **variant** | *N/A (Pro Only)* | `boolean` (false) | Show variant selection dropdown |
+| **loadingPercentage** | `boolean` (false) | `boolean` (false) | Displays percentage loader |
+| **progressBar** | `boolean` (true) | `boolean` (true) | Show/hide progress bar |
+| **rotateAlongX** | *N/A (Pro Only)* | `number` ("0") | Initial X orbit degree |
+| **rotateAlongY** | *N/A (Pro Only)* | `number` (75) | Initial Y orbit degree |
+| **exposure** | `number` (1) | `number` (1) | Scene exposure brightness |
+| **environmentImage** | *N/A (Pro Only)* | `string` ("") | Lighting reflection image URL |
+| **useEnvironmentAsSkybox** | *N/A (Pro Only)* | `boolean` (false) | Set environment image as background |
+| **zoomLevel** | *N/A (Pro Only)* | `number` (1) | Multiplier scale of model |
+| **appliedTextures** | *N/A (Pro Only)* | `object` (`{ "modelUrl": null }`) | Customized PBR texture metadata |
+| **toneMapping** | *N/A (Pro Only)* | `string` ("neutral") | Tone mapping algorithm selector |
+| **hotspots** | *N/A (Pro Only)* | `array` (`[]`) | Annotations/Hotspots JSON array |
+| **styles** | `object` (width/height/bgColor/progressBarColor/thumbSize) | `object` (width/height/bgColor/progressBarColor/thumbSize) | Custom CSS style configurations |
+| **stylesheet** | *N/A (Pro Only)* | `string` | Custom user CSS string |
+| **additional** | *N/A (Pro Only)* | `object` (ID/Class/CSS) | Wrapper ID, Class, and inline CSS block |
+| **animation** | *N/A (Pro Only)* | `boolean` (false) | Enable default animations |
+| **woo** | `boolean` (false) | `boolean` (false) | WooCommerce page identifier flag |
+| **selectedAnimation** | *N/A (Pro Only)* | `string` ("") | Current selected animation name |
+| **hotspotStyle** | *N/A (Pro Only)* | `string` ("style-1") | Hotspot visual theme style |
+| **placement** | `string` ("block") | `string` ("block") | Placement environment context |
+| **lockXAxisRotation** | *N/A (Pro Only)* | `boolean` (false) | Lock horizontal camera rotation |
+| **lockYAxisRotation** | *N/A (Pro Only)* | `boolean` (false) | Lock vertical camera rotation |
 
 ### 7.2 manageAttributes.ts
 
@@ -445,7 +496,7 @@ cd /path/to/3d-viewer && npm run build
 | **Auto Rotate** | 🟢 Easy | Viewer.php, Utils.php, types.ts, manageAttributes.ts |
 | **Autoplay** | 🟢 Easy | Viewer.php, Utils.php, types.ts, manageAttributes.ts |
 | **Shadow Intensity** | 🟢 Easy | Viewer.php, Utils.php, types.ts, manageAttributes.ts |
-| **Exposure control** | 🟢 Easy | Already in free, just needs manageAttributes update |
+| **Exposure control** | ✅ Done | Viewer.php, Utils.php, Shortcode.php, block.json, types.ts, manageAttributes.ts |
 | **Progressbar Color** | 🟢 Easy | Viewer.php, Utils.php, types.ts, Style.tsx |
 | **Lock Axis Rotation** | 🟢 Easy | Viewer.php, Utils.php, types.ts, manageAttributes.ts |
 | **CSS Editor** | 🟢 Easy | Viewer.php, Utils.php, render output |

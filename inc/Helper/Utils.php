@@ -221,6 +221,10 @@ class Utils
             'model' => [
                 'modelUrl' => $meta('bp_3d_src', [], false, 'url'),
                 'poster' => $meta('bp_3d_poster', [], false, 'url'),
+                'arEnabled' => $meta('bp_3d_enable_ar', '0', true),
+                'arMode' => $meta('ar_mode', 'webxr scene-viewer quick-look'),
+                'arPlacement' => $meta('ar_placement', 'floor'),
+                'modelISOSrc' => $meta('model_iso_src'),
             ],
             'align' => $meta('bp_3d_align', 'center'),
             'uniqueId' => 'model' . $id,
@@ -241,6 +245,8 @@ class Utils
             'cameraBtn' => $meta('bp_3d_camera_btn', '0', true),
             'loadingPercentage' => $meta('bp_model_progress_percent', '0', true),
             'progressBar' => $meta('bp_3d_progressbar', '0', true),
+            'exposure' => $meta('3d_exposure', '1'),
+            'shadow' => (int) $meta('3d_shadow_intensity', '1', false),
             'woo' => false,
             'placement' => 'shortcode',
             'styles' => [

@@ -13,6 +13,7 @@ import openFullscreen from "../../../../utils/openFullscreen";
 import closeFullscreen from "../../../../utils/closeFullscreen";
 
 import ModelViewer from "./ModelViewer";
+import ARQRCode from "./ARQRCode";
 
 import './../../style.scss'
 // interface
@@ -26,7 +27,7 @@ interface ViewerInterface {
 
 const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: ViewerInterface) => {
   const [isValid, setIsValid] = useState(false);
-  const { uniqueId, model, fullscreen, cameraBtn = false, zoomInOutBtn = false, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, position } = attributes;
+  const { uniqueId, model, fullscreen, cameraBtn, zoomInOutBtn, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, arLink, position } = attributes;
   const { isFullscreen } = O3DVSettings;
 
   const modelSrc = model?.modelUrl;
@@ -132,8 +133,9 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
         <div className="position-bottom-left">
           {currentViewer === 'modelViewer' && <>
             {cameraBtn && <Camera className="control-btn cameraBtn" onClick={() => downloadImageFromDataUrl(viewerRef.current.toDataURL(), 'model.png')} />}
-            {/* {currentModel?.arEnabled &&
-            } */}
+            {currentModel?.arEnabled && (
+              <ARQRCode {...{ viewerRef, arLink, placement }} />
+            )}
           </>}
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import { useState, useEffect } from "@wordpress/element";
-import { PanelBody, ToggleControl } from "@wordpress/components";
+import { PanelBody, ToggleControl, RangeControl } from "@wordpress/components";
 import Title from "../../../../../../components/Title";
 import SettingsIcon from "../../../../../../icons/SettingsIcon";
 import BInfoControl from "../../../../../../components/BInfoControl";
@@ -14,7 +13,7 @@ interface OptionsProps {
 }
 
 const Options = ({ attributes, setAttributes, setOpen }: OptionsProps) => {
-  const { fullscreen, cameraBtn, lazyLoad, loadingPercentage, model, mouseControl, progressBar, zoomInOutBtn } = attributes;
+  const { fullscreen, cameraBtn, lazyLoad, loadingPercentage, model, mouseControl, progressBar, zoomInOutBtn, exposure = 1, shadow = true } = attributes;
 
   return (
     <>
@@ -36,8 +35,12 @@ const Options = ({ attributes, setAttributes, setOpen }: OptionsProps) => {
             <BInfoControl Component={ToggleControl} className="mt10" label={__("Camera/Capture Button", "3d-viewer")} checked={cameraBtn} onChange={() => setAttributes({ cameraBtn: !cameraBtn })} info={helpText.cameraBtn} />
             <BInfoControl Component={ToggleControl} className="mt10" label={__("Zoom In/Out Button", "3d-viewer")} checked={zoomInOutBtn} onChange={() => setAttributes({ zoomInOutBtn: !zoomInOutBtn })} info={helpText.zoomInOutBtn} />
 
+            <BInfoControl Component={ToggleControl} className="mt5" label={__("Enable Shadow", "3d-viewer")} checked={shadow} onChange={() => setAttributes({ shadow: !shadow })} info={helpText.shadow} />
+
+            <BInfoControl Component={RangeControl} labelPosition="side" label={__("Exposure", "3d-viewer")} value={exposure} onChange={(exposure: number) => setAttributes({ exposure })} min={0.1} step={0.1} max={5} info={__("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer")} />
+
             <Notice status={"premium"} isIcon={true}>
-              {__("shadow, autoplay, variant selector, animation selector, lock left-right, up-down rotation, auto rotate, zoom, set initial zoom available in premium version", "3d-viewer")}
+              {__("autoplay, variant selector, animation selector, lock left-right, up-down rotation, auto rotate, zoom, set initial zoom available in premium version", "3d-viewer")}
             </Notice>
 
 

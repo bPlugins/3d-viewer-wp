@@ -3,6 +3,8 @@ export interface ManageAttributesConfig {
     zoom?: boolean;
     mouseControl?: boolean;
     loading?: string;
+    exposure?: string | number;
+    shadow?: boolean | string | number;
     [key: string]: unknown;
 }
 
@@ -11,6 +13,7 @@ interface CurrentModel {
     skyboxImage?: string;
     useEnvironmentAsSkybox?: boolean;
     skyboxHeight?: string;
+    exposure?: string | number;
     [key: string]: unknown;
 }
 
@@ -26,6 +29,8 @@ const manageAttributes = (
 
     const {
         zoom,
+        exposure,
+        shadow,
     } = attributes;
 
 
@@ -36,12 +41,24 @@ const manageAttributes = (
 
         loading ? modelViewer.setAttribute('loading', loading) : modelViewer.removeAttribute('loading');
 
-
-
         if (!zoom) {
             modelViewer.setAttribute('disable-zoom', '');
         } else {
             modelViewer.removeAttribute('disable-zoom');
+        }
+
+        // Exposure (brightness)
+        const expVal = currentModel?.exposure ?? exposure;
+        setDomAttribute(modelViewer, 'exposure', expVal);
+
+        // Shadow Intensity & Softness
+        if (shadow) {
+            const intensity = shadow === true ? '1' : String(shadow);
+            modelViewer.setAttribute('shadow-intensity', intensity);
+            modelViewer.setAttribute('shadow-softness', '1');
+        } else {
+            modelViewer.removeAttribute('shadow-intensity');
+            modelViewer.removeAttribute('shadow-softness');
         }
 
     }, 10);
@@ -56,13 +73,16 @@ export default manageAttributes;
 export const setDomAttribute = (
     dom: HTMLElement | null,
     attribute: string,
-    value: string | null | undefined
+    value: string | number | boolean | null | undefined
 ): void => {
     if (dom) {
-        if (value && !value.includes('null')) {
-            dom.setAttribute(attribute, value);
-        } else {
-            dom.removeAttribute(attribute);
+        if (value !== null && value !== undefined) {
+            const strVal = String(value).trim();
+            if (strVal !== '' && !strVal.includes('null')) {
+                dom.setAttribute(attribute, strVal);
+                return;
+            }
         }
+        dom.removeAttribute(attribute);
     }
 };
