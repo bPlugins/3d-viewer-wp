@@ -279,7 +279,7 @@ class Viewer
         ),
         array(
           'id' => '3d_shadow_intensity',
-          'type' => 'spinner',
+          'type' => 'slider',
           'title' => __('shadow Intensity', '3d-viewer'),
           'subtitle' => __('Shadow Intensity for Model', '3d-viewer'),
           'desc' => __("Controls how dark or light the model’s shadow appears. Higher values create darker, more visible shadows.", "3d-viewer"),

@@ -9,7 +9,7 @@ interface DashboardInfoInput {
     licenseActiveNonce?: string;
 }
 
-interface DashboardInfo {
+export interface DashboardInfo {
     name: string;
     displayName: string;
     description: string;
@@ -145,7 +145,7 @@ export const welcomeInfo = (adminUrl: string = '') => ({
     // ── Changelogs (badge-prefixed list items) ─────────────────────────
     changelogs: [
         {
-            version: '1.9.0 - 11 July, 2026',
+            version: '1.9.0 - 12 July, 2026',
             type: 'new',
             list: [
                 '<strong>New:</strong> Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.',
@@ -265,7 +265,7 @@ export const demoInfo: DemoInfo = {
 interface PricingInfo {
     logo: string;
     pluginId: number;
-    planId: number;
+    planIds: number[];
     licenses: (number | null)[];
     button: { label: string };
     featured: { selected: number };
@@ -274,7 +274,7 @@ interface PricingInfo {
 export const pricingInfo: PricingInfo = {
     logo: `https://ps.w.org/${slug}/assets/icon-128x128.png`,
     pluginId: 8795,
-    planId: 14970,
+    planIds: [14970, 52950],
     licenses: [1, 3, null],
     button: {
         label: 'Buy Now ➜'

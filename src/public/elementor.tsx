@@ -1,6 +1,6 @@
 import React from 'react';
 import { jsonParse } from 'bp-utils';
-import FrontEnd from './Components/FrontEnd';
+import FrontEnd, { FrontEndAttributes } from './Components/FrontEnd';
 
 const { createRoot } = (window as any).ReactDOM;
 
@@ -33,13 +33,47 @@ window.addEventListener('elementor/frontend/init', function () {
 
     const initializeAddon = (dom: HTMLElement | null): void => {
         if (!dom) return;
-        const dataset = { ...dom.dataset } || {};
-        const attributes = jsonParse(dataset.attributes);
+        if (dom.getAttribute('data-rendered') === 'true') return;
+
+        const dataset = dom.dataset;
+        const attributes = dataset.attributes ? jsonParse(dataset.attributes) as FrontEndAttributes : null;
 
         if (!attributes) return;
         dom.removeAttribute('data-attributes');
+        dom.setAttribute('data-rendered', 'true');
 
-        const root = createRoot(dom);
-        root.render(<FrontEnd attributes={attributes} />);
+        const renderViewer = () => {
+            const root = createRoot(dom);
+            root.render(<FrontEnd attributes={attributes} />);
+        };
+
+        if (!attributes.currentViewer || attributes.currentViewer === 'modelViewer') {
+            const Src = document.getElementById('bp3d-lib-model-viewer-js');
+            if (!Src) {
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.id = 'bp3d-lib-model-viewer-js';
+                script.src = (window as any)['bp3dBlock']?.modelViewerSrc || '/wp-content/plugins/3d-viewer/public/js/model-viewer.latest.min.js';
+                document.head.appendChild(script);
+            }
+            renderViewer();
+        }
+
+        if (attributes.currentViewer === 'O3DViewer') {
+            if (typeof (window as any).OV === 'undefined') {
+                const Src = document.getElementById('bp3d-o3dviewer-js');
+                if (!Src) {
+                    const script = document.createElement('script');
+                    script.id = 'bp3d-o3dviewer-js';
+                    script.src = (window as any)['bp3dBlock']?.o3dviewerSrc || '/wp-content/plugins/3d-viewer/public/js/o3dv.min.js';
+                    document.head.appendChild(script);
+                    script.addEventListener('load', renderViewer);
+                } else {
+                    Src.addEventListener('load', renderViewer);
+                }
+            } else {
+                renderViewer();
+            }
+        }
     };
 });

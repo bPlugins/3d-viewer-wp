@@ -14,7 +14,9 @@ const navigation: NavigationItem[] = [
     { name: 'Feature Comparison', href: '/feature-comparison' }
 ];
 
-interface LayoutProps {
+import { DashboardInfo } from '../utils/data';
+
+interface LayoutProps extends DashboardInfo {
     [key: string]: any;
 }
 

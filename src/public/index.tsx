@@ -125,12 +125,12 @@ window.addEventListener('elementor/frontend/init', function () {
         function (scope: any) {
             const blocks = scope[0]?.querySelectorAll('.modelViewerBlock') as NodeListOf<HTMLElement> | undefined;
             blocks?.forEach((dom: HTMLElement) => {
-                const dataset = { ...dom.dataset } || {};
+                const dataset = dom.dataset;
                 setTimeout(() => {
                     Object.keys(dom.dataset).forEach((key) => delete dom.dataset[key]);
                 }, 10);
 
-                const attributes = jsonParse(dataset.attributes);
+                const attributes = dataset.attributes ? jsonParse(dataset.attributes) : null;
 
                 if (attributes) {
                     const selector = dataset.selector;

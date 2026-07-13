@@ -246,7 +246,7 @@ class Utils
             'loadingPercentage' => $meta('bp_model_progress_percent', '0', true),
             'progressBar' => $meta('bp_3d_progressbar', '0', true),
             'exposure' => $meta('3d_exposure', '1'),
-            'shadow' => (int) $meta('3d_shadow_intensity', '1', false),
+            'shadow' => (float) $meta('3d_shadow_intensity', '1', false),
             'woo' => false,
             'placement' => 'shortcode',
             'styles' => [

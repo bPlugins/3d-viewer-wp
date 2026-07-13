@@ -10,7 +10,7 @@ jQuery(document).ready(function ($: any) {
     $("[name='_bp3dimages_[angle_property][right]']").attr('placeholder', 'Y');
     $("[name='_bp3dimages_[angle_property][bottom]']").attr('placeholder', 'Z');
 
-    $(document).on('click', '.bp3d_shortcode_copy_icon', function (e: Event) {
+    $(document).on('click', '.bp3d_shortcode_copy_icon', function (this: HTMLElement, e: Event) {
         e.preventDefault();
 
         const text = $(this).data('clipboard-text');
@@ -31,7 +31,7 @@ jQuery(document).ready(function ($: any) {
         }, 200);
     });
 
-    $(document).on('click', '.bp3d_shortcode_copy_btn', function (e: Event) {
+    $(document).on('click', '.bp3d_shortcode_copy_btn', function (this: HTMLElement, e: Event) {
         e.preventDefault();
 
         const text = $(this).data('clipboard-text');

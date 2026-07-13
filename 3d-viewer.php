@@ -139,6 +139,7 @@ if (function_exists('bp3d_fs')) {
         require_once $bpem_bootstrap;
     }
 
+
     add_action('bpem_loaded', function () {
         if (class_exists('\\BPEM\\Manager')) {
             \BPEM\Manager::boot(array(
@@ -148,15 +149,17 @@ if (function_exists('bp3d_fs')) {
                 'menu_parent' => 'edit.php?post_type=bp3d-model-viewer',
                 'freemius' => function_exists('bp3d_fs') ? bp3d_fs() : null,
                 'max_plan_id' => 'max',
-                'catalog_url' => plugins_url('/public/extensions.json', __FILE__),
+                'catalog_file' => __DIR__ . '/public/extensions.php', // Explicit PHP path
                 'menu_badge' => true,
                 'menu_badge_persist' => true,
-                'bundled_modules_dir' => __DIR__ . '/modules',
-                // 'enable_extensions' => false
+                'enable_freemius_checkout' => true
 
             ));
         }
     });
+
+
+
 
 }
 

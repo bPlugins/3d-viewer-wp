@@ -334,7 +334,7 @@ export function merge<T extends Record<string, unknown>>(
         target = (Array.isArray(source) ? [] : {}) as T;
     }
 
-    const result: Record<string, unknown> = Array.isArray(target) ? [] : {};
+    const result: any = Array.isArray(target) ? [] : {};
 
     for (const key in target) {
         if (Object.prototype.hasOwnProperty.call(target, key)) {

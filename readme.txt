@@ -300,7 +300,7 @@ Yes, we have build in Elementor widget and shortcode both.
 
 == Changelog ==
 
-= 1.9.0 - 11 July, 2026  =
+= 1.9.0 - 12 July, 2026  =
 New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
 New: Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.
 New: Added Exposure and Shadow Intensity controls for the Model Viewer.
