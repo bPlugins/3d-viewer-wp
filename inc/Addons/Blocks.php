@@ -82,8 +82,12 @@ class Blocks
      */
     public function init()
     {
-        register_block_type(BP3D_PATH . 'build/blocks/3d-viewer');
-        register_block_type(BP3D_PATH . '3d-viewer-block/build');
+        if (file_exists(BP3D_PATH . 'build/blocks/3d-viewer/block.json')) {
+            register_block_type(BP3D_PATH . 'build/blocks/3d-viewer');
+        }
+        if (file_exists(BP3D_PATH . '3d-viewer-block/build/block.json')) {
+            register_block_type(BP3D_PATH . '3d-viewer-block/build');
+        }
     }
 
 

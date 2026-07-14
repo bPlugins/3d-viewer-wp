@@ -48,8 +48,13 @@ window.addEventListener('elementor/frontend/init', function () {
         };
 
         if (!attributes.currentViewer || attributes.currentViewer === 'modelViewer') {
-            const Src = document.getElementById('bp3d-lib-model-viewer-js');
-            if (!Src) {
+            // The widget's PHP may have enqueued the library as a WP script
+            // module (tag id "…-js-module"), so match any existing copy — a
+            // second load would throw on customElements.define.
+            const alreadyLoaded =
+                !!customElements.get('model-viewer') ||
+                !!document.querySelector('script[src*="model-viewer"]');
+            if (!alreadyLoaded) {
                 const script = document.createElement('script');
                 script.type = 'module';
                 script.id = 'bp3d-lib-model-viewer-js';

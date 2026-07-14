@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import jsonParse from './../../../wp-utils/v1/jsonParse';
 import Viewer from './../blocks/3d-viewer/Components/Common/Viewer';
 import modelRenderer from '../utils/modelRenderer';
 
 import './product';
 import { findParentUntilMultipleChildren, isImageSource, restoreOriginalImageSrc } from '../utils';
 import createSetAttributes from '../utils/createSetAttributes';
+import jsonParse from '../utils/jsonParse';
 
 declare const elementorFrontend: any;
 declare const OV: any;
@@ -143,8 +143,13 @@ window.addEventListener('elementor/frontend/init', function () {
                         dom.setAttribute('data-rendered', 'true');
                         const root = createRoot(dom);
                         root.render(<FrontEnd attributes={attributes} />);
-                        const Src = document.getElementById('bp3d-lib-model-viewer-js');
-                        if (!Src) {
+                        // The widget's PHP may have enqueued the library as a WP
+                        // script module (different tag id), so match any existing
+                        // copy — a second load would throw on customElements.define.
+                        const alreadyLoaded =
+                            !!customElements.get('model-viewer') ||
+                            !!document.querySelector('script[src*="model-viewer"]');
+                        if (!alreadyLoaded) {
                             const script = document.createElement('script');
                             script.type = 'module';
                             script.id = 'bp3d-lib-model-viewer-js';

@@ -135,7 +135,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'type' => 'b-select-file',
             'separator' => 'before',
             'placeholder' => esc_html__('Paste bin file URL', '3d-viewer'),
-            'condition' => ['decoder' => 'draco', 'currentViewer' => 'modelViewer'],
+            'condition' => ['useDecoder' => 'draco', 'currentViewer' => 'modelViewer'],
         ]);
 
         $this->add_control('poster', [
@@ -258,7 +258,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'condition' => ['currentViewer' => 'modelViewer'],
         ]);
 
-        $this->add_control('arEnabled', [
+        $this->add_control('enableAr', [
             'label' => esc_html__('Enable AR', '3d-viewer'),
             'type' => \Elementor\Controls_Manager::SWITCHER,
             'label_on' => esc_html__('Enable', '3d-viewer'),
@@ -268,13 +268,13 @@ class ModelViewer extends \Elementor\Widget_Base
             'condition' => ['currentViewer' => 'modelViewer'],
         ]);
 
-        $this->add_control('modelISOSrc', [
+        $this->add_control('modelIsoSrc', [
             'label' => esc_html__('3D Source for iOS (Optional)', '3d-viewer'),
             'type' => 'b-select-file',
             'placeholder' => esc_html__('Paste USDZ Model URL', '3d-viewer'),
             'condition' => [
                 'currentViewer' => 'modelViewer',
-                'arEnabled' => 'yes',
+                'enableAr' => 'yes',
             ],
         ]);
 
@@ -288,7 +288,7 @@ class ModelViewer extends \Elementor\Widget_Base
             ],
             'condition' => [
                 'currentViewer' => 'modelViewer',
-                'arEnabled' => 'yes',
+                'enableAr' => 'yes',
             ],
         ]);
 
@@ -303,7 +303,7 @@ class ModelViewer extends \Elementor\Widget_Base
             ],
             'condition' => [
                 'currentViewer' => 'modelViewer',
-                'arEnabled' => 'yes',
+                'enableAr' => 'yes',
             ],
         ]);
 
@@ -407,14 +407,17 @@ class ModelViewer extends \Elementor\Widget_Base
             'model' => [
                 'modelUrl' => $settings['modelUrl'] ?? '',
                 'poster' => $settings['poster'] ?? '',
-                'useDecoder' => $settings['useDecoder'] ?? 'none',
-                'arEnabled' => ($settings['arEnabled'] ?? '') === 'yes',
+                // The frontend renderer reads `model.decoder` and the model-viewer
+                // build expects the "Draco"/"none" spelling used by the block editor,
+                // so map the widget's lowercase `useDecoder` value onto that contract.
+                'decoder' => (($settings['useDecoder'] ?? 'none') === 'draco') ? 'Draco' : 'none',
+                'arEnabled' => ($settings['enableAr'] ?? '') === 'yes',
                 'arPlacement' => $settings['arPlacement'] ?? 'floor',
                 'arMode' => $settings['arMode'] ?? 'webxr',
-                'modelISOSrc' => $settings['modelISOSrc'] ?? '',
+                'modelISOSrc' => $settings['modelIsoSrc'] ?? '',
             ],
             'currentViewer' => $settings['currentViewer'] ?? 'modelViewer',
-            'lazyLoad' => ($settings['lazy_load'] ?? '') === 'yes',
+            'loading' => ($settings['lazy_load'] ?? '') === 'yes' ? 'lazy' : 'eager',
             'zoom' => ($settings['zoom'] ?? '') === 'yes',
             'zoomInOutBtn' => ($settings['zoomInOutBtn'] ?? '') === 'yes',
             'cameraBtn' => ($settings['cameraBtn'] ?? '') === 'yes',

@@ -10,11 +10,21 @@
     "cp": "cp ./languages/3d-viewer.pot ./languages/3d-viewer-en_US.po",
     "build": "wp-scripts build --webpack-copy-php && npm run i18n && find . -name '.DS_Store' -delete && npm run zip",
     "sync": "browser-sync start -p 'http://localhost/freemius' --files '**/*.php' 'dist/*.js' 'dist/*.css'",
-    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc lib languages public vendor 3d-viewer.php readme.txt composer.json uninstall.php",
+    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc languages public vendor 3d-viewer.php readme.txt composer.json uninstall.php",
     "clean": "find . -name '.DS_Store' -type f -delete",
     "preview": "npm-run-all --parallel sync start",
     "bundle": "gulp bundle && gulp zip",
-    "deploy": "gulp freemius-deploy"
+    "deploy": "gulp freemius-deploy",
+    "test:e2e": "playwright test -c tests/e2e/playwright.config.ts",
+    "test:e2e:headed": "playwright test -c tests/e2e/playwright.config.ts --headed",
+    "test:e2e:ui": "playwright test -c tests/e2e/playwright.config.ts --ui",
+    "test:e2e:report": "playwright show-report tests/e2e/artifacts/report",
+    "test:e2e:gallery": "node tests/e2e/scripts/make-gallery.mjs && open tests/e2e/artifacts/gallery.html",
+    "test": "playwright test -c tests/e2e/playwright.config.ts",
+    "test:headed": "playwright test -c tests/e2e/playwright.config.ts --headed",
+    "test:ui": "playwright test -c tests/e2e/playwright.config.ts --ui",
+    "test:report": "playwright show-report tests/e2e/artifacts/report",
+    "test:gallery": "node tests/e2e/scripts/make-gallery.mjs && open tests/e2e/artifacts/gallery.html"
   },
   "dependencies": {
     "@types/qrcode": "^1.5.6",

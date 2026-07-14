@@ -6,8 +6,8 @@ import posz from "../../../../../public/images/envmaps/fishermans_bastion/posz.j
 import negx from "../../../../../public/images/envmaps/fishermans_bastion/negx.jpg";
 import negy from "../../../../../public/images/envmaps/fishermans_bastion/negy.jpg";
 import negz from "../../../../../public/images/envmaps/fishermans_bastion/negz.jpg";
+import hexToRGB from "../../../../utils/hexToRGB";
 
-import hexToRGB from "../../../../../../wp-utils/v1/hexToRGB";
 
 
 interface Basic3DViewerProps {

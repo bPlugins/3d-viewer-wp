@@ -28,3 +28,11 @@ package-lock.json
 playwright.config.ts
 task-runner-config.json
 pnpm-lock.yaml
+
+# e2e suite — generated artifacts (the config itself IS tracked, overriding
+# the blanket playwright.config.ts ignore above)
+!tests/e2e/playwright.config.ts
+tests/e2e/artifacts
+tests/e2e/fixtures/
+
+promo

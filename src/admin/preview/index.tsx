@@ -246,7 +246,7 @@ const PreviewPopupButton: React.FC = () => {
                 onClick={openPopup}
             >
                 <span className="dashicons dashicons-visibility"></span>
-                {__('Preview')}
+                {__('Live Preview')}
             </button>
 
             {isOpen && createPortal(
@@ -343,20 +343,102 @@ function mountPreviewButton(): boolean {
     return true;
 }
 
+/**
+ * Pin the whole "Live Preview" meta box (#bp3d_live_preview) to the top of the
+ * viewport once it scrolls out of view, so it stays reachable on the long
+ * settings screen. The entire postbox card — not just the button — switches to
+ * `position: fixed`; a same-size placeholder holds its slot in the sidebar so
+ * nothing shifts. Runs on the PHP-rendered postbox, independent of React.
+ */
+function initStickyPreviewBox(): boolean {
+    const box = document.getElementById('bp3d_live_preview');
+    if (!box) {
+        return false;
+    }
+    if (box.dataset.bp3dSticky === 'true') {
+        return true;
+    }
+    box.dataset.bp3dSticky = 'true';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'bp3d-live-preview-placeholder';
+    placeholder.style.display = 'none';
+    box.parentNode?.insertBefore(placeholder, box);
+
+    let stuck = false;
+
+    const topOffset = (): number => {
+        const bar = document.getElementById('wpadminbar');
+        return (bar ? bar.offsetHeight : 0) + 8;
+    };
+
+    const stick = (offset: number) => {
+        const rect = box.getBoundingClientRect();
+        placeholder.style.height = box.offsetHeight + 'px';
+        placeholder.style.marginBottom = window.getComputedStyle(box).marginBottom;
+        placeholder.style.display = 'block';
+        box.style.position = 'fixed';
+        box.style.top = offset + 'px';
+        box.style.left = rect.left + 'px';
+        box.style.width = box.offsetWidth + 'px';
+        box.style.boxSizing = 'border-box';
+        box.classList.add('is-stuck');
+        stuck = true;
+    };
+
+    const unstick = () => {
+        box.style.position = '';
+        box.style.top = '';
+        box.style.left = '';
+        box.style.width = '';
+        box.style.boxSizing = '';
+        box.classList.remove('is-stuck');
+        placeholder.style.display = 'none';
+        stuck = false;
+    };
+
+    const update = () => {
+        const offset = topOffset();
+        if (!stuck) {
+            if (box.getBoundingClientRect().top < offset) {
+                stick(offset);
+            }
+            return;
+        }
+        // Un-stick once the placeholder (which holds the original slot) scrolls
+        // back into view; otherwise keep the fixed box aligned to the column.
+        if (placeholder.getBoundingClientRect().top >= offset) {
+            unstick();
+        } else {
+            box.style.top = offset + 'px';
+            box.style.left = placeholder.getBoundingClientRect().left + 'px';
+            box.style.width = placeholder.offsetWidth + 'px';
+        }
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return true;
+}
+
 function init() {
-    const p = mountPreview();
-    const b = mountPreviewButton();
-    if (p && b) {
+    let tries = 0;
+    const tick = (): boolean => {
+        const p = mountPreview();
+        const b = mountPreviewButton();
+        const s = initStickyPreviewBox();
+        return p && b && s;
+    };
+
+    if (tick()) {
         return;
     }
 
     // Metabox markup may not be ready yet on some screens — retry briefly.
-    let tries = 0;
     const timer = window.setInterval(() => {
         tries += 1;
-        const mountedP = mountPreview();
-        const mountedB = mountPreviewButton();
-        if ((mountedP && mountedB) || tries > 40) {
+        if (tick() || tries > 40) {
             window.clearInterval(timer);
             if (tries > 40) {
                 // eslint-disable-next-line no-console

@@ -712,3 +712,37 @@
 .bp3d-preview-popup-trigger .dashicons::before {
   color: #ffffff !important;
 }
+
+/* --- Live Preview meta box (sidebar, directly under the Publish box) --- */
+/* Hide the meta box title so the box reads as a clean button card — the
+   button itself is labelled "Live Preview", so a title would be redundant. */
+#bp3d_live_preview .postbox-header {
+  display: none;
+}
+
+#bp3d_live_preview .inside {
+  margin-top: 0;
+  padding: 12px;
+}
+
+#bp3d-preview-btn-root {
+  width: 100%;
+}
+
+.bp3d-preview-popup-trigger {
+  width: 100% !important;
+  justify-content: center !important;
+  height: 40px !important;
+  line-height: 38px !important;
+  padding: 0 18px !important;
+}
+
+/* Pinned state: the entire meta box is fixed to the top of the viewport (its
+   top/left/width are applied inline via JS from the measured column) once it
+   scrolls out of view. A same-size placeholder holds its slot in the sidebar.
+   z-index keeps it below the preview modal overlay (999999) so it hides itself
+   while the modal is open. */
+#bp3d_live_preview.is-stuck {
+  z-index: 99990;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}

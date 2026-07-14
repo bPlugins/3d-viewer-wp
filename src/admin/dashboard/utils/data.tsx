@@ -145,7 +145,7 @@ export const welcomeInfo = (adminUrl: string = '') => ({
     // ── Changelogs (badge-prefixed list items) ─────────────────────────
     changelogs: [
         {
-            version: '1.9.0 - 12 July, 2026',
+            version: '1.9.0 - 15 July, 2026',
             type: 'new',
             list: [
                 '<strong>New:</strong> Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.',

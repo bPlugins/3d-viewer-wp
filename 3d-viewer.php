@@ -20,6 +20,25 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * plugin is activated, deactivate the premium build automatically.
+ */
+if (!function_exists('bp3d_deactivate_premium_version')) {
+    function bp3d_deactivate_premium_version()
+    {
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $premium = '3d-viewer-premium/3d-viewer-premium.php';
+
+        if (is_plugin_active($premium)) {
+            deactivate_plugins($premium);
+        }
+    }
+}
+register_activation_hook(__FILE__, 'bp3d_deactivate_premium_version');
+
 if (function_exists('bp3d_fs')) {
     bp3d_fs()->set_basename(true, __FILE__);
 } else {
@@ -157,9 +176,6 @@ if (function_exists('bp3d_fs')) {
             ));
         }
     });
-
-
-
 
 }
 

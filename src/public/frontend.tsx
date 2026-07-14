@@ -1,5 +1,4 @@
 import React from 'react';
-import jsonParse from '../../../wp-utils/v1/jsonParse';
 
 import './product';
 import './scss/themes/themes.scss';
@@ -7,6 +6,7 @@ import './scss/themes/common.scss';
 import FrontEnd from './Components/FrontEnd';
 import manageIncompatibleTheme from '../utils/manageIncompatibleTheme';
 import './elementor';
+import jsonParse from '../utils/jsonParse';
 
 const { createRoot } = (window as any).ReactDOM;
 
