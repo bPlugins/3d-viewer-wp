@@ -12,7 +12,21 @@
 @import '../../../../bpl-tools/Admin/style.scss';
 
 // Your custom dashboard styles here
-
+.navBadge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 2px;
+    padding: 3px 6px;
+    margin-left: 4px;
+    border-radius: 3px;
+    background: var(--bpl-dashboard-secondary-color, #f16522);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
 
 #wpbody-content .fs-notice.promotion,
 #wpbody-content .fs-notice.success,

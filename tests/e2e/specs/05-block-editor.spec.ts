@@ -1,4 +1,11 @@
-import { test, expect, expectNoFatal, waitModelLoaded, insertViewerBlock } from '../fixtures';
+import {
+    test,
+    expect,
+    expectNoFatal,
+    waitModelLoaded,
+    insertViewerBlock,
+    openSettingsSidebar,
+} from '../fixtures';
 
 /** Full "model" object (object attributes are not merged with defaults). */
 function modelObject(url: string) {
@@ -66,7 +73,7 @@ test.describe('Authoring in the block editor', () => {
         await admin.createNewPost({ title: 'E2E-3DV Sidebar Post' });
         await insertViewerBlock(page, editor, { model: modelObject(state.glb.url) });
         await editor.canvas.locator('[data-type="b3dviewer/modelviewer"]').first().click();
-        await editor.openDocumentSettingsSidebar();
+        await openSettingsSidebar(page);
 
         const tabs = page.locator('.b3dviewer-tab-panel');
         await expect(tabs).toBeVisible();

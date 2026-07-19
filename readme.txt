@@ -271,6 +271,12 @@ The bundle also includes the following sub-dependencies:
 * Purpose: Shared utility library providing admin dashboard components and common Gutenberg editor controls.
 * External Services: The library may connect to bPlugins, WordPress.org, and Freemius services for product data and checkout functionality. See full details: https://github.com/bPlugins/bpl-tools#external-requests--why-they-are-made
 
+= bp-extension-manager =
+* Source / GitHub: https://github.com/bPlugins/bp-extension-manager
+* License: GPL-2.0-or-later – https://www.gnu.org/licenses/gpl-2.0.html
+* Purpose: Shared library that discovers, gates, licenses, and administers the plugin's add-on extensions from the "Extensions" admin page.
+* External Services: The library may connect to bPlugins, WordPress.org, and Freemius services to list available add-ons, resolve download URLs, and manage licenses. Connections are made only from the plugin's admin dashboard.
+
 
 == Frequently Asked Questions ==
 
@@ -300,7 +306,7 @@ Yes, we have build in Elementor widget and shortcode both.
 
 == Changelog ==
 
-= 1.9.0 - 14 July, 2026  =
+= 1.9.0 - 18 July, 2026  =
 New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
 New: Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.
 New: Added Exposure and Shadow Intensity controls for the Model Viewer.

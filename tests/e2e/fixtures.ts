@@ -31,13 +31,28 @@ type CustomFixtures = {
     pageErrors: Error[];
 };
 
+/**
+ * True when an uncaught error is attributable to another plugin's or the
+ * theme's scripts. The Studio site runs a full theme + plugin stack (Astra,
+ * Spectra, WooCommerce, …) whose own JS errors are not this plugin's
+ * regressions. Errors with no wp-content source in the stack (inline
+ * scripts, hydration) are kept.
+ */
+function isThirdPartyError(error: Error): boolean {
+    const sources = [...(error.stack || '').matchAll(/wp-content\/(?:plugins|themes)\/([^/]+)\//g)]
+        .map((m) => m[1]);
+    return sources.length > 0 && !sources.some((slug) => slug.startsWith('3d-viewer'));
+}
+
 export const test = baseTest.extend<CustomFixtures>({
     state: async ({}, use) => {
         await use(readState());
     },
     pageErrors: async ({ page }, use) => {
         const errors: Error[] = [];
-        page.on('pageerror', (error) => errors.push(error));
+        page.on('pageerror', (error) => {
+            if (!isThirdPartyError(error)) errors.push(error);
+        });
         await use(errors);
     },
 });
@@ -48,6 +63,21 @@ export { expect };
 export async function expectNoFatal(page: Page) {
     const body = (await page.locator('body').innerText().catch(() => '')) || '';
     expect(body).not.toMatch(/Fatal error|There has been a critical error/i);
+}
+
+/**
+ * Opens the editor settings sidebar. editor.openDocumentSettingsSidebar()
+ * matches the top-bar "Settings" button by substring, which collides with the
+ * "Astra Settings" / "Spectra Block Settings" buttons the site's theme stack
+ * adds — so match the accessible name exactly.
+ */
+export async function openSettingsSidebar(page: Page) {
+    const toggle = page
+        .getByRole('region', { name: 'Editor top bar' })
+        .getByRole('button', { name: 'Settings', exact: true });
+    if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
+        await toggle.click();
+    }
 }
 
 /** Waits until the block editor reports ready after admin.createNewPost(). */

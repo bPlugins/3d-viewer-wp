@@ -145,6 +145,25 @@ export default async function globalSetup() {
     // land on an opt-in screen mid-spec.
     await requestUtils.request.get(`${process.env.WP_BASE_URL}/wp-admin/index.php`).catch(() => {});
 
+    // SureRank (the site's SEO plugin) launches a first-run driver.js tour in
+    // the editor whose overlay intercepts clicks (e.g. on Publish). It is
+    // gated on a browser-local localStorage flag, so bake that flag into the
+    // shared storage state every test context starts from.
+    const storagePath = process.env.STORAGE_STATE_PATH!;
+    const storage = JSON.parse(fs.readFileSync(storagePath, 'utf8'));
+    const origin = process.env.WP_BASE_URL!.replace(/\/$/, '');
+    storage.origins = storage.origins ?? [];
+    let originState = storage.origins.find((o: { origin: string }) => o.origin === origin);
+    if (!originState) {
+        originState = { origin, localStorage: [] };
+        storage.origins.push(originState);
+    }
+    originState.localStorage = (originState.localStorage ?? []).filter(
+        (item: { name: string }) => item.name !== 'surerank_editor_tour_seen'
+    );
+    originState.localStorage.push({ name: 'surerank_editor_tour_seen', value: '1' });
+    fs.writeFileSync(storagePath, JSON.stringify(storage, null, 2));
+
     // ----------------------------------------------- 6. clean previous data
     wp(['eval-file', path.join(E2E, 'scripts', 'clean-e2e-data.php')], { allowFail: true });
 

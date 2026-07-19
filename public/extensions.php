@@ -21,7 +21,7 @@ return array(
 			'is_paid' => true,
 			'price_label' => '', // Optional pricing label shown in UI
 			'plugin_file' => 'wc-3d-model-viewer-pro/wc-3d-model-viewer.php',
-			'download_url' => 'https://bplugins.com/wp-content/uploads/2026/06/wc-3d-model-viewer-pro.1.0.0.zip',
+			'download_url' => '',
 			'homepage_url' => 'https://bplugins.com/products/woocommerce-3d-model-viewer',
 			// Optional display metadata
 			'icon_url' => BP3D_DIR .'public/images/logo/wc-3d-model-viewer.png',
