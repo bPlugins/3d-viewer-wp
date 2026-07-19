@@ -2,6 +2,8 @@
 
 namespace BP3D\Base;
 
+use BP3D\Helper\Utils;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -17,12 +19,7 @@ class ExtendMimeType
 
     public function getActiveMimeTypes()
     {
-        $settings = get_option('_bp3d_settings_', []);
-        $allowed_mimes = isset($settings['allowed_mime_types']) ? $settings['allowed_mime_types'] : [];
-        if (!is_array($allowed_mimes)) {
-            $allowed_mimes = [];
-        }
-        return $allowed_mimes;
+        return Utils::getAllowedMimeTypes();
     }
 
     private function getFilteredMimeTypes(): array

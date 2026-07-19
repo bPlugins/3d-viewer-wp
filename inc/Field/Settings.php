@@ -52,7 +52,7 @@ class Settings
           'id' => 'allowed_mime_types',
           'type' => 'checkbox',
           'title' => __('Allowed Mime Types', '3d-viewer'),
-          'desc' => __('Select which 3D model file types can be uploaded to the media library. By default, all extended mime types are disabled.', '3d-viewer'),
+          'desc' => __('Select which 3D model file types can be uploaded to the media library. GLB and GLTF are enabled by default; enable any other format you need here.', '3d-viewer'),
           'options' => array(
             'glb' => 'GLB (.glb)',
             'gltf' => 'GLTF (.gltf)',
@@ -69,7 +69,7 @@ class Settings
             'hdr' => 'HDR (.hdr)',
             'usdz' => 'USDZ (.usdz)',
           ),
-          'default' => array(),
+          'default' => array('glb', 'gltf'),
         ),
         // Delete data on uninstall
         array(

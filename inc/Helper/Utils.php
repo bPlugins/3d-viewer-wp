@@ -18,6 +18,15 @@ class Utils
 {
     public static ?string $theme_name = null;
 
+    /**
+     * 3D file formats enabled for upload out of the box.
+     *
+     * Any other format must be enabled from the 3D Viewer settings page.
+     *
+     * @var array<int, string>
+     */
+    public const DEFAULT_ALLOWED_MIME_TYPES = ['glb', 'gltf'];
+
     public function __construct()
     {
         self::$theme_name = wp_get_theme()->name;
@@ -203,6 +212,29 @@ class Utils
         $settings = get_option($key, $default);
 
         return self::return_function($settings);
+    }
+
+    /**
+     * Get the list of 3D file extensions allowed for upload.
+     *
+     * GLB and GLTF are enabled by default. Any other format must be
+     * enabled from the 3D Viewer settings page. Once the setting has
+     * been saved the stored list is respected verbatim, so an explicitly
+     * empty list disables every format.
+     *
+     * @return array<int, string>
+     */
+    public static function getAllowedMimeTypes(): array
+    {
+        $settings = get_option('_bp3d_settings_', []);
+
+        if (!is_array($settings) || !isset($settings['allowed_mime_types'])) {
+            return self::DEFAULT_ALLOWED_MIME_TYPES;
+        }
+
+        $allowed = $settings['allowed_mime_types'];
+
+        return is_array($allowed) ? $allowed : [];
     }
 
     /**

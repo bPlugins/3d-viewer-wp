@@ -100,6 +100,32 @@ class ModelViewer extends \Elementor\Widget_Base
             'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
         ]);
 
+        // Allowed upload formats notice
+        $allowed_mimes = \BP3D\Helper\Utils::getAllowedMimeTypes();
+        $settings_url = admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings');
+
+        if (empty($allowed_mimes)) {
+            $format_notice = sprintf(
+                /* translators: %s: URL to the settings page. */
+                __('<strong>Notice:</strong> All 3D file formats are currently disabled for upload. Please enable the formats you need in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                esc_url($settings_url)
+            );
+            $notice_type = 'danger';
+        } else {
+            $format_notice = sprintf(
+                /* translators: %s: URL to the settings page. */
+                __('<strong>GLB</strong> and <strong>GLTF</strong> files are enabled by default. To upload other 3D formats (OBJ, STL, FBX, etc.), enable them in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                esc_url($settings_url)
+            );
+            $notice_type = 'info';
+        }
+
+        $this->add_control('format_notice', [
+            'type' => \Elementor\Controls_Manager::RAW_HTML,
+            'raw' => $format_notice,
+            'content_classes' => 'elementor-panel-alert elementor-panel-alert-' . $notice_type,
+        ]);
+
         // Viewer type
         $this->add_control('currentViewer', [
             'label' => esc_html__('Viewer', '3d-viewer'),

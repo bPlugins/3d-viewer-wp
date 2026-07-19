@@ -60,11 +60,7 @@ class Viewer
       $model_url = is_array($meta['bp_3d_src']) ? ($meta['bp_3d_src']['url'] ?? '') : $meta['bp_3d_src'];
     }
 
-    $settings = get_option('_bp3d_settings_', []);
-    $allowed_mimes = isset($settings['allowed_mime_types']) ? $settings['allowed_mime_types'] : [];
-    if (!is_array($allowed_mimes)) {
-      $allowed_mimes = [];
-    }
+    $allowed_mimes = \BP3D\Helper\Utils::getAllowedMimeTypes();
 
     $fields = array();
 
@@ -104,7 +100,7 @@ class Viewer
         'style' => 'info',
         'content' => sprintf(
           /* translators: %s: URL to the settings page. */
-          __('Allowed 3D file formats are managed in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+          __('<strong>GLB</strong> and <strong>GLTF</strong> files are enabled by default. To upload other 3D formats (OBJ, STL, FBX, etc.), enable them in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
           admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
         ),
       );

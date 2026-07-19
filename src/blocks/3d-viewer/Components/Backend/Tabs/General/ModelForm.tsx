@@ -61,12 +61,14 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
           </a>.
         </div>
       ) : (
-        <div style={{ fontSize: '11px', color: '#666', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#46b450' }}></span>
-          {__("Allowed 3D formats managed in ", "3d-viewer")}
-          <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
-            {__("Settings", "3d-viewer")}
-          </a>.
+        <div style={{ fontSize: '11px', color: '#666', marginBottom: '15px', display: 'flex', alignItems: 'flex-start', gap: '4px', lineHeight: '1.4' }}>
+          <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#46b450', marginTop: '4px', flexShrink: 0 }}></span>
+          <span>
+            {__("GLB & GLTF are enabled by default. To upload other 3D formats, enable them in ", "3d-viewer")}
+            <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
+              {__("Settings", "3d-viewer")}
+            </a>.
+          </span>
         </div>
       )}
 

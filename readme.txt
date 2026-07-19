@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
 Tested up to: 7.0
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -280,8 +280,11 @@ The bundle also includes the following sub-dependencies:
 
 == Frequently Asked Questions ==
 
-= Which 3D files currently this plugin support? 
-Currently this plugin support .GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, .3DS files. 
+= Which 3D files currently this plugin support?
+Currently this plugin support .GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, .3DS files.
+
+= Which file formats can I upload by default?
+For security, only .GLB and .GLTF uploads are enabled out of the box. To upload any other supported format (OBJ, STL, FBX, 3DS, DAE, etc.), enable it from **3D Viewer → Settings → Allowed Mime Types**. The shortcode generator, Gutenberg block, and Elementor widget will show a notice reminding you to enable a format when it is disabled.
 
 = Can I use this plugin with Elementor page builder ?  
 Yes, we have build in Elementor widget and shortcode both. 
@@ -305,6 +308,10 @@ Yes, we have build in Elementor widget and shortcode both.
 
 
 == Changelog ==
+
+= 1.9.1 - 19 July, 2026  =
+New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.
+New: Added reminder notices in the shortcode generator, Gutenberg block, and Elementor widget prompting to enable other 3D formats from settings.
 
 = 1.9.0 - 18 July, 2026  =
 New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
