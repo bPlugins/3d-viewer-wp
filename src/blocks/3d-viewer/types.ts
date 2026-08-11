@@ -85,6 +85,7 @@ export interface BlockAttributes {
 	mouseControl: boolean;
 	fullscreen: boolean;
 	cameraBtn: boolean;
+	downloadBtn: boolean;
 	loadingPercentage: boolean;
 	progressBar: boolean;
 

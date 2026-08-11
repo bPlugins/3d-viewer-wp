@@ -17,6 +17,7 @@ const entry = {
     public: "./src/public/index.tsx",
     frontend: "./src/public/frontend.tsx", // woocommerce
     dashboard: "./src/admin/dashboard/admin.tsx",
+    onboarding: "./src/admin/onboarding/index.tsx",
     admin: "./src/admin/index.ts",
     "admin-preview": "./src/admin/preview/index.tsx",
 };

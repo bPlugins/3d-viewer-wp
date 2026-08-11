@@ -12,6 +12,7 @@ export const helpText: Record<string, string> = {
     mouseControl: __('Allows users to rotate, pan, and interact with the model using a mouse or touch input.', '3d-viewer'),
     fullscreen: __('Shows a fullscreen button so users can view the model in fullscreen mode.', '3d-viewer'),
     cameraBtn: __('Displays a camera button that lets users capture the current view of the model.', '3d-viewer'),
+    downloadBtn: __('Displays a download button that allows users to download the 3D model file.', '3d-viewer'),
     loadingPercentage: __('Shows the loading percentage while the 3D model is being loaded.', '3d-viewer'),
     progressBar: __('Displays a progress bar during model loading to indicate loading status.', '3d-viewer'),
     lazyLoad: __('Delays loading the 3D model until it becomes visible on the screen, improving performance.', '3d-viewer'),

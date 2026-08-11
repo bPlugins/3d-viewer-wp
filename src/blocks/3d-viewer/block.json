@@ -83,6 +83,10 @@
       "type": "boolean",
       "default": false
     },
+    "downloadBtn": {
+      "type": "boolean",
+      "default": false
+    },
     "loadingPercentage": {
       "type": "boolean",
       "default": false

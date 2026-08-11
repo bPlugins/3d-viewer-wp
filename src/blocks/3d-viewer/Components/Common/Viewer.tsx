@@ -7,8 +7,9 @@ import Basic3DViewer from "./Basic3DViewer";
 
 import ShopLoopItemComponents from "./ShopLoopItemComponents";
 
-import { Camera, Close, Fullscreen, Minus, Plus } from "./icons";
+import { Camera, Close, Download, Fullscreen, Minus, Plus } from "./icons";
 import downloadImageFromDataUrl from "../../../../utils/downloadImageFromDataUrl";
+import download3DFile from "../../../../utils/download3DFile";
 import openFullscreen from "../../../../utils/openFullscreen";
 import closeFullscreen from "../../../../utils/closeFullscreen";
 
@@ -27,7 +28,7 @@ interface ViewerInterface {
 
 const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: ViewerInterface) => {
   const [isValid, setIsValid] = useState(false);
-  const { uniqueId, model, fullscreen, cameraBtn, zoomInOutBtn, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, arLink, position } = attributes;
+  const { uniqueId, model, fullscreen, cameraBtn, downloadBtn, zoomInOutBtn, align, woo, currentViewer = "modelViewer", O3DVSettings = {}, placement, arLink, position } = attributes;
   const { isFullscreen } = O3DVSettings;
 
   const modelSrc = model?.modelUrl;
@@ -137,6 +138,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
               <ARQRCode {...{ viewerRef, arLink, placement }} />
             )}
           </>}
+          {downloadBtn && modelSrc && <Download className="control-btn downloadBtn" onClick={() => download3DFile(modelSrc)} />}
         </div>
       </div>
 

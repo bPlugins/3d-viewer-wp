@@ -242,6 +242,15 @@ class ModelViewer extends \Elementor\Widget_Base
             'condition' => ['currentViewer' => 'modelViewer'],
         ]);
 
+        $this->add_control('downloadBtn', [
+            'label' => esc_html__('3D File Download Button', '3d-viewer'),
+            'type' => \Elementor\Controls_Manager::SWITCHER,
+            'label_on' => esc_html__('Show', '3d-viewer'),
+            'label_off' => esc_html__('Hide', '3d-viewer'),
+            'return_value' => 'yes',
+            'default' => 'no',
+        ]);
+
         $this->add_control('loadingPercentage', [
             'label' => esc_html__('Show Loading Percentage', '3d-viewer'),
             'type' => \Elementor\Controls_Manager::SWITCHER,
@@ -447,6 +456,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'zoom' => ($settings['zoom'] ?? '') === 'yes',
             'zoomInOutBtn' => ($settings['zoomInOutBtn'] ?? '') === 'yes',
             'cameraBtn' => ($settings['cameraBtn'] ?? '') === 'yes',
+            'downloadBtn' => ($settings['downloadBtn'] ?? '') === 'yes',
             'preload' => 'auto',
             'mouseControl' => ($settings['mouseControls'] ?? '') === 'yes',
             'fullscreen' => ($settings['fullscreen'] ?? '') === 'yes',

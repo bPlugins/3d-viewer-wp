@@ -13,7 +13,7 @@ interface OptionsProps {
 }
 
 const Options = ({ attributes, setAttributes, setOpen }: OptionsProps) => {
-  const { fullscreen, cameraBtn, lazyLoad, loadingPercentage, model, mouseControl, progressBar, zoomInOutBtn, exposure = 1, shadow = true } = attributes;
+  const { fullscreen, cameraBtn, downloadBtn, lazyLoad, loadingPercentage, model, mouseControl, progressBar, zoomInOutBtn, exposure = 1, shadow = true } = attributes;
 
   return (
     <>
@@ -33,6 +33,7 @@ const Options = ({ attributes, setAttributes, setOpen }: OptionsProps) => {
             <BInfoControl Component={ToggleControl} className="mt5" label={__("Show Progressbar", "3d-viewer")} checked={progressBar} onChange={() => setAttributes({ progressBar: !progressBar })} info={helpText.progressBar} />
 
             <BInfoControl Component={ToggleControl} className="mt10" label={__("Camera/Capture Button", "3d-viewer")} checked={cameraBtn} onChange={() => setAttributes({ cameraBtn: !cameraBtn })} info={helpText.cameraBtn} />
+            <BInfoControl Component={ToggleControl} className="mt10" label={__("3D File Download Button", "3d-viewer")} checked={downloadBtn} onChange={() => setAttributes({ downloadBtn: !downloadBtn })} info={helpText.downloadBtn} />
             <BInfoControl Component={ToggleControl} className="mt10" label={__("Zoom In/Out Button", "3d-viewer")} checked={zoomInOutBtn} onChange={() => setAttributes({ zoomInOutBtn: !zoomInOutBtn })} info={helpText.zoomInOutBtn} />
 
             <BInfoControl Component={ToggleControl} className="mt5" label={__("Enable Shadow", "3d-viewer")} checked={shadow} onChange={() => setAttributes({ shadow: !shadow })} info={helpText.shadow} />

@@ -153,6 +153,7 @@ class Shortcode
             'fullscreen' => $meta('bp_3d_fullscreen', '1', true),
             'zoomInOutBtn' => $meta('bp_3d_zoom_in_out_btn', '0', true),
             'cameraBtn' => $meta('bp_3d_camera_btn', '0', true),
+            'downloadBtn' => $meta('bp_3d_download_btn', '0', true),
             'loadingPercentage' => $meta('bp_model_progress_percent', '0', true),
             'progressBar' => $meta('bp_3d_progressbar', '0', true),
             'exposure' => $meta('3d_exposure', '1'),

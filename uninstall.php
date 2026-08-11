@@ -13,6 +13,14 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
+if (!function_exists('is_plugin_active')) {
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+}
+
+if (is_plugin_active('3d-viewer-premium/3d-viewer-premium.php')) {
+    return;
+}
+
 // Bail early if the user hasn't opted in to data removal.
 $bp3d_settings = get_option('_bp3d_settings_', []);
 $bp3d_should_delete = isset($bp3d_settings['delete_data_on_uninstall']) && $bp3d_settings['delete_data_on_uninstall'] === '1';
@@ -37,6 +45,10 @@ foreach ($bp3d_posts as $post_id) {
 $bp3d_option_keys = [
     '_bp3d_settings_',            // Main settings (CSF)
     'bp3d_setup_wizard_completed', // Setup wizard flag
+    'bp3d_onboarding_completed',  // Guided setup run to the end
+    'bp3d_onboarding_exited',     // Guided setup left before the last step
+    'bp3d_onboarding_progress',   // Guided setup progress percentage
+    'bp3d_onboarding_redirect',   // Guided setup one-time redirect flag
     'bp3d_imported',              // Import migration flag
     'model_viewer_import_ver',    // Import version tracker
 ];
@@ -44,6 +56,9 @@ $bp3d_option_keys = [
 foreach ($bp3d_option_keys as $bp3d_key) {
     delete_option($bp3d_key);
 }
+
+// ── 2b. Per-user guided setup notice dismissals ──────────────────────
+delete_metadata('user', 0, 'bp3d_dismissed_onboarding_notice', '', true);
 
 // ── 3. Clean up any CSF framework transients ─────────────────────────
 delete_transient('csf_remote_stylesheets');

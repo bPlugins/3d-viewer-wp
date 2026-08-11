@@ -2,11 +2,19 @@ import React from 'react';
 
 const slug = '3d-viewer';
 
+/** Guided-setup state, mirroring BP3D\Base\Onboarding::state(). */
+export interface OnboardingState {
+    completed: boolean;
+    percent: number;
+}
+
 interface DashboardInfoInput {
     version: string;
     adminUrl?: string;
     isPremium?: boolean;
     licenseActiveNonce?: string;
+    setupUrl?: string;
+    onboarding?: OnboardingState;
 }
 
 export interface DashboardInfo {
@@ -41,10 +49,12 @@ export interface DashboardInfo {
         label: string;
         url: string;
     };
+    setupUrl: string;
+    onboarding: OnboardingState;
 }
 
 export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
-    const { version, adminUrl = '', isPremium = false, licenseActiveNonce } = info;
+    const { version, adminUrl = '', isPremium = false, licenseActiveNonce, setupUrl = '', onboarding } = info;
 
     return {
         name: `3D Viewer`,
@@ -75,16 +85,20 @@ export const dashboardInfo = (info: DashboardInfoInput): DashboardInfo => {
         },
         licenseActiveNonce,
         startButton: {
-            label: 'Start Now',
+            label: 'Create 3D Viewer',
             url: `${adminUrl}/post-new.php?post_type=bp3d-model-viewer`
-        }
+        },
+        setupUrl,
+        // Treated as done when the page didn't tell us — better to drop the
+        // nav entry than to nag someone who has already been through it.
+        onboarding: onboarding || { completed: true, percent: 100 }
     }
 };
 
-// ── Welcome page icons ─────────────────────────────────────────────────
-const gutenbergTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 512 512'><path d='M448 96V416H192V320l-64 64L64 320v96H32c-17.7 0-32-14.3-32-32V128c0-17.7 14.3-32 32-32H448zM192 96V224h96V96H192z' /></svg>;
-const shortcodeTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 640 512'><path d='M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z' /></svg>;
-const elementorTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 448 512'><path d='M427 0H21C9.4 0 0 9.4 0 21v470c0 11.6 9.4 21 21 21h406c11.6 0 21-9.4 21-21V21c0-11.6-9.4-21-21-21zM147 355h-38V157h38v198zm113 0h-38V157h38v198zm113 0h-38V157h38v198z' /></svg>;
+// ── Editor icons — shared with the guided-setup wizard ─────────────────
+export const gutenbergTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 512 512'><path d='M448 96V416H192V320l-64 64L64 320v96H32c-17.7 0-32-14.3-32-32V128c0-17.7 14.3-32 32-32H448zM192 96V224h96V96H192z' /></svg>;
+export const shortcodeTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 640 512'><path d='M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z' /></svg>;
+export const elementorTabIcon = <svg xmlns='http://www.w3.org/2000/svg' width="18" viewBox='0 0 448 512'><path d='M427 0H21C9.4 0 0 9.4 0 21v470c0 11.6 9.4 21 21 21h406c11.6 0 21-9.4 21-21V21c0-11.6-9.4-21-21-21zM147 355h-38V157h38v198zm113 0h-38V157h38v198zm113 0h-38V157h38v198z' /></svg>;
 
 /**
  * Welcome-only data — spread onto <Welcome /> alongside dashboardInfo props.
@@ -267,6 +281,7 @@ interface PricingInfo {
     pluginId: number;
     planIds: number[];
     licenses: (number | null)[];
+    cycles: string[];
     button: { label: string };
     featured: { selected: number };
 }
@@ -276,6 +291,7 @@ export const pricingInfo: PricingInfo = {
     pluginId: 8795,
     planIds: [14970, 52950],
     licenses: [1, 3, null],
+    cycles: ['annual', 'lifetime'],
     button: {
         label: 'Buy Now ➜'
     },

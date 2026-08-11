@@ -5,7 +5,7 @@
  * Plugin Name: 3D Viewer – Display Interactive 3D Models
  * Plugin URI:  https://bplugins.com/
  * Description: Easily display interactive 3D models on the web. Supported File type .glb, .gltf,obj 3ds stl ply off 3dm fbx dae wrl 3mf amf ifc brep step iges fcstd bim
- * Version: 1.9.1
+ * Version: 1.9.2
  * Author: bPlugins
  * Author URI: https://bplugins.com
  * Requires PHP: 7.4
@@ -39,6 +39,19 @@ if (!function_exists('bp3d_deactivate_premium_version')) {
 }
 register_activation_hook(__FILE__, 'bp3d_deactivate_premium_version');
 
+/**
+ * Flag a fresh activation so admin_init can send the user to the guided setup
+ * once. Gated on an option rather than on the absence of settings, so an
+ * update never re-triggers it.
+ */
+if (!function_exists('bp3d_flag_onboarding_redirect')) {
+    function bp3d_flag_onboarding_redirect()
+    {
+        add_option('bp3d_onboarding_redirect', 1);
+    }
+}
+register_activation_hook(__FILE__, 'bp3d_flag_onboarding_redirect');
+
 if (function_exists('bp3d_fs')) {
     bp3d_fs()->set_basename(true, __FILE__);
 } else {
@@ -53,7 +66,7 @@ if (function_exists('bp3d_fs')) {
     if (defined('WP_DEBUG') && WP_DEBUG === true) {
         define('BP3D_VERSION', time());
     } else {
-        define('BP3D_VERSION', '1.9.1');
+        define('BP3D_VERSION', '1.9.2');
     }
 
     defined('BP3D_DIR') or define('BP3D_DIR', plugin_dir_url(__FILE__));
@@ -81,6 +94,10 @@ if (function_exists('bp3d_fs')) {
                 'has_affiliation' => 'selected',
                 'menu' => array(
                     'slug' => 'edit.php?post_type=bp3d-model-viewer',
+                    // Deliberately the dashboard, not the guided setup: the
+                    // setup screen is not registered for Pro, and first-path
+                    // has no way to branch. Free users still reach the wizard —
+                    // Onboarding::maybe_redirect() picks them up from here.
                     'first-path' => 'edit.php?post_type=bp3d-model-viewer&page=3d-viewer',
                     'support' => false,
                     'affiliation' => false,

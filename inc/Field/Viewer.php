@@ -234,6 +234,17 @@ class Viewer
         ),
 
         array(
+          'id' => 'bp_3d_download_btn',
+          'type' => 'switcher',
+          'title' => __('3D File Download Button', '3d-viewer'),
+          'subtitle' => __('Show/Hide 3D File Download Button', '3d-viewer'),
+          'desc' => __("Show/Hide 3D File Download Button in the 3D model viewer.", "3d-viewer"),
+          'text_on' => __('Yes', '3d-viewer'),
+          'text_off' => __('NO', '3d-viewer'),
+          'default' => false,
+        ),
+
+        array(
           'id' => 'bp_3d_loading',
           'type' => 'radio',
           'title' => __('Loading Type', '3d-viewer'),

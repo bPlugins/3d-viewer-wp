@@ -1,201 +1,180 @@
-=== 3D Viewer – Display Interactive 3D Models ===
+=== 3D Viewer – Turn Product Pages into Interactive 3D Experiences ===
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
-Tags: 3D model viewer, threejs, widget, model viewer, 360° product view
+Tags: 3d model viewer, 360 product view, augmented reality, woocommerce, glb
 Tested up to: 7.0
-Stable tag: 1.9.1
+Stable tag: 1.9.2
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-3D Viewer lets you embed interactive 3D models and 360 product views on WordPress sites with support for GLB, GLTF, OBJ, STL, FBX, DAE, and BIM.
+Embed interactive 3D models, 360° product views, and AR experiences in WordPress. Supports GLB, GLTF, OBJ, STL, FBX – WooCommerce ready.
 
 == Description ==
 
-**Instantly Display Interactive 3D Models and 360° Product Image on Your Website – No Code Required**
+**Turn flat product photos into interactive 3D experiences your visitors can rotate, zoom, and even place in their own room with Augmented Reality – no code required.**
 
-
-[**3D Viewer**](https://bplugins.com/products/3d-viewer/) | [**Documentation**](https://bplugins.com/docs/3d-viewer/) | [**Pricing**](https://bplugins.com/products/3d-viewer/pricing) | [**Support**](https://bplugins.com/support/) | [**Demo**](https://bplugins.com/products/3d-viewer/#demos)
+[**3D Viewer**](https://bplugins.com/products/3d-viewer/) | [**Documentation**](https://bplugins.com/docs/3d-viewer/) | [**Pricing**](https://bplugins.com/products/3d-viewer/pricing) | [**Support**](https://bplugins.com/support/) | [**Live Demo**](https://bplugins.com/products/3d-viewer/#demos)
 
 https://youtube.com/watch?v=_9vKv5pEClM
 
-[**3D Viewer**](https://bplugins.com/products/3d-viewer/) lets you embed interactive 3D models into posts, pages, widgets, and WooCommerce product pages. Utilizing the Three.js library, it supports various 3D file formats, including GLB, GLTF, OBJ, and STL.
+### Why 3D Viewer?
 
-The plugin offers features such as touch controls, zoom, pan, auto-rotation, and lazy loading. Users can customize viewer settings, including lighting, background, and camera angles, to suit their needs. Integration with Elementor and Gutenberg editors allows for seamless placement of 3D models using blocks or shortcodes.
+Static images make visitors guess. **3D Viewer** lets them explore. Embed interactive 3D models in posts, pages, widgets, and WooCommerce product pages – visitors can rotate, zoom, pan, and inspect every angle with a mouse or touchscreen, exactly like holding the product in their hands.
 
-In WooCommerce, 3D Viewer facilitates the display of 3D product models, enhancing the user experience by allowing customers to interact with products in three dimensions.
+Built on the proven Three.js engine, 3D Viewer supports all major 3D formats (GLB, GLTF, OBJ, STL, FBX, DAE, PLY, 3DS) and renders them responsively on every device. Lazy loading keeps your pages fast, and native Gutenberg and Elementor integration means you place a model the same way you place an image.
 
-Designed with performance in mind, 3D Viewer ensures responsive and mobile-friendly rendering of 3D content across devices.
-
+Selling online? Show your WooCommerce products in 3D and let customers interact before they buy – interactive product views build the confidence that turns browsers into buyers.
 
 ### Free Features – Everything You Need to Get Started
 
-- **Embed 3D Models in Posts, Pages, and Widgets:** Easily place your 3D model anywhere using shortcodes or Gutenberg blocks.
-
-- **Supports Popular 3D Formats:** Upload and display files in .GLB, .GLTF, .OBJ, .STL, and more.
-
-- **WooCommerce Integration:** Show 3D product views right on your WooCommerce product pages to boost engagement and buyer confidence.
-
-- **Touch, Pan, Zoom & Rotate:** Visitors can explore your model with mouse or touchscreen gestures.
-
-- **Elementor Compatible:** Works seamlessly with Elementor to place 3D models with drag-and-drop ease.
-
-- **Lazy Loading for Performance:** Optimize page load speed by loading models only when visible - great for SEO!
-
+- **Embed Anywhere:** Place 3D models in posts, pages, and widgets with a shortcode or Gutenberg block.
+- **All Popular 3D Formats:** Upload and display .GLB, .GLTF, .OBJ, .STL, and more.
+- **WooCommerce Integration:** Show interactive 3D product views right on your product pages.
+- **Touch, Pan, Zoom & Rotate:** Full mouse and touchscreen gesture support out of the box.
+- **Augmented Reality (AR):** Let mobile visitors view models in their real environment via WebXR, Scene Viewer, and Quick Look – including QR code access from desktop.
+- **Elementor Compatible:** Drop 3D models into Elementor layouts with ease.
+- **Lazy Loading for Performance:** Models load only when visible, keeping pages fast and SEO-friendly.
+- **Live Editor Preview:** See your 3D model directly in the editor while you configure it.
+- **Optional Download Button:** Let visitors download the 3D file straight from the viewer – off by default, one toggle to enable.
+- **Guided Setup:** A short walkthrough on first activation that gets your first 3D model on the page.
 
 ### Pro Version – Unlock More Control & Customization
+
 Want even more flexibility? [**3D Viewer Pro**](https://bplugins.com/products/3d-viewer/pricing) adds powerful features that let you fine-tune the viewer, improve performance, and streamline your workflow.
 
-**Pro Features Include:**
+**Pro features include:**
 
-- Drag-and-drop **Elementor Widget** with full viewer settings.
+- Drag-and-drop **Elementor widget** with full viewer settings.
+- **External model URLs** (Amazon S3, Google Drive, CDNs, and more).
+- Fine-grained **lighting, shadow intensity, and exposure** controls.
+- **Poster image** shown while the model loads, plus a loading **progress bar**.
+- **Auto-rotate, fullscreen, and autoplay** toggles.
+- **Custom camera angle** for the perfect first impression.
+- **WooCommerce 3D gallery** with multiple models per product.
+- **Hotspots and annotations** to highlight product details.
 
-- Support for **external model URLs** (Amazon S3, Google Drive, CDNs, etc.).
-
-- Adjust **lighting, shadow intensity**, and **exposure**.
-
-- Add a **poster image** to show while the model is loading.
-
-- Display a **progress bar** until the 3D file is fully loaded.
-
-- Enable or disable **auto-rotate, fullscreen**, and **autoplay**.
-
-- Set a **custom camera angle** for the perfect first impression.
-
-- Create a **WooCommerce gallery** with multiple 3D files per product.
-
-
-### How to Use 3D Viewer– Quick Start Guide
-
-Getting started is easy!
+### How to Use 3D Viewer – Quick Start
 
 https://youtube.com/watch?v=ofC8XbdAuVE
 
-#### Step-by-Step Guide
+**Add your first model in under a minute:**
 
-- Go to **3D Viewer > Add New** in your WordPress dashboard.
+1. Go to **3D Viewer → Add New** in your WordPress dashboard.
+2. Upload your 3D model or paste a URL.
+3. Customize the viewer (lighting, rotation, background, and more).
+4. Click **Save** to generate a shortcode.
+5. Paste the shortcode into any post, page, or widget.
 
-- Upload your 3D model or paste a URL.
+**Embed in a WooCommerce product:**
 
-- Customize the viewer settings (lighting, rotation, background, etc.).
+1. Edit or create a WooCommerce product.
+2. Scroll to the **3D Viewer Settings** metabox.
+3. Upload the model file or paste an external link.
+4. Publish – the 3D model appears on the product page.
 
-- Click **Save** to generate a shortcode.
-
-- Copy and paste the shortcode into any post, page, or widget block.
-
-
-**To Embed in a WooCommerce Product:**
-
-- Edit or create a WooCommerce product.
-
-- Scroll to the **“3D Viewer Settings”** metabox.
-
-- Upload the model file or paste an external link.
-
-- Publish the product – the 3D model will appear on the product page.
-
-
-**Gutenberg Block Support**
-
-- Prefer using the block editor? We've got you covered!
-
-- In your Post/Page Editor, go to the Common Blocks section
-
-- Select the **3D Viewer** block
-
-- Choose your desired player
-
-- Hit **Publish**
-
-
-That’s it – your 3D model is live!
+**Prefer the block editor?** Add the **3D Viewer** block to any post or page, choose your model, and hit Publish. That's it – your 3D model is live!
 
 [**Live Demo**](https://bplugins.com/products/3d-viewer/#demos) | [**Try The Pro**](https://bplugins.com/products/3d-viewer/pricing)
 
-
 ### Use Cases
 
-- **WooCommerce Products:** Let customers rotate and inspect 3D product models before buying.
-
-- **Education & Training:** Embed anatomical models, mechanical parts, or scientific visuals for better understanding.
-
-- **Architecture & Engineering:** Showcase 3D building plans or prototypes in client presentations or portfolios.
-
-- **Gaming & Assets:** Display characters, assets, or environmental models for interactive demos or downloads.
-
-- **Art & Design Portfolios:** Highlight your creative work—from sculpture to product design—in an engaging format.
-
-- **Research & Prototyping:** Share experimental models and simulations for collaborative feedback.
-
-- **App & UI Previews:** Present app interfaces or hardware in 3D for investor pitches or beta user onboarding.
-
-- **Packaging & Product Mockups:** Let stakeholders explore physical packaging in real-time before production.
-
+- **WooCommerce Stores:** Let customers rotate and inspect products in 3D before buying.
+- **Education & Training:** Embed anatomical models, mechanical parts, or scientific visuals.
+- **Architecture & Engineering:** Present 3D building plans and prototypes to clients.
+- **Gaming & Digital Assets:** Showcase characters, assets, and environments interactively.
+- **Art & Design Portfolios:** Highlight sculpture, product design, and creative work.
+- **Research & Prototyping:** Share experimental models for collaborative feedback.
+- **Packaging & Mockups:** Let stakeholders explore packaging in real time before production.
 
 ### Supported 3D File Formats
 
-- **- Models:** .GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, .3DS
-
+.GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, .3DS
 
 ### Optimized for All Devices
 
 - Fully responsive and mobile-friendly
-
 - Touch gesture support (rotate, zoom, pan)
-
 - Retina-ready rendering
+- Compatible with popular WordPress themes
 
-- Works with most popular WordPress themes
+### What Users Say
 
-[**Live Demo**](https://bplugins.com/products/3d-viewer/#demos) | [**Try The Pro**](https://bplugins.com/products/3d-viewer/pricing)
+❛❛**_It's the most valid plugin I have found for viewing 3D models. The support is also very good and an issue I reported was immediately corrected._**❜❜
+**_– diegoparoni_**
 
+❛❛**_Fantastic plugin. The main feature that I like is the 3D model is perfectly loaded and you can adjust the light. I am using the PRO version._**❜❜
+**_– blunoa_**
 
-### User Feedback
+Like the plugin? Missing a feature? **[Send your feedback](https://bplugins.com/support)** – we ship improvements every month.
 
-
-❛❛**_It’s the most valid plugin I have found for viewing 3D models. The support is also very good and an issue I reported was immediately corrected._**❜❜ 
-
-**_-diegoparoni_**
-
-<br />
-<br />
-
-❛❛-_Fantastic plugin the main feature that i like is the 3D model is perfectly loaded and you can adjust the light, I am using the PRO version._**❜❜ 
-
-**_-blunoa_**
-
-Like that plugin? Hate it? Want a new feature? **[Send your feedback](https://bplugins.com/support)**
-
-
-### Check out our other WordPress Plugins-
+### Check Out Our Other WordPress Plugins
 
 [**Html5 Video Player**](https://bplugins.com/products/html5-video-player/) – Display videos as single and playlist in multiple skins.
-
-[**Html5 Audio Player**](https://bplugins.com/products/html5-audio-player/) – Listen audios with awesome visuals.
-
-[**PDF Poster**](https://bplugins.com/products/pdf-poster/) – Display/Embed PDF files with different styles.
-
+[**Html5 Audio Player**](https://bplugins.com/products/html5-audio-player/) – Listen to audio with awesome visuals.
+[**PDF Poster**](https://bplugins.com/products/pdf-poster/) – Display and embed PDF files with different styles.
 [**StreamCast**](https://bplugins.com/products/streamcast-radio-player/) – Customizable radio player with different skins.
-
 [**Advanced Post Block**](https://bplugins.com/products/advanced-post-block/) – Show posts and custom posts in different layouts.
-
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
+**From your WordPress dashboard (recommended):**
 
-e.g.
+1. Go to **Plugins → Add New**.
+2. Search for **"3D Viewer"**.
+3. Click **Install Now**, then **Activate**.
+4. Go to **3D Viewer → Add New** to upload your first model.
 
-1. Upload `plugin-directory` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use shortcode in page, post or in widgets.
-4. If you want player in your theme PHP, Place `<?php echo do_shortcode('YOUR_SHORTCODE'); ?>` in your templates
+**Manual installation:**
 
+1. Upload the plugin folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Use the shortcode in any page, post, or widget.
+4. To embed in theme PHP, place `<?php echo do_shortcode('YOUR_SHORTCODE'); ?>` in your template.
+
+== Frequently Asked Questions ==
+
+= Which 3D file formats does this plugin support? =
+3D Viewer supports .GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, and .3DS files.
+
+= Does 3D Viewer work with WooCommerce? =
+Yes. You can attach a 3D model to any product and it will display on the product page. The Pro version adds a 3D gallery with multiple models per product and per-variation models.
+
+= Does it support Augmented Reality (AR)? =
+Yes. Models can be viewed in AR on supported mobile devices via WebXR, Scene Viewer (Android), and Quick Look (iOS). Desktop visitors can scan a QR code to open the model in AR on their phone.
+
+= Can I use this plugin with Elementor? =
+Yes, both an Elementor widget and shortcode support are built in.
+
+= Can visitors download my 3D model file? =
+Only if you let them. The download button is off by default – enable it per model from the Gutenberg block, the Elementor widget, or the shortcode settings.
+
+= Will 3D models slow down my website? =
+No. Models are lazy-loaded – they only load when visible on screen – and rendering is optimized for mobile and desktop.
+
+= Can I load models from external URLs like Amazon S3 or Google Drive? =
+Yes, loading models from external URLs (S3, Google Drive, CDNs, and more) is available in the Pro version.
+
+= How can I reach you for modifications, customization, or help? =
+[Please follow this link to reach us directly](https://bplugins.com/support).
+
+== Screenshots ==
+
+1. Add New 3D
+2. 3D Configuration
+3. Single and Multiple Preview
+4. 3D Product at top of the image
+5. 3D Product at bottom of the image
+6. Product image replaced with 3D Pro
+7. Show 3D based on product variable
+8. Settings
+9. Gutenberg Block
+10. Gutenberg Block Settings
 
 == Source Code ==
 
-You can find the source code, report bugs, and contribute to the development of this plugin on our GitHub repository: 
+You can find the source code, report bugs, and contribute to the development of this plugin on our GitHub repository:
 [**3D Viewer on GitHub**](https://github.com/bPlugins/3d-viewer-wp)
 
 == External Services ==
@@ -277,41 +256,17 @@ The bundle also includes the following sub-dependencies:
 * Purpose: Shared library that discovers, gates, licenses, and administers the plugin's add-on extensions from the "Extensions" admin page.
 * External Services: The library may connect to bPlugins, WordPress.org, and Freemius services to list available add-ons, resolve download URLs, and manage licenses. Connections are made only from the plugin's admin dashboard.
 
-
-== Frequently Asked Questions ==
-
-= Which 3D files currently this plugin support?
-Currently this plugin support .GLB, .GLTF, .OBJ, .STL, .FBX, .DAE, .PLY, .3DS files.
-
-= Which file formats can I upload by default?
-For security, only .GLB and .GLTF uploads are enabled out of the box. To upload any other supported format (OBJ, STL, FBX, 3DS, DAE, etc.), enable it from **3D Viewer → Settings → Allowed Mime Types**. The shortcode generator, Gutenberg block, and Elementor widget will show a notice reminding you to enable a format when it is disabled.
-
-= Can I use this plugin with Elementor page builder ?  
-Yes, we have build in Elementor widget and shortcode both. 
-
-= How can I reach you, if I need any modification, customization or helps?
-[Please follow this link to reach us directly ](https://bplugins.com/support)
-
-
-== Screenshots ==
-
-1. Add New 3D
-2. 3D Configuration
-3. Single and Multiple Preview
-4. 3D Product at top of the image
-5. 3D Product at bottom of the image
-6. Product image replaced with 3D Pro
-7. Show 3D based on product variable
-8. Settings
-9. Gutenberg Block
-10. Gutenberg Block Settings
-
-
 == Changelog ==
+
+= 1.9.2 - 12 August, 2026  =
+New: Added a 3D file download button that lets visitors download the model file from the viewer. Off by default, and available in the Gutenberg block, the Elementor widget, and the shortcode generator.
+New: Added a guided setup walkthrough for new installs, covering the ways to add a model and ending on your first 3D model. Existing sites can start it from Help & Demos → Guided Setup.
+Fixed: Uninstalling the free plugin no longer removes 3D Viewer data while 3D Viewer Pro is active.
 
 = 1.9.1 - 19 July, 2026  =
 New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.
 New: Added reminder notices in the shortcode generator, Gutenberg block, and Elementor widget prompting to enable other 3D formats from settings.
+
 
 = 1.9.0 - 18 July, 2026  =
 New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.

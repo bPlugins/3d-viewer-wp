@@ -40,6 +40,8 @@ class Init
             Base\Import::class,
             Shortcode\Shortcode::class,
             Base\ExtendMimeType::class,
+            Base\Onboarding::class,
+            Base\OnboardingNotice::class,
             Field\Viewer::class,
             Field\Settings::class,
             Woocommerce\SingleProduct::class,
