@@ -136,6 +136,8 @@ class BP3DProductModel extends \Elementor\Widget_Base
      */
     protected function render(): void
     {
+        Addons::ensureElementorDependencies();
+
         echo do_shortcode('[3d_viewer_product]');
     }
 }

@@ -39,6 +39,11 @@ final class Controls
     public function registerControls($controls_manager)
     {
         require_once __DIR__ . '/b-select-file.php';
-        $controls_manager->register(new SelectFile());
+
+        if (!class_exists(__NAMESPACE__ . '\BP3DSelectFile')) {
+            return;
+        }
+
+        $controls_manager->register(new BP3DSelectFile());
     }
 }

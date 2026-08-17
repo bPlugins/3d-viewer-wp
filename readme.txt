@@ -262,6 +262,10 @@ The bundle also includes the following sub-dependencies:
 New: Added a 3D file download button that lets visitors download the model file from the viewer. Off by default, and available in the Gutenberg block, the Elementor widget, and the shortcode generator.
 New: Added a guided setup walkthrough for new installs, covering the ways to add a model and ending on your first 3D model. Existing sites can start it from Help & Demos → Guided Setup.
 Fixed: Uninstalling the free plugin no longer removes 3D Viewer data while 3D Viewer Pro is active.
+Fixed: The Elementor widget no longer stays blank on sites that reorder, defer, or delay scripts, and the editor preview now always loads the viewer libraries.
+Update: The Elementor widget keeps its configured height while no model is selected, instead of collapsing to the widget icon.
+Update: Rebuilt the Elementor file picker with a file preview, a Replace button and a Remove button. Selected files are unchanged.
+Fixed: The Elementor file picker no longer clashes with other bPlugins plugins (Panorama Lite, HTML5 Video Player) that shipped a control of the same name, which could leave one plugin's picker unresponsive.
 
 = 1.9.1 - 19 July, 2026  =
 New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.

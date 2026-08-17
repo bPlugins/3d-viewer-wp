@@ -57,6 +57,10 @@ interface OnboardingStep {
         url: string;
         isYoutube: boolean;
         title: string;
+        // The still shown before playback. Named `poster` because that is the
+        // key bpl-tools' resolveVideo() reads; anything else is ignored and the
+        // step silently falls back to `media.thumbnail`.
+        poster?: string;
     }
 }
 
@@ -126,7 +130,8 @@ export const onboardingSteps = ({ adminUrl = '' }: StepsArgs = {}): OnboardingSt
             video: {
                 url: 'https://youtu.be/Tno8LiebxaI',
                 isYoutube: true,
-                title: __('3D Viewer — short tutorial', '3d-viewer')
+                title: __('3D Viewer — short tutorial', '3d-viewer'),
+                poster: `${window.bp3dDashboard?.dir || ''}admin/images/short-tutorial-thumbnail.png`,
             },
             subtitle: __('Let’s get your first 3D model on the page. It takes about a minute, and everything you set here can be changed later.', '3d-viewer'),
             bullets: [
