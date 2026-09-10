@@ -653,6 +653,33 @@
   justify-content: center;
 }
 
+/* Let the viewer fill the modal stage, the same way it does in the sidebar
+   preview box — without this the block keeps its intrinsic width and sits in
+   the left half of the body. */
+.bp3d-modal-body .modelViewerBlock,
+.bp3d-modal-body .b3dviewer-wrapper {
+  width: 100%;
+}
+
+/* Loading indicator. It is slotted into <model-viewer slot="progress-bar">, so
+   its containing block is model-viewer's own slot wrapper (and, before the
+   custom element upgrades, the wrapper itself). Centre it against whichever of
+   those it lands in rather than relying on a percentage height that collapses
+   to the icon, which pins it to the top-left corner. */
+.bp3d-modal-body .bp3d_loader,
+.bp3d-model-preview__stage .bp3d_loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Modal animation keyframes */
 @keyframes bp3d-fade-in {
   from { opacity: 0; }

@@ -75,7 +75,7 @@ final class Addons
         }
 
         if (!wp_script_is('bp3d-public', 'registered')) {
-            $deps = ['react', 'react-dom', 'jquery'];
+            $deps = ['react', 'react-dom', 'jquery', 'wp-i18n'];
 
             // Editor documents have no `elementor-frontend`, and a missing
             // dependency would stop the bundle from printing at all.
@@ -84,6 +84,7 @@ final class Addons
             }
 
             wp_register_script('bp3d-public', BP3D_DIR . 'build/frontend.js', $deps, BP3D_VERSION, true);
+            wp_set_script_translations('bp3d-public', '3d-viewer', BP3D_PATH . 'languages');
         }
     }
 

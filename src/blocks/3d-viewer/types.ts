@@ -13,6 +13,8 @@ export interface ResponsiveValue {
 
 export interface ModelSettings {
 	modelUrl?: string;
+	environmentImage?: string;
+	skyboxImage?: string;
 	[key: string]: unknown;
 }
 
@@ -93,6 +95,9 @@ export interface BlockAttributes {
 	styles: Styles;
 	stylesheet?: string;
 	placement: string;
+
+	// Lighting
+	environmentImage?: string;
 
 	// Exposure
 	exposure: number;

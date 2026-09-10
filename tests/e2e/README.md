@@ -24,6 +24,13 @@ npm run test:e2e:gallery           # all screenshots of the last run on one page
 The suite auto-starts the Studio site if it is stopped (requires the Studio
 CLI — enable it in the Studio app under Settings → General).
 
+Against any other install (Local, Docker, a plain LAMP site) point it at a
+plain wp-cli and the site's URL/credentials; the site must already be up:
+
+```bash
+E2E_WP_CLI=wp WP_BASE_URL=http://dev.local WP_USERNAME=e2e_admin WP_PASSWORD=… npm run test:e2e
+```
+
 ## What gets tested
 
 | Spec | Covers |
@@ -63,7 +70,8 @@ report `loaded === true` (real WebGL render), not just for markup.
      cash-on-delivery enabled, the seeded product priced/virtual/in-stock,
      and the test customer's billing profile prefilled.
 - Seeded ids/links land in `artifacts/state.json` (the `state` fixture).
-- wp-cli goes through `studio wp` executed from the site root (`wp.ts`).
+- wp-cli goes through `studio wp` executed from the site root (`wp.ts`), or
+  whatever `E2E_WP_CLI` names.
 - Tests run with **1 worker** on purpose — they share one WordPress install.
 
 ## Adding tests

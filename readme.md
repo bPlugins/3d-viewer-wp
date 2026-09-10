@@ -1,11 +1,11 @@
 # 3D Viewer – Display Interactive 3D Models
 
-[![Version](https://img.shields.io/badge/version-1.9.0-blue.svg)](https://wordpress.org/plugins/3d-viewer/)
+[![Version](https://img.shields.io/badge/version-1.9.3-blue.svg)](https://wordpress.org/plugins/3d-viewer/)
 [![WordPress](https://img.shields.io/badge/WordPress-6.5%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPLv2%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-A WordPress plugin to embed interactive 3D models and 360° product views into posts, pages, widgets, and WooCommerce product pages — no code required. Supports GLB, GLTF, OBJ, STL, FBX, DAE, PLY, and 3DS files.
+A WordPress plugin to embed interactive 3D models and 360° product views into posts, pages, widgets, and WooCommerce product pages — no code required. Supports GLB, GLTF, OBJ, STL, FBX, DAE, PLY, and 3DS files. Augmented Reality is part of the free plugin.
 
 > This is the developer README. For the user-facing plugin description, screenshots, and changelog, see [`readme.txt`](readme.txt).
 
@@ -21,6 +21,8 @@ A WordPress plugin to embed interactive 3D models and 360° product views into p
 - Embed 3D models via Gutenberg block, shortcode, or Elementor widget
 - Two viewer engines — **Lite** (Google `<model-viewer>`) and **Advanced** (Online 3D Viewer)
 - WooCommerce product integration with variant galleries
+- Augmented Reality (free) — WebXR, Scene Viewer and Quick Look, with QR-code hand-off from desktop and an optional iOS `.usdz` source
+- Environment image and HDR skybox image (free) — lighting/reflections and viewer background
 - Touch / pan / zoom / rotate controls and auto-rotation
 - Reusable viewer presets
 - Lazy loading for performance

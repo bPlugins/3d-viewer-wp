@@ -76,7 +76,7 @@ class Viewer
       );
     } elseif (!empty($model_url)) {
       $ext = strtolower(pathinfo($model_url, PATHINFO_EXTENSION));
-      $supported = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
+      $supported = \BP3D\Helper\Utils::getSupportedMimeTypes();
       if (in_array($ext, $supported, true) && !in_array($ext, $allowed_mimes, true)) {
         $show_notice = true;
         $notice_content = sprintf(
@@ -100,7 +100,7 @@ class Viewer
         'style' => 'info',
         'content' => sprintf(
           /* translators: %s: URL to the settings page. */
-          __('<strong>GLB</strong> and <strong>GLTF</strong> files are enabled by default. To upload other 3D formats (OBJ, STL, FBX, etc.), enable them in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+          __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
           admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
         ),
       );
@@ -159,6 +159,38 @@ class Viewer
         'title' => __('3D Poster Image', '3d-viewer'),
         'subtitle' => __('Display a poster until loaded', '3d-viewer'),
         'desc' => __('Upload or Select 3d Poster Image.  if you don\'t want to use just leave it empty', '3d-viewer'),
+        'dependency' => array('currentViewer', '==', 'modelViewer'),
+      ),
+      array(
+        'id' => 'bp_3d_environment_image_preset',
+        'type' => 'select',
+        'title' => __('Environment Image', '3d-viewer'),
+        'subtitle' => __('Lighting and reflections', '3d-viewer'),
+        'desc' => __('Sets an environment image to improve lighting and reflections on the model.', '3d-viewer'),
+        'options' => array(
+          'neutral' => __('Neutral', '3d-viewer'),
+          'legacy' => __('Legacy', '3d-viewer'),
+          'custom' => __('Custom', '3d-viewer'),
+        ),
+        'default' => 'neutral',
+        'dependency' => array('currentViewer', '==', 'modelViewer'),
+      ),
+      array(
+        'id' => 'bp_3d_environment_image',
+        'type' => 'upload',
+        'button_title' => __('Upload', '3d-viewer'),
+        'title' => __('Custom Environment Image', '3d-viewer'),
+        'subtitle' => __('Your own image', '3d-viewer'),
+        'desc' => __('Upload or paste the URL of the image to use for lighting and reflections.', '3d-viewer'),
+        'dependency' => array('currentViewer|bp_3d_environment_image_preset', '==|==', 'modelViewer|custom'),
+      ),
+      array(
+        'id' => 'bp_3d_skybox_image',
+        'type' => 'upload',
+        'button_title' => __('Upload', '3d-viewer'),
+        'title' => __('HDR Skybox Image', '3d-viewer'),
+        'subtitle' => __('Background and environmental lighting', '3d-viewer'),
+        'desc' => __('Sets a skybox image that appears as the background and provides environmental lighting for the model. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
         'dependency' => array('currentViewer', '==', 'modelViewer'),
       ),
     ));

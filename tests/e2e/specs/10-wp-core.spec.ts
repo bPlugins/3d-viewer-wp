@@ -51,7 +51,8 @@ test.describe('WordPress core (regression with plugin active)', () => {
     });
 
     test('media library grid loads without errors', async ({ page, admin, pageErrors }) => {
-        await admin.visitAdminPage('upload.php');
+        // The library remembers list/grid per user; this test is about the grid.
+        await admin.visitAdminPage('upload.php', 'mode=grid');
         await expectNoFatal(page);
         await expect(page.locator('.media-frame, #wp-media-grid').first()).toBeVisible();
         expect(pageErrors).toHaveLength(0);

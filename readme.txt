@@ -1,8 +1,8 @@
 === 3D Viewer – Turn Product Pages into Interactive 3D Experiences ===
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3d model viewer, 360 product view, augmented reality, woocommerce, glb
-Tested up to: 7.0
-Stable tag: 1.9.2
+Tested up to: 7.1
+Stable tag: 1.9.3
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -27,13 +27,16 @@ Built on the proven Three.js engine, 3D Viewer supports all major 3D formats (GL
 
 Selling online? Show your WooCommerce products in 3D and let customers interact before they buy – interactive product views build the confidence that turns browsers into buyers.
 
+**Augmented Reality is free.** AR is part of the free plugin – no upgrade, no add-on. Switch it on for any model and visitors on supported phones can place it in their own room, while desktop visitors scan a QR code to open the same model in AR on their phone.
+
 ### Free Features – Everything You Need to Get Started
 
 - **Embed Anywhere:** Place 3D models in posts, pages, and widgets with a shortcode or Gutenberg block.
+- **Augmented Reality (AR) – now free:** Let mobile visitors view models in their real environment via WebXR, Scene Viewer, and Quick Look – including QR code access from desktop. Set the AR placement (floor or wall) and add an optional iOS `.usdz` source.
 - **All Popular 3D Formats:** Upload and display .GLB, .GLTF, .OBJ, .STL, and more.
 - **WooCommerce Integration:** Show interactive 3D product views right on your product pages.
 - **Touch, Pan, Zoom & Rotate:** Full mouse and touchscreen gesture support out of the box.
-- **Augmented Reality (AR):** Let mobile visitors view models in their real environment via WebXR, Scene Viewer, and Quick Look – including QR code access from desktop.
+- **Environment & Skybox Images – now free:** Add an environment image for realistic lighting and reflections, or set an HDR skybox as the model's background.
 - **Elementor Compatible:** Drop 3D models into Elementor layouts with ease.
 - **Lazy Loading for Performance:** Models load only when visible, keeping pages fast and SEO-friendly.
 - **Live Editor Preview:** See your 3D model directly in the editor while you configure it.
@@ -142,7 +145,7 @@ Like the plugin? Missing a feature? **[Send your feedback](https://bplugins.com/
 Yes. You can attach a 3D model to any product and it will display on the product page. The Pro version adds a 3D gallery with multiple models per product and per-variation models.
 
 = Does it support Augmented Reality (AR)? =
-Yes. Models can be viewed in AR on supported mobile devices via WebXR, Scene Viewer (Android), and Quick Look (iOS). Desktop visitors can scan a QR code to open the model in AR on their phone.
+Yes, and it is free – AR is included in the free version, no upgrade required. Models can be viewed in AR on supported mobile devices via WebXR, Scene Viewer (Android), and Quick Look (iOS). Desktop visitors can scan a QR code to open the model in AR on their phone. Turn it on with the **Enable AR** toggle in the Gutenberg block, the Elementor widget, or the shortcode generator, then pick the AR placement and mode.
 
 = Can I use this plugin with Elementor? =
 Yes, both an Elementor widget and shortcode support are built in.
@@ -258,6 +261,13 @@ The bundle also includes the following sub-dependencies:
 
 == Changelog ==
 
+= 1.9.3 - 9 September, 2026  =
+New: Environment Image and HDR Skybox Image are now available in the free version, in the Gutenberg block, the Elementor widget, and the shortcode generator.
+Fixed: The viewer no longer spins forever when the 3D model file is missing (404) or fails to load; it now shows a short message instead.
+Update: All supported 3D formats, including .hdr for skybox images, are now enabled for upload by default; any of them can still be turned off in Settings → Allowed Mime Types.
+Fixed: The double-extension upload guard (e.g. model.php.glb) passed such files through instead of blocking them; they are now refused.
+Fixed: Guided Setup kept its full-screen layout only if no other plugin appended its admin body class without a space (e.g. Tutor LMS); it now stays full-screen regardless.
+
 = 1.9.2 - 12 August, 2026  =
 New: Added a 3D file download button that lets visitors download the model file from the viewer. Off by default, and available in the Gutenberg block, the Elementor widget, and the shortcode generator.
 New: Added a guided setup walkthrough for new installs, covering the ways to add a model and ending on your first 3D model. Existing sites can start it from Help & Demos → Guided Setup.
@@ -266,6 +276,7 @@ Fixed: The Elementor widget no longer stays blank on sites that reorder, defer, 
 Update: The Elementor widget keeps its configured height while no model is selected, instead of collapsing to the widget icon.
 Update: Rebuilt the Elementor file picker with a file preview, a Replace button and a Remove button. Selected files are unchanged.
 Fixed: The Elementor file picker no longer clashes with other bPlugins plugins (Panorama Lite, HTML5 Video Player) that shipped a control of the same name, which could leave one plugin's picker unresponsive.
+Update: Augmented Reality (AR) is now available in the free version, including WebXR, Scene Viewer, Quick Look, QR code access, AR placement, and the iOS .usdz source.
 
 = 1.9.1 - 19 July, 2026  =
 New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.

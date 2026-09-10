@@ -73,10 +73,11 @@ class EnqueueAssets
             wp_enqueue_script(
                 'bp3d-admin-preview',
                 BP3D_DIR . 'build/admin-preview.js',
-                ['react', 'react-dom'],
+                ['react', 'react-dom', 'wp-i18n'],
                 BP3D_VERSION,
                 true
             );
+            wp_set_script_translations('bp3d-admin-preview', '3d-viewer', BP3D_PATH . 'languages');
             wp_localize_script('bp3d-admin-preview', 'bp3dPreview', [
                 'modelViewerSrc' => BP3D_DIR . 'public/js/model-viewer.latest.min.js',
                 'o3dviewerSrc' => BP3D_DIR . 'public/js/o3dv.min.js',

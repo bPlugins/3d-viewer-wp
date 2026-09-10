@@ -57,10 +57,12 @@ class Blocks
         wp_register_script(
             'bp3d-public',
             BP3D_DIR . 'build/frontend.js',
-            ['react', 'react-dom'],
+            ['react', 'react-dom', 'wp-i18n'],
             BP3D_VERSION,
             true
         );
+
+        wp_set_script_translations('bp3d-public', '3d-viewer', BP3D_PATH . 'languages');
 
         $settings = Utils::getSettings('_bp3d_settings_', []);
 
@@ -113,7 +115,8 @@ class Blocks
 
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
             'admin_url' => admin_url(),
-            'allowedMimeTypes' => Utils::getAllowedMimeTypes()
+            'allowedMimeTypes' => Utils::getAllowedMimeTypes(),
+            'supportedMimes' => Utils::SUPPORTED_MIME_TYPES
         ]);
 
         wp_enqueue_script_module('bp3d-lib-model-viewer');

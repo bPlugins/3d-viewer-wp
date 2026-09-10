@@ -47,6 +47,16 @@ function fieldVal(id: string, sub?: string): string {
 }
 
 /**
+ * Mirror of Utils::resolveEnvironmentImage(): preset + custom URL → the single
+ * value the viewer reads ('' neutral, 'legacy', or a URL).
+ */
+function resolveEnvironmentImage(preset: string, url: string): string {
+    if (preset === 'legacy') return 'legacy';
+    if (preset === 'custom' || preset === '') return url;
+    return '';
+}
+
+/**
  * Cast a switcher/boolean field value, falling back to a default when unset.
  */
 function boolVal(id: string, def: boolean): boolean {
@@ -67,6 +77,7 @@ function readAttributes(): Record<string, any> {
         model: {
             modelUrl: fieldVal('bp_3d_src', 'url'),
             poster: fieldVal('bp_3d_poster', 'url'),
+            skyboxImage: fieldVal('bp_3d_skybox_image'),
             decoder: fieldVal('bp_3d_decoder') || 'none',
             arEnabled: boolVal('bp_3d_enable_ar', false),
             arMode: fieldVal('ar_mode') || 'webxr scene-viewer quick-look',
@@ -92,6 +103,7 @@ function readAttributes(): Record<string, any> {
         zoomInOutBtn: boolVal('bp_3d_zoom_in_out_btn', false),
         cameraBtn: boolVal('bp_3d_camera_btn', false),
         progressBar: boolVal('bp_3d_progressbar', false),
+        environmentImage: resolveEnvironmentImage(fieldVal('bp_3d_environment_image_preset'), fieldVal('bp_3d_environment_image')),
         exposure: fieldVal('3d_exposure') || '1',
         shadow: fieldVal('3d_shadow_intensity') !== '' ? parseFloat(fieldVal('3d_shadow_intensity')) : 1,
         woo: false,

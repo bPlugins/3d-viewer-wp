@@ -114,7 +114,7 @@ class ModelViewer extends \Elementor\Widget_Base
         } else {
             $format_notice = sprintf(
                 /* translators: %s: URL to the settings page. */
-                __('<strong>GLB</strong> and <strong>GLTF</strong> files are enabled by default. To upload other 3D formats (OBJ, STL, FBX, etc.), enable them in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
                 esc_url($settings_url)
             );
             $notice_type = 'info';
@@ -167,8 +167,35 @@ class ModelViewer extends \Elementor\Widget_Base
         $this->add_control('poster', [
             'label' => esc_html__('Select Poster', '3d-viewer'),
             'type' => 'bp3d-select-file',
-            'separator' => 'after',
             'placeholder' => esc_html__('Paste Poster URL', '3d-viewer'),
+            'condition' => ['currentViewer' => 'modelViewer'],
+        ]);
+
+        $this->add_control('environmentImagePreset', [
+            'label' => esc_html__('Environment Image', '3d-viewer'),
+            'description' => esc_html__('Improves lighting and reflections on the model.', '3d-viewer'),
+            'type' => \Elementor\Controls_Manager::SELECT,
+            'default' => 'neutral',
+            'options' => [
+                'neutral' => esc_html__('Neutral', '3d-viewer'),
+                'legacy' => esc_html__('Legacy', '3d-viewer'),
+                'custom' => esc_html__('Custom', '3d-viewer'),
+            ],
+            'condition' => ['currentViewer' => 'modelViewer'],
+        ]);
+
+        $this->add_control('environmentImage', [
+            'label' => esc_html__('Custom Environment Image', '3d-viewer'),
+            'type' => 'bp3d-select-file',
+            'placeholder' => esc_html__('Paste Image URL', '3d-viewer'),
+            'condition' => ['currentViewer' => 'modelViewer', 'environmentImagePreset' => 'custom'],
+        ]);
+
+        $this->add_control('skyboxImage', [
+            'label' => esc_html__('HDR Skybox Image', '3d-viewer'),
+            'description' => esc_html__('Shown as the background and used for environmental lighting. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
+            'type' => 'bp3d-select-file',
+            'placeholder' => esc_html__('Paste Skybox Image URL', '3d-viewer'),
             'condition' => ['currentViewer' => 'modelViewer'],
         ]);
 
@@ -430,6 +457,11 @@ class ModelViewer extends \Elementor\Widget_Base
         $settings = $this->get_settings_for_display();
         $get_settings = $this->bp3d_get_settings();
 
+        $environment_image = \BP3D\Helper\Utils::resolveEnvironmentImage(
+            $settings['environmentImagePreset'] ?? null,
+            $settings['environmentImage'] ?? ''
+        );
+
         $finalData = [
             'align' => 'center',
             'uniqueId' => 'b3dviewer' . uniqid(),
@@ -442,6 +474,8 @@ class ModelViewer extends \Elementor\Widget_Base
             'model' => [
                 'modelUrl' => $settings['modelUrl'] ?? '',
                 'poster' => $settings['poster'] ?? '',
+                'environmentImage' => $environment_image,
+                'skyboxImage' => $settings['skyboxImage'] ?? '',
                 // The frontend renderer reads `model.decoder` and the model-viewer
                 // build expects the "Draco"/"none" spelling used by the block editor,
                 // so map the widget's lowercase `useDecoder` value onto that contract.
@@ -462,6 +496,7 @@ class ModelViewer extends \Elementor\Widget_Base
             'fullscreen' => ($settings['fullscreen'] ?? '') === 'yes',
             'loadingPercentage' => ($settings['loadingPercentage'] ?? '') === 'yes',
             'progressBar' => ($settings['progressBar'] ?? '') === 'yes',
+            'environmentImage' => $environment_image,
             'exposure' => isset($settings['exposure']['size']) ? (float) $settings['exposure']['size'] : 1.0,
             'shadow' => ($settings['shadow'] ?? '') === 'yes',
             'styles' => [

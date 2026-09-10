@@ -44,6 +44,11 @@ class Settings
       'footer_text' => '',
 
     ));
+    $mime_options = array();
+    foreach (\BP3D\Helper\Utils::getSupportedMimeTypes() as $ext) {
+      $mime_options[$ext] = strtoupper($ext) . ' (.' . $ext . ')';
+    }
+
     \CSF::createSection($this->prefix, array(
       'title' => __('General Settings', '3d-viewer'),
       'icon' => 'fas fa-cog',
@@ -52,24 +57,9 @@ class Settings
           'id' => 'allowed_mime_types',
           'type' => 'checkbox',
           'title' => __('Allowed Mime Types', '3d-viewer'),
-          'desc' => __('Select which 3D model file types can be uploaded to the media library. GLB and GLTF are enabled by default; enable any other format you need here.', '3d-viewer'),
-          'options' => array(
-            'glb' => 'GLB (.glb)',
-            'gltf' => 'GLTF (.gltf)',
-            'obj' => 'OBJ (.obj)',
-            '3ds' => '3DS (.3ds)',
-            'step' => 'STEP (.step)',
-            'stl' => 'STL (.stl)',
-            'fbx' => 'FBX (.fbx)',
-            '3dml' => '3DML (.3dml)',
-            'dae' => 'DAE (.dae)',
-            'wrl' => 'WRL (.wrl)',
-            '3mf' => '3MF (.3mf)',
-            'mtl' => 'MTL (.mtl)',
-            'hdr' => 'HDR (.hdr)',
-            'usdz' => 'USDZ (.usdz)',
-          ),
-          'default' => array('glb', 'gltf'),
+          'desc' => __('Select which 3D model and HDR file types can be uploaded to the media library. All supported formats are enabled by default; uncheck any you want to block.', '3d-viewer'),
+          'options' => $mime_options,
+          'default' => \BP3D\Helper\Utils::getSupportedMimeTypes(),
         ),
         // Delete data on uninstall
         array(

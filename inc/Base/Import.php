@@ -35,6 +35,42 @@ class Import
             $this->migrateModelData();
             update_option('bp3d_imported', BP3D_IMPORT_VER);
         }
+
+        $this->migrateAllowedMimeTypes();
+    }
+
+    /**
+     * Widen the upload whitelist left behind by the old GLB/GLTF-only default.
+     *
+     * Runs once. A stored list that is exactly the old default came from a
+     * site that never touched the checkboxes, so it is replaced with the new
+     * all-formats default; any other selection is a deliberate choice and is
+     * left alone.
+     */
+    private function migrateAllowedMimeTypes(): void
+    {
+        if (get_option('bp3d_mime_defaults_widened')) {
+            return;
+        }
+
+        update_option('bp3d_mime_defaults_widened', 1);
+
+        $settings = get_option('_bp3d_settings_', []);
+
+        if (!is_array($settings) || !isset($settings['allowed_mime_types']) || !is_array($settings['allowed_mime_types'])) {
+            return;
+        }
+
+        $stored = $settings['allowed_mime_types'];
+        sort($stored);
+        $legacy = ['glb', 'gltf'];
+
+        if ($stored !== $legacy) {
+            return;
+        }
+
+        $settings['allowed_mime_types'] = \BP3D\Helper\Utils::getSupportedMimeTypes();
+        update_option('_bp3d_settings_', $settings);
     }
 
     /**

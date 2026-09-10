@@ -56,6 +56,12 @@ class ExtendMimeType
         $extendedMimes = $this->getFilteredMimeTypes();
 
         if (isset($extendedMimes[$ext])) {
+            // A denial has to be spelled out: `$data` carries what core already
+            // decided, and core accepts these names because the upload_mimes
+            // filter above registered the extension. Returning it would pass
+            // the file through rather than block it.
+            $reject = ['ext' => false, 'type' => false, 'proper_filename' => false];
+
             // Hardening: Stop double-extension execution bypass (e.g. script.php.glb)
             $dangerous_extensions = [
                 'php', 'php3', 'php4', 'php5', 'php7', 'php8', 
@@ -64,13 +70,13 @@ class ExtendMimeType
             ];
             for ($i = 0; $i < $f_exp_count - 1; $i++) {
                 if (in_array(strtolower($f_sp[$i]), $dangerous_extensions, true)) {
-                    return $data; // Reject
+                    return $reject;
                 }
             }
 
             // Hardening: Prevent execution bypass if Magic Mime engine matches PHP
             if ($real_mime !== null && strpos(strtolower($real_mime), 'php') !== false) {
-                return $data; // Reject
+                return $reject;
             }
 
             $type = $extendedMimes[$ext];
@@ -82,24 +88,7 @@ class ExtendMimeType
 
     private function getMimeTypes(): array
     {
-        $mimes = [
-            'glb' => 'model/gltf-binary',
-            'gltf' => 'model/gltf-binary',
-            'obj' => 'model/obj',
-            '3ds' => 'application/x-3ds',
-            'step' => 'application/step',
-            'stl' => 'application/vnd.ms-pki.stl',
-            'fbx' => 'application/octet-stream',
-            '3dml' => 'text/vnd.in3d.3dml',
-            'dae' => 'application/collada+xml',
-            'wrl' => 'model/vrml',
-            '3mf' => 'application/vnd.ms-3mfdocument',
-            'mtl' => 'model/mtl',
-            'hdr' => 'image/vnd.radiance',
-            'usdz' => 'model/vnd.pixar.usd',
-        ];
-
-        return $mimes;
+        return Utils::SUPPORTED_MIME_TYPES;
     }
 }
 

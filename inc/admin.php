@@ -136,7 +136,9 @@ if (!class_exists('BP3DAdmin')) {
         public function setup_body_class($classes)
         {
             if (self::onboarding_available() && $this->is_setup_screen()) {
-                $classes .= ' bpl-onboarding-fullscreen';
+                // Trailing space too: a later filter that forgets its leading
+                // space (Tutor LMS does) would otherwise fuse onto this class.
+                $classes .= ' bpl-onboarding-fullscreen ';
             }
 
             return $classes;

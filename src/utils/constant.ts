@@ -6,6 +6,8 @@ export const helpText: Record<string, string> = {
     viewerType: __('Choose between Lite and Advanced viewer modes. Lite is optimized for GLB and GLTF files with strong performance and essential features. Advanced supports almost all 3D file types but offers a more streamlined feature set.', '3d-viewer'),
     modelUrl: __('Specifies the URL of the 3D model file to be displayed in the viewer.', '3d-viewer'),
     modelPoster: __('Sets a placeholder image that is shown before the 3D model finishes loading.', '3d-viewer'),
+    environmentImage: __('Sets an environment image to improve lighting and reflections on the model.', '3d-viewer'),
+    skyboxImage: __('Sets a skybox image that appears as the background and provides environmental lighting for the model. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
     useDecoder: __('Selects which decoder to use for loading the model. Choose Draco if your model is compressed, or None for standard models.', '3d-viewer'),
     zoom: __('Enables zooming in and out of the 3D model using mouse scroll or touch gestures.', '3d-viewer'),
     zoomInOutBtn: __('Displays zoom in and zoom out buttons on the viewer interface.', '3d-viewer'),

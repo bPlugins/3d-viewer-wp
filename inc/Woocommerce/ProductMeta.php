@@ -79,7 +79,7 @@ class ProductMeta
             );
         } elseif (!empty($model_src)) {
             $ext = strtolower(pathinfo($model_src, PATHINFO_EXTENSION));
-            $supported = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
+            $supported = Utils::getSupportedMimeTypes();
             if (in_array($ext, $supported, true) && !in_array($ext, $allowed_mimes, true)) {
                 $show_notice = true;
                 $notice_content = sprintf(
@@ -103,7 +103,7 @@ class ProductMeta
                 'style'   => 'info',
                 'content' => sprintf(
                     /* translators: %s: URL to the settings page. */
-                    __('<strong>GLB</strong> and <strong>GLTF</strong> files are enabled by default. To upload other 3D formats (OBJ, STL, FBX, etc.), enable them in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                    __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
                     admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
                 ),
             ];
@@ -125,7 +125,7 @@ class ProductMeta
                 'type' => 'upload',
                 'title' => esc_html__('3D Source', '3d-viewer'),
                 'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
-                'desc' => esc_html__('Upload / Paste Model url. Supported file type: glb, glTF', '3d-viewer'),
+                'desc' => esc_html__('Upload / Paste Model url. Supported file types: glb, gltf, obj, stl, fbx, dae, 3ds, 3mf, step, wrl, usdz.', '3d-viewer'),
                 'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
                 'default' => $models[0]['model_src'] ?? '',
             ],

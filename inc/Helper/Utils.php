@@ -19,13 +19,29 @@ class Utils
     public static ?string $theme_name = null;
 
     /**
-     * 3D file formats enabled for upload out of the box.
+     * Every 3D/HDR file format the plugin knows how to register for upload.
      *
-     * Any other format must be enabled from the 3D Viewer settings page.
+     * Single source of truth for the upload_mimes filter, the settings
+     * checkbox list and the "format is disabled" editor notices.
      *
-     * @var array<int, string>
+     * @var array<string, string>
      */
-    public const DEFAULT_ALLOWED_MIME_TYPES = ['glb', 'gltf'];
+    public const SUPPORTED_MIME_TYPES = [
+        'glb' => 'model/gltf-binary',
+        'gltf' => 'model/gltf-binary',
+        'obj' => 'model/obj',
+        '3ds' => 'application/x-3ds',
+        'step' => 'application/step',
+        'stl' => 'application/vnd.ms-pki.stl',
+        'fbx' => 'application/octet-stream',
+        '3dml' => 'text/vnd.in3d.3dml',
+        'dae' => 'application/collada+xml',
+        'wrl' => 'model/vrml',
+        '3mf' => 'application/vnd.ms-3mfdocument',
+        'mtl' => 'model/mtl',
+        'hdr' => 'image/vnd.radiance',
+        'usdz' => 'model/vnd.pixar.usd',
+    ];
 
     public function __construct()
     {
@@ -183,14 +199,19 @@ class Utils
      */
     public static function return_function($meta)
     {
-        return function ($key, $default = null, $is_boolean = false, $key2 = null) use ($meta) {
+        // Posts saved before any setting was written store a string here, and a
+        // string offset beginning with a digit ('3d_exposure') warns and reads a
+        // character instead of falling through to the default.
+        $data = is_array($meta) ? $meta : [];
+
+        return function ($key, $default = null, $is_boolean = false, $key2 = null) use ($meta, $data) {
             if ($key === 'all') {
                 return $meta;
             }
 
             $value = $key2
-                ? ($meta[$key][$key2] ?? $default)
-                : ($meta[$key] ?? $default);
+                ? ($data[$key][$key2] ?? $default)
+                : ($data[$key] ?? $default);
 
             if ($is_boolean) {
                 return $value == '1';
@@ -215,12 +236,25 @@ class Utils
     }
 
     /**
+     * Every file extension the plugin can register for upload.
+     *
+     * Also the out-of-the-box allowed list: every supported format ships
+     * enabled, and a site switches off the ones it does not want.
+     *
+     * @return array<int, string>
+     */
+    public static function getSupportedMimeTypes(): array
+    {
+        return array_keys(self::SUPPORTED_MIME_TYPES);
+    }
+
+    /**
      * Get the list of 3D file extensions allowed for upload.
      *
-     * GLB and GLTF are enabled by default. Any other format must be
-     * enabled from the 3D Viewer settings page. Once the setting has
-     * been saved the stored list is respected verbatim, so an explicitly
-     * empty list disables every format.
+     * All supported formats are enabled by default. Once the setting has
+     * been saved the stored list is respected verbatim, so a site that
+     * previously enabled only GLB/GLTF keeps that choice, and an
+     * explicitly empty list disables every format.
      *
      * @return array<int, string>
      */
@@ -229,12 +263,39 @@ class Utils
         $settings = get_option('_bp3d_settings_', []);
 
         if (!is_array($settings) || !isset($settings['allowed_mime_types'])) {
-            return self::DEFAULT_ALLOWED_MIME_TYPES;
+            return self::getSupportedMimeTypes();
         }
 
         $allowed = $settings['allowed_mime_types'];
 
         return is_array($allowed) ? $allowed : [];
+    }
+
+    /**
+     * Collapse the preset + custom-URL pair used by the Elementor widget and
+     * the shortcode generator onto the single value the block stores: '' for
+     * neutral, the 'legacy' keyword, or a URL.
+     *
+     * @param  string|null  $preset  'neutral' | 'legacy' | 'custom' | null when never saved
+     * @param  mixed        $url     Custom image URL
+     * @return string
+     */
+    public static function resolveEnvironmentImage($preset, $url): string
+    {
+        $url = is_string($url) ? $url : '';
+
+        if ($preset === 'legacy') {
+            return 'legacy';
+        }
+        if ($preset === 'custom') {
+            return $url;
+        }
+        // Saved before the preset existed: a URL on its own still wins.
+        if ($preset === null || $preset === '') {
+            return $url;
+        }
+
+        return '';
     }
 
     /**
@@ -253,6 +314,7 @@ class Utils
             'model' => [
                 'modelUrl' => $meta('bp_3d_src', [], false, 'url'),
                 'poster' => $meta('bp_3d_poster', [], false, 'url'),
+                'skyboxImage' => $meta('bp_3d_skybox_image'),
                 'arEnabled' => $meta('bp_3d_enable_ar', '0', true),
                 'arMode' => $meta('ar_mode', 'webxr scene-viewer quick-look'),
                 'arPlacement' => $meta('ar_placement', 'floor'),
@@ -278,6 +340,7 @@ class Utils
             'downloadBtn' => $meta('bp_3d_download_btn', '0', true),
             'loadingPercentage' => $meta('bp_model_progress_percent', '0', true),
             'progressBar' => $meta('bp_3d_progressbar', '0', true),
+            'environmentImage' => self::resolveEnvironmentImage($meta('bp_3d_environment_image_preset'), $meta('bp_3d_environment_image')),
             'exposure' => $meta('3d_exposure', '1'),
             'shadow' => (float) $meta('3d_shadow_intensity', '1', false),
             'woo' => false,

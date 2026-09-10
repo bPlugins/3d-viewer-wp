@@ -117,6 +117,10 @@
       "type": "boolean",
       "default": false
     },
+    "environmentImage": {
+      "type": "string",
+      "default": ""
+    },
     "exposure": {
       "type": "number",
       "default": 1

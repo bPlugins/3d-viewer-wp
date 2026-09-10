@@ -5,7 +5,7 @@ import BtnGroup from '../../../../../../../../bpl-tools/Components/BtnGroup/BtnG
 import { InlineMediaUpload } from '../../../../../../../../bpl-tools/Components/MediaControl/MediaControl'
 
 
-import { modelViewers } from "../../../../data";
+import { defaultEnvironmentImages, modelViewers } from "../../../../data";
 import ThreeDIcons from "../../../../../../icons/ThreeDIcons";
 import Title from "../../../../../../components/Title";
 import BInfoControl from "../../../../../../components/BInfoControl";
@@ -21,8 +21,21 @@ interface ModelFormProps {
 const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
   const { model, currentViewer, O3DVSettings, placement } = attributes;
 
+  const environmentImage = attributes.environmentImage || '';
+
+  // A custom image needs an entry of its own to stay selected, but only ever one.
+  const environmentImages = defaultEnvironmentImages.some((item) => item.value === environmentImage)
+    ? defaultEnvironmentImages
+    : [...defaultEnvironmentImages, { label: __("Custom", "3d-viewer"), value: environmentImage }];
+
   const settingsUrl = window.bp3dBlock?.admin_url + 'edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings';
-  const allowedMimeTypes = window.bp3dBlock?.allowedMimeTypes || [];
+  const allowedMimeTypes: string[] = window.bp3dBlock?.allowedMimeTypes || [];
+  const supportedMimes: Record<string, string> = window.bp3dBlock?.supportedMimes || {};
+  const supportedMimeTypes = Object.keys(supportedMimes);
+
+  // The media picker lists whatever is still uploadable, so a format switched
+  // off in settings drops out of it too.
+  const modelMimeTypes = Array.from(new Set(allowedMimeTypes.map((ext) => supportedMimes[ext]).filter(Boolean)));
   const modelUrl = model?.modelUrl || '';
 
   let showNotice = false;
@@ -33,8 +46,7 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
     noticeMessage = __("All 3D file formats are currently disabled for upload. Please enable them in settings.", "3d-viewer");
   } else if (modelUrl) {
     const ext = modelUrl.split('.').pop()?.toLowerCase();
-    const allMimes = ['glb', 'gltf', 'obj', '3ds', 'step', 'stl', 'fbx', '3dml', 'dae', 'wrl', '3mf', 'mtl', 'hdr', 'usdz'];
-    if (ext && allMimes.includes(ext) && !allowedMimeTypes.includes(ext)) {
+    if (ext && supportedMimeTypes.includes(ext) && !allowedMimeTypes.includes(ext)) {
       showNotice = true;
       noticeMessage = `The uploaded 3D model format (.${ext.toUpperCase()}) is currently disabled. Please enable it in settings.`;
     }
@@ -64,7 +76,7 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
         <div style={{ fontSize: '11px', color: '#666', marginBottom: '15px', display: 'flex', alignItems: 'flex-start', gap: '4px', lineHeight: '1.4' }}>
           <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#46b450', marginTop: '4px', flexShrink: 0 }}></span>
           <span>
-            {__("GLB & GLTF are enabled by default. To upload other 3D formats, enable them in ", "3d-viewer")}
+            {__("All supported 3D formats are enabled for upload by default. You can turn any of them off in ", "3d-viewer")}
             <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
               {__("Settings", "3d-viewer")}
             </a>.
@@ -80,7 +92,7 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
         onChange={(modelUrl) => {
           setAttributes({ model: { ...model, initialView: null, modelUrl, ext: modelUrl.split(".")?.[modelUrl.split(".").length - 1] }, O3DVSettings: { ...O3DVSettings, camera: null } });
         }}
-        types={["model/gltf-binary", "model/obj", "application/octet-stream", "application/x-3ds", "application/vnd.ms-pki.stl", "text/vnd.in3d.3dml", "application/collada+xml", "model/vrml", "application/vnd.ms-3mfdocument"]}
+        types={modelMimeTypes.length ? modelMimeTypes : Object.values(supportedMimes)}
         label={__("Model URL", "3d-viewer")}
         info={helpText.modelUrl}
       />
@@ -90,6 +102,12 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
       {currentViewer === "modelViewer" && (
         <>
           <BInfoControl Component={InlineMediaUpload} value={model?.poster} placeholder={__("Model Poster", "3d-viewer")} onChange={(poster) => setAttributes({ model: { ...model, poster } })} types={["image"]} label={__("Model Poster", "3d-viewer")} info={helpText.modelPoster} />
+
+          <BInfoControl Component={SelectControl} label={__("Environment Image", "3d-viewer")} options={environmentImages} value={environmentImage} onChange={(environmentImage) => setAttributes({ environmentImage })} info={helpText.environmentImage} />
+
+          <BInfoControl Component={InlineMediaUpload} value={environmentImage} placeholder={__("Environment Image URL", "3d-viewer")} onChange={(environmentImage) => setAttributes({ environmentImage })} types={["image"]} label={__("Custom Environment Image", "3d-viewer")} info={helpText.environmentImage} />
+
+          <BInfoControl Component={InlineMediaUpload} value={model?.skyboxImage} placeholder={__("HDR Image URL", "3d-viewer")} onChange={(skyboxImage) => setAttributes({ model: { ...model, skyboxImage } })} types={["image"]} label={__("HDR Skybox Image", "3d-viewer")} info={helpText.skyboxImage} />
 
 
           <BInfoControl Component={SelectControl} options={[
@@ -148,7 +166,7 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
           </>
         )}
         <hr />
-        <PremiumPanel title={__('Premium Features', '3d-viewer')} description={__('Multople models, HDR skybox image, Enviroment Image, Ton Mapping and Apply Textures available in premmium version', '3d-viewer')} pricingUrl={pricingUrl}><></></PremiumPanel>
+        <PremiumPanel title={__('Premium Features', '3d-viewer')} description={__('Multiple models, tone mapping and applying textures are available in the premium version', '3d-viewer')} pricingUrl={pricingUrl}><></></PremiumPanel>
       </>}
 
     </PanelBody>

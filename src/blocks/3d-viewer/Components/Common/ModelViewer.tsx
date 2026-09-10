@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { __ } from "@wordpress/i18n";
 
 // @ts-ignore
 import loadingImgSrc from './../../../../public/loading.webp';
@@ -9,14 +10,59 @@ interface ModelViewerProps {
     attributes: any;
     modelSrc: string;
     viewerRef: any;
-    __: (key: string, textdomain?: string) => string;
 }
+
+const toPageProtocol = (url?: string): string => url?.replace(/https?:/, window.location.protocol) || '';
+
+/**
+ * Resolve an environment or skybox image URL, or an empty string when it does
+ * not load. model-viewer fetches these inside its own model load pass and
+ * throws when one fails, which leaves the viewer stuck on its poster, and a
+ * change made after that pass rejects with nothing to catch it. Checking the
+ * URL here keeps a broken one from ever reaching the element.
+ */
+const useResolvableImage = (url: string): string => {
+    const [resolved, setResolved] = useState('');
+
+    useEffect(() => {
+        // `legacy` and `neutral` are model-viewer keywords, not fetchable URLs.
+        if (!url || !url.includes('/')) {
+            setResolved(url);
+            return;
+        }
+
+        let active = true;
+
+        fetch(url)
+            .then((response) => {
+                // Only the status is needed; drop the body rather than pulling
+                // a whole HDR through twice.
+                response.body?.cancel().catch(() => undefined);
+                return response.ok;
+            })
+            .catch(() => false)
+            .then((ok) => {
+                if (active) {
+                    setResolved(ok ? url : '');
+                }
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [url]);
+
+    return resolved;
+};
 
 const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
     const { loadingPercentage = false, uniqueId, model, loading, activeIndex = 0, mouseControl, isBackend } = attributes;
     const currentModel = model;
+    const [loadFailed, setLoadFailed] = useState(false);
 
     const modelPoster = currentModel?.poster?.replace(/https?:/, window.location.protocol)
+    const environmentImage = useResolvableImage(toPageProtocol(currentModel?.environmentImage || attributes.environmentImage));
+    const skyboxImage = useResolvableImage(toPageProtocol(currentModel?.skyboxImage || attributes.skyboxImage));
 
 
     const toggleAttr = (selector: any, condition: boolean, attribute: string, value: string) => {
@@ -29,6 +75,54 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
     useEffect(() => {
         manageAttributes(viewerRef.current, currentModel, attributes);
     }, [uniqueId, attributes, activeIndex]);
+
+    // Only a genuine source change clears a recorded failure: a plain mount pass
+    // would wipe a 404 that came back before the effects ran.
+    const lastSrc = useRef(modelSrc);
+
+    useEffect(() => {
+        if (lastSrc.current !== modelSrc) {
+            lastSrc.current = modelSrc;
+            setLoadFailed(false);
+        }
+    }, [modelSrc]);
+
+    // A missing or broken model file never fires `load`, so the loader has to be
+    // cleared from model-viewer's `loadfailure`. A 404 comes back before React
+    // flushes effects, so these are bound from the ref callback instead — that
+    // runs in the same commit that inserts the element, ahead of any response.
+    // Progress is not usable here: it also tracks the environment and poster
+    // tasks, so it reaches 1 while the model itself is still loading.
+    const failureHandlers = useRef<{ error: (e: any) => void; load: () => void } | null>(null);
+
+    if (!failureHandlers.current) {
+        failureHandlers.current = {
+            error: (event: any) => {
+                if (event?.detail?.type === 'loadfailure') {
+                    setLoadFailed(true);
+                }
+            },
+            // A retry or a late-arriving model clears a failure already recorded.
+            load: () => setLoadFailed(false),
+        };
+    }
+
+    const attachViewer = useCallback((element: any) => {
+        const handlers = failureHandlers.current!;
+        const previous = viewerRef.current;
+
+        if (previous && previous !== element) {
+            previous.removeEventListener('error', handlers.error);
+            previous.removeEventListener('load', handlers.load);
+        }
+
+        viewerRef.current = element;
+
+        if (element && element !== previous) {
+            element.addEventListener('error', handlers.error);
+            element.addEventListener('load', handlers.load);
+        }
+    }, [viewerRef]);
 
     // handle ar feature
     useEffect(() => {
@@ -117,7 +211,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
 
     return (
         <>
-            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={viewerRef} data-js-focus-visible data-decoder={model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model" ar={currentModel.arEnabled || false} ar-placement={currentModel.arPlacement || 'floor'} >
+            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={attachViewer} data-js-focus-visible data-decoder={model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model" environment-image={environmentImage || undefined} skybox-image={skyboxImage || undefined} skybox-height={skyboxImage ? (currentModel?.skyboxHeight || '0m') : undefined} ar={currentModel.arEnabled || false} ar-placement={currentModel.arPlacement || 'floor'} >
 
                 <span slot="interaction-prompt" style={{ display: 'none' }}></span>
                 <span slot="ar-button"></span>
@@ -126,7 +220,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
                 <button type="button" slot="poster" id="default-poster" aria-label="A 3D model" style={modelPoster ? { backgroundImage: ` url("${modelPoster}")` } : {}}></button>
 
                 {/* {loadingPercentage && viewerRef.current && !viewerRef.current?.loaded && ( */}
-                {loadingPercentage &&
+                {loadingPercentage && !loadFailed &&
                     !viewerRef.current?.loaded && ( // working fine on frontend with this condition
                         <div className="percentageWrapper" slot="progress-bar">
                             <div className="overlay"></div>
@@ -134,9 +228,13 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
                         </div>
                     )}
                 {/* working fine on frontend with this condition */}
-                {!viewerRef.current?.loaded && !loadingPercentage && <div className="bp3d_loader" slot="progress-bar">
+                {!viewerRef.current?.loaded && !loadingPercentage && !loadFailed && <div className="bp3d_loader" slot="progress-bar">
                     <div className="overlay"></div>
                     <img style={{ width: '100px', background: 'white', borderRadius: '5px', height: 'auto' }} src={loadingImgSrc} />
+                </div>}
+
+                {loadFailed && <div className="bp3d_load_error" slot="progress-bar">
+                    <span>{__("The 3D model could not be loaded.", "3d-viewer")}</span>
                 </div>}
 
             </model-viewer>

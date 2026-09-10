@@ -50,6 +50,7 @@ $bp3d_option_keys = [
     'bp3d_onboarding_progress',   // Guided setup progress percentage
     'bp3d_onboarding_redirect',   // Guided setup one-time redirect flag
     'bp3d_imported',              // Import migration flag
+    'bp3d_mime_defaults_widened', // One-time upload whitelist widening flag
     'model_viewer_import_ver',    // Import version tracker
 ];
 

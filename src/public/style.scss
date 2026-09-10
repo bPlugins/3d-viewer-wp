@@ -305,6 +305,20 @@
   color: #fff;
 }
 
+.bp3d_load_error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  padding: 8px 14px;
+  border-radius: 4px;
+  background: #333333cc;
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+
 .b3dviewer .fullscreen model-viewer {
   height: 100% !important;
 }
