@@ -94,10 +94,6 @@ if (function_exists('bp3d_fs')) {
                 'has_affiliation' => 'selected',
                 'menu' => array(
                     'slug' => 'edit.php?post_type=bp3d-model-viewer',
-                    // Deliberately the dashboard, not the guided setup: the
-                    // setup screen is not registered for Pro, and first-path
-                    // has no way to branch. Free users still reach the wizard —
-                    // Onboarding::maybe_redirect() picks them up from here.
                     'first-path' => 'edit.php?post_type=bp3d-model-viewer&page=3d-viewer',
                     'support' => false,
                     'affiliation' => false,

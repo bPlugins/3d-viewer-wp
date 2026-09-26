@@ -262,90 +262,93 @@ The bundle also includes the following sub-dependencies:
 == Changelog ==
 
 = 1.9.4 - 26 September, 2026  =
-Changed: Redesigned the guided setup as a three-step onboarding.
+* Changed: Redesigned the guided setup as a three-step onboarding.
+* New: Added a Monthly billing cycle to the Pricing page.
+* Update: The block editor placeholder now reads "Add Your 3D Model" and keeps the block's height.
+* Update: The old guided setup URL now redirects to the new one.
 
 = 1.9.3 - 9 September, 2026  =
-New: Environment Image and HDR Skybox Image are now available in the free version, in the Gutenberg block, the Elementor widget, and the shortcode generator.
-Fixed: The viewer no longer spins forever when the 3D model file is missing (404) or fails to load; it now shows a short message instead.
-Update: All supported 3D formats, including .hdr for skybox images, are now enabled for upload by default; any of them can still be turned off in Settings → Allowed Mime Types.
-Fixed: The double-extension upload guard (e.g. model.php.glb) passed such files through instead of blocking them; they are now refused.
-Fixed: Guided Setup kept its full-screen layout only if no other plugin appended its admin body class without a space (e.g. Tutor LMS); it now stays full-screen regardless.
+* New: Environment Image and HDR Skybox Image are now available in the free version, in the Gutenberg block, the Elementor widget, and the shortcode generator.
+* Fixed: The viewer no longer spins forever when the 3D model file is missing (404) or fails to load; it now shows a short message instead.
+* Update: All supported 3D formats, including .hdr for skybox images, are now enabled for upload by default; any of them can still be turned off in Settings → Allowed Mime Types.
+* Fixed: The double-extension upload guard (e.g. model.php.glb) passed such files through instead of blocking them; they are now refused.
+* Fixed: Guided Setup kept its full-screen layout only if no other plugin appended its admin body class without a space (e.g. Tutor LMS); it now stays full-screen regardless.
 
 = 1.9.2 - 12 August, 2026  =
-New: Added a 3D file download button that lets visitors download the model file from the viewer. Off by default, and available in the Gutenberg block, the Elementor widget, and the shortcode generator.
-New: Added a guided setup walkthrough for new installs, covering the ways to add a model and ending on your first 3D model. Existing sites can start it from Help & Demos → Guided Setup.
-Fixed: Uninstalling the free plugin no longer removes 3D Viewer data while 3D Viewer Pro is active.
-Fixed: The Elementor widget no longer stays blank on sites that reorder, defer, or delay scripts, and the editor preview now always loads the viewer libraries.
-Update: The Elementor widget keeps its configured height while no model is selected, instead of collapsing to the widget icon.
-Update: Rebuilt the Elementor file picker with a file preview, a Replace button and a Remove button. Selected files are unchanged.
-Fixed: The Elementor file picker no longer clashes with other bPlugins plugins (Panorama Lite, HTML5 Video Player) that shipped a control of the same name, which could leave one plugin's picker unresponsive.
-Update: Augmented Reality (AR) is now available in the free version, including WebXR, Scene Viewer, Quick Look, QR code access, AR placement, and the iOS .usdz source.
+* New: Added a 3D file download button that lets visitors download the model file from the viewer. Off by default, and available in the Gutenberg block, the Elementor widget, and the shortcode generator.
+* New: Added a guided setup walkthrough for new installs, covering the ways to add a model and ending on your first 3D model. Existing sites can start it from Help & Demos → Guided Setup.
+* Fixed: Uninstalling the free plugin no longer removes 3D Viewer data while 3D Viewer Pro is active.
+* Fixed: The Elementor widget no longer stays blank on sites that reorder, defer, or delay scripts, and the editor preview now always loads the viewer libraries.
+* Update: The Elementor widget keeps its configured height while no model is selected, instead of collapsing to the widget icon.
+* Update: Rebuilt the Elementor file picker with a file preview, a Replace button and a Remove button. Selected files are unchanged.
+* Fixed: The Elementor file picker no longer clashes with other bPlugins plugins (Panorama Lite, HTML5 Video Player) that shipped a control of the same name, which could leave one plugin's picker unresponsive.
+* Update: Augmented Reality (AR) is now available in the free version, including WebXR, Scene Viewer, Quick Look, QR code access, AR placement, and the iOS .usdz source.
 
 = 1.9.1 - 19 July, 2026  =
-New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.
-New: Added reminder notices in the shortcode generator, Gutenberg block, and Elementor widget prompting to enable other 3D formats from settings.
+* New: Enabled GLB and GLTF uploads by default; other formats can be enabled from Settings → Allowed Mime Types.
+* New: Added reminder notices in the shortcode generator, Gutenberg block, and Elementor widget prompting to enable other 3D formats from settings.
 
 
 = 1.9.0 - 18 July, 2026  =
-New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
-New: Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.
-New: Added Exposure and Shadow Intensity controls for the Model Viewer.
-New: Added a live 3D model preview panel to the editor metabox.
-New: Added an Extensions catalog and manager to the admin dashboard.
-Update: Refactored the admin dashboard with section icons and an improved layout.
+* New: Added Augmented Reality (AR) support with WebXR, Scene Viewer, and Quick Look modes, including QR code access to view models in AR from mobile devices.
+* New: Added an iOS-specific (.usdz) model source for AR Quick Look on Apple devices.
+* New: Added Exposure and Shadow Intensity controls for the Model Viewer.
+* New: Added a live 3D model preview panel to the editor metabox.
+* New: Added an Extensions catalog and manager to the admin dashboard.
+* Update: Refactored the admin dashboard with section icons and an improved layout.
 
 = 1.8.13 - 01 June, 2026  =
-Update: Tested with WordPress 7.0 and Updated Product Meta Field.
-Update: Prefixed isGutenberg meta key and configuration options for standards compliance.
-Fixed: Hardened file extension exception checks against double-extension script uploads.
-New: Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.
-New: Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.
+* Update: Tested with WordPress 7.0 and Updated Product Meta Field.
+* Update: Prefixed isGutenberg meta key and configuration options for standards compliance.
+* Fixed: Hardened file extension exception checks against double-extension script uploads.
+* New: Added Allowed Mime Types settings checklist to enable/disable 3D file formats on upload.
+* New: Integrated dynamic and minimal warning notices in Metaboxes and Gutenberg sidebar.
 
 = 1.8.12 - 16 May, 2026  =
-Update: Overall code quality and strengthened security protocols.
-Update: Required WordPress version updated.
+* Update: Overall code quality and strengthened security protocols.
+* Update: Required WordPress version updated.
 
 = 1.8.11 - 13 May, 2026  =
-Update: Removed Custom CSS Field from Settings
+* Update: Removed Custom CSS Field from Settings
 
 
 = 1.8.10 - 09 May, 2026  =
-Improved: Overall code quality and strengthened security protocols.
+* Improved: Overall code quality and strengthened security protocols.
 
 = 1.8.9 - 05 May, 2026  =
-Update: Updated Codestar Framework for better stability.
-Update: Removed restricted "Locked Fields" to improve user flexibility
-New: Added Zoom In/Out controls to the Classic Shortcode Generator.
-New: Added Camera controls to the Classic Shortcode Generator.
-Improved: Overall code quality and strengthened security protocols.
+* Update: Updated Codestar Framework for better stability.
+* Update: Removed restricted "Locked Fields" to improve user flexibility
+* New: Added Zoom In/Out controls to the Classic Shortcode Generator.
+* New: Added Camera controls to the Classic Shortcode Generator.
+* Improved: Overall code quality and strengthened security protocols.
 
 
 = 1.8.8 - 02 April, 2026  =
-Fixed: Woocommerce order issue
+* Fixed: Woocommerce order issue
 
 = 1.8.7 - 28 Mar, 2026  =
-Fixed: Move elements fields to 'Elements' tab in classic editor
-Fixed: Zoom not working in 'Advanced' Viewer
-Update: Freemius SDK
+* Fixed: Move elements fields to 'Elements' tab in classic editor
+* Fixed: Zoom not working in 'Advanced' Viewer
+* Update: Freemius SDK
 
 = 1.8.6 - 15 Mar, 2026  =
-Fixed: Remove unknown anchor link
+* Fixed: Remove unknown anchor link
 
 = 1.8.5 - 10 Mar, 2026  =
-Fixed: STL File does not work
-Fixed: Does not work on Elementor Page Builder
+* Fixed: STL File does not work
+* Fixed: Does not work on Elementor Page Builder
 
 = 1.8.4 - 28 Feb, 2026  =
-New: 4-step Setup Wizard after installation.
-Fixed: WooCommerce variation not working.
-Fixed: Shadow not working.
-Fixed: Rotation Delay not working.
-Update: Added Info text with all the controls.
-Update: Remove affiliate and contact Submenu.
-Update: Minimize Shortcode area (Classic Shortcode Generator).
+* New: 4-step Setup Wizard after installation.
+* Fixed: WooCommerce variation not working.
+* Fixed: Shadow not working.
+* Fixed: Rotation Delay not working.
+* Update: Added Info text with all the controls.
+* Update: Remove affiliate and contact Submenu.
+* Update: Minimize Shortcode area (Classic Shortcode Generator).
 
 = 1.8.3 - 17 Dec, 2025  =
-Fixed: new shortcodes were not working properly.
+* Fixed: new shortcodes were not working properly.
 
 = 1.8.2 - 4 Dec, 2025  =
 * Feature: Option to add Link on hotspot (Premium)

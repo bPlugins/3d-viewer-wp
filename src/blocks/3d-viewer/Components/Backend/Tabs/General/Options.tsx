@@ -12,7 +12,7 @@ interface OptionsProps {
   setOpen: (open: boolean) => void;
 }
 
-const Options = ({ attributes, setAttributes, setOpen }: OptionsProps) => {
+const Options = ({ attributes, setAttributes }: OptionsProps) => {
   const { fullscreen, cameraBtn, downloadBtn, lazyLoad, loadingPercentage, model, mouseControl, progressBar, zoomInOutBtn, exposure = 1, shadow = true } = attributes;
 
   return (

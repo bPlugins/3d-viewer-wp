@@ -18,13 +18,6 @@ export interface ModelSettings {
 	[key: string]: unknown;
 }
 
-export interface ModelItem {
-	modelUrl: string;
-	poster: string;
-	useDecoder: 'none' | 'draco' | 'meshopt' | string;
-	[key: string]: unknown;
-}
-
 export interface O3DVSettings {
 	isFullscreen: boolean;
 	camera: string | null;
@@ -43,12 +36,6 @@ export interface Styles {
 	[key: string]: unknown;
 }
 
-export interface AdditionalSettings {
-	ID: string;
-	Class: string;
-	CSS: string;
-}
-
 export interface AppliedTextures {
 	modelUrl: string | null;
 	[key: string]: unknown;
@@ -56,10 +43,6 @@ export interface AppliedTextures {
 
 export interface ViewerAttributes {
 	tonMapping: string;
-	[key: string]: unknown;
-}
-
-export interface Hotspot {
 	[key: string]: unknown;
 }
 

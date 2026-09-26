@@ -42,8 +42,8 @@ interface StyleProps {
 }
 
 const Style: React.FC<StyleProps> = ({ attributes, setAttributes, device }) => {
-    const { styles, woo, currentViewer, progressBar } = attributes;
-    const { width, height, bgColor, progressBarColor } = styles;
+    const { styles, woo } = attributes;
+    const { width, height, bgColor } = styles;
 
     useEffect(() => {
         if (typeof height === 'string') {

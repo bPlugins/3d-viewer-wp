@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-
 import Style from "./Style";
-// import SliderController from "./SliderControllder";
 import Basic3DViewer from "./Basic3DViewer";
 
 import ShopLoopItemComponents from "./ShopLoopItemComponents";

@@ -8,7 +8,7 @@ import { saveProgress } from './lib/save';
 
 const App: React.FC = () => {
     const [step, setStep] = useState<number>(1);
-    const [method, setMethod] = useState<Method>('gutenberg');
+    const [method, setMethod] = useState<Method>('shortcode');
 
     const go = (url: string) => {
         if (url) window.location.assign(url);

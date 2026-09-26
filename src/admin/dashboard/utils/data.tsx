@@ -291,7 +291,7 @@ export const pricingInfo: PricingInfo = {
     pluginId: 8795,
     planIds: [14970, 52950],
     licenses: [1, 3, null],
-    cycles: ['annual', 'lifetime'],
+    cycles: ['monthly', 'annual', 'lifetime'],
     button: {
         label: 'Buy Now ➜'
     },

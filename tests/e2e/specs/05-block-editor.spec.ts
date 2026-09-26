@@ -42,7 +42,7 @@ test.describe('Authoring in the block editor', () => {
 
         const block = editor.canvas.locator('[data-type="b3dviewer/modelviewer"]').first();
         await expect(block).toBeVisible();
-        await expect(block.locator('.upload3d')).toContainText(/Upload a 3D Model to Start/i);
+        await expect(block.locator('.upload3d')).toContainText(/Add Your 3D Model/i);
 
         // Set the model URL through the store (the sidebar media control is a
         // custom component; the attribute contract is what render.php consumes).

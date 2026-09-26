@@ -18,44 +18,6 @@ export const defaultEnvironmentImages: SelectOption[] = [
     },
 ];
 
-export const toneMappings: SelectOption[] = [
-    {
-        label: 'Neutral',
-        value: 'neutral',
-    },
-    {
-        label: 'ACES',
-        value: 'aces',
-    },
-    {
-        label: 'agX',
-        value: 'agx',
-    },
-];
-
-export const textureChannels: SelectOption[] = [
-    {
-        label: 'Base Color',
-        value: 'baseColor',
-    },
-    {
-        label: 'Metallic Roughness',
-        value: 'metallicRoughness',
-    },
-    {
-        label: 'Normal Map',
-        value: 'normal',
-    },
-    {
-        label: 'Emissive',
-        value: 'emissive',
-    },
-    {
-        label: 'Occlusion',
-        value: 'occlusion',
-    },
-];
-
 export const modelViewers = (placement: string): ViewerOption[] => {
     if (placement === 'visual-editor') {
         return [

@@ -26,6 +26,25 @@ if (!class_exists('BP3DAdmin')) {
             add_action('admin_page_access_denied', [$this, 'redirect_legacy_setup_url']);
             // Last hook before admin-header.php prints the notices.
             add_action('in_admin_header', [$this, 'suppress_setup_notices'], PHP_INT_MAX);
+            add_action('admin_head', [$this, 'render_admin_styles']);
+        }
+
+        /**
+         * Output admin head styles for the Freemius Upgrade menu link.
+         */
+        public function render_admin_styles()
+        {
+            ?>
+            <style>
+                .fs-submenu-item.\33 d-viewer.pricing.upgrade-mode {
+                    background: #146ef5;
+                    border-radius: 3px;
+                    color: #fff;
+                    display: inline-block;
+                    padding: 9px 20px 9px 18px;
+                }
+            </style>
+            <?php
         }
 
         /**
@@ -259,7 +278,7 @@ if (!class_exists('BP3DAdmin')) {
                     'addModel' => admin_url('post-new.php?post_type=bp3d-model-viewer'),
                     'addPage' => admin_url('post-new.php?post_type=page'),
                     'dashboard' => admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer'),
-                    'upgrade' => 'https://bplugins.com/products/3d-viewer/pricing/',
+                    'upgrade' => admin_url('edit.php?post_type=bp3d-model-viewer&page=3d-viewer#/pricing'),
                     'tutorial' => 'https://youtu.be/Tno8LiebxaI',
                 ],
             ]);

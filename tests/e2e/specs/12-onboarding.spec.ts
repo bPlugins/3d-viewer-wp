@@ -69,7 +69,7 @@ test.describe('Guided setup wizard', () => {
 
         await expect(badge('Augmented Reality')).toHaveText('Included');
         await expect(badge('Hotspots & Initial View')).toHaveText('Pro');
-        await expect(page.locator('#bp3dOnboarding').getByRole('link', { name: 'Upgrade to Pro' })).toHaveAttribute('href', /bplugins\.com\/products\/3d-viewer\/pricing/);
+        await expect(page.locator('#bp3dOnboarding').getByRole('link', { name: 'Upgrade to Pro' })).toHaveAttribute('href', /page=3d-viewer#\/pricing/);
     });
 
     test('Need help opens the tutorial in a modal', async ({ page, admin }) => {

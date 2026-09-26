@@ -1,7 +1,4 @@
 const defaultConfig = require("@wordpress/scripts/config/webpack.config.js");
-// const path = require("path");
-
-// import ESLintPlugin from "eslint-webpack-plugin";
 const ESLintPlugin = require("eslint-webpack-plugin");
 
 const plugins = defaultConfig.plugins.filter((p) => {
@@ -14,7 +11,6 @@ const plugins = defaultConfig.plugins.filter((p) => {
 
 const entry = {
     ...defaultConfig.entry(),
-    public: "./src/public/index.tsx",
     frontend: "./src/public/frontend.tsx", // woocommerce
     dashboard: "./src/admin/dashboard/admin.tsx",
     onboarding: "./src/admin/onboarding/index.tsx",

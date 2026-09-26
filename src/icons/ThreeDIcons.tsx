@@ -39,5 +39,3 @@ const ThreeDIcons: React.FC<ThreeDIconsProps> = ({ size = 16, ...props }) => (
 );
 
 export default ThreeDIcons;
-
-export const threeDIcon = <ThreeDIcons />;

@@ -6,6 +6,7 @@ import { useBlockProps } from "@wordpress/block-editor";
 import Settings from "./settings";
 import Viewer from "../Common/Viewer";
 import { InlineMediaUpload } from "../../../../../../bpl-tools/Components/MediaControl/MediaControl";
+import ThreeDIcons from "../../../../icons/ThreeDIcons";
 import { BlockAttributes } from "../../types";
 
 interface EditProps {
@@ -18,7 +19,7 @@ interface EditProps {
 
 const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: EditProps) => {
   const [isValid, setIsValid] = useState(true);
-  const { uniqueId, model, placement } = attributes;
+  const { uniqueId, model } = attributes;
   const viewerRef = useRef();
 
   //generate new unique ID
@@ -46,6 +47,15 @@ const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: Edi
 
   const containerRef = useRef();
 
+  // Old saves store height as a plain string instead of per-device values.
+  const height = attributes.styles?.height as any;
+  const heightFor = (device: string) => (typeof height === "string" ? height : height?.[device]);
+  const uploadStyle = {
+    "--bp3d-upload-h-desktop": heightFor("desktop"),
+    "--bp3d-upload-h-tablet": heightFor("tablet"),
+    "--bp3d-upload-h-mobile": heightFor("mobile"),
+  } as React.CSSProperties;
+
 
   return (
     <div {...blockProps}>
@@ -57,8 +67,10 @@ const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: Edi
         {modelSrc && isValid && <Viewer {...{ viewerRef, attributes, setAttributes, __, containerRef }} />}
         {modelSrc && !isValid && <h2>{__("3D file is not valid", "3d-viewer")}</h2>}
         {!modelSrc && (
-          <div className="upload3d">
-            <h2>Upload a 3D Model to Start</h2>
+          <div className="upload3d" style={uploadStyle}>
+            <div className="upload3d__icon"><ThreeDIcons size={26} /></div>
+            <h2>{__("Add Your 3D Model", "3d-viewer")}</h2>
+            <p className="upload3d__hint">{__("Paste a model URL or upload a file to get started.", "3d-viewer")}</p>
             <InlineMediaUpload
               value={modelSrc}
               placeholder={__("Model URL", "3d-viewer")}
