@@ -47,7 +47,7 @@ E2E_WP_CLI=wp WP_BASE_URL=http://dev.local WP_USERNAME=e2e_admin WP_PASSWORD=…
 | `09-elementor` | Model Viewer widget renders + loads on an Elementor-built page (skipped if Elementor inactive) |
 | `10-wp-core` | WP core regression with the plugin active: publish a standard post, regular image upload (upload_mimes filter), media library grid |
 | `11-woocommerce-shop` | Woo core regression: shop page lists products, full purchase (add to cart → block checkout → order received with COD) |
-| `12-onboarding` | Guided setup wizard: full-screen page renders, fields seeded from saved settings, editor choice persists, finish lands on Add New model |
+| `12-onboarding` | Guided setup: three-step page renders in wp-admin, settings untouched, early exit keeps the 33% resume entry, method picker keyboard + copy, video modal, finish lands on Add New model |
 
 Frontend model assertions wait for the **visible** `<model-viewer>` element to
 report `loaded === true` (real WebGL render), not just for markup.

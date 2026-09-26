@@ -1468,22 +1468,22 @@
           </div>
 
           <h2>The setup wizard</h2>
-          <p>Right after activation the plugin sends you to a four-step wizard at <span
-              class="path">admin.php?page=bp3d-setup-wizard</span>:</p>
+          <p>Right after activation the free plugin sends administrators to a three-step guided setup at <span
+              class="path">3D Viewer → Help &amp; Demos → Guided Setup</span> (<span
+              class="path">edit.php?post_type=bp3d-model-viewer&amp;page=bp3d-setup-wizard</span>):</p>
           <ol>
-            <li><strong>Welcome</strong> — a summary of the two viewers.</li>
-            <li><strong>Choose How to Generate Shortcode</strong> — pick <em>Gutenberg Block</em> or <em>Classic
-                Editor</em>. This writes the <strong>Enable Gutenberg</strong> setting described in <a href="#settings"
-                data-nav>Global Settings</a>, which decides how new 3D Viewer posts open.</li>
-            <li><strong>Available Options</strong> — a tour of the Model and Options panels.</li>
-            <li><strong>Publish &amp; You're All Set</strong> — embedding and quick troubleshooting.</li>
+            <li><strong>Model</strong> — a welcome screen with a link to the 2-minute tutorial.</li>
+            <li><strong>Customize</strong> — what the free and Pro editions include.</li>
+            <li><strong>Publish</strong> — pick <em>Gutenberg</em>, <em>Elementor</em> or <em>Shortcode</em> for
+              step-by-step instructions on adding a model that way.</li>
           </ol>
           <figure class="media-slot" data-media="image" data-src="img/setup-wizard-choose-editor.png" data-shot="editor"
-            data-caption="Setup wizard: choosing between the Gutenberg block and the Classic editor"></figure>
+            data-caption="Setup wizard: choosing how to add models"></figure>
           <div class="callout tip">
-            <span class="ct">The wizard runs once</span>
-            <p>Opening the page marks it complete, and later visits redirect to the 3D Viewer list. You can change the
-              same setting any time at <span class="path">3D Viewer → Settings → Shortcode Generator</span>.</p>
+            <span class="ct">The wizard changes no settings</span>
+            <p>It only records how far you got. Leave early and the <strong>Guided Setup</strong> entry stays on the
+              Help &amp; Demos screen, with your progress, until you reach the last step. It needs the
+              <code>manage_options</code> capability and is not shown once a Pro licence is active.</p>
           </div>
 
           <h2>Where everything lives</h2>
@@ -1668,17 +1668,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-
-          <h2>The first-run screen</h2>
-          <p>Straight after activation the plugin offers the same choice in its setup wizard — <strong>"Choose How to
-              Generate Shortcode"</strong> — with a preview of each editing experience behind the <em>Preview</em>
-            buttons. Picking one simply writes the setting above, so you can ignore it and change your mind later at any
-            time.</p>
-          <div class="callout">
-            <span class="ct">The wizard runs once</span>
-            <p>Opening it marks it complete and later visits redirect to the viewer list, so <span class="path">Settings
-                → Shortcode Generator</span> is where you change this afterwards.</p>
           </div>
 
           <h2>Not quite everything is in both</h2>
@@ -4108,8 +4097,7 @@
                 <tr>
                   <td><strong>Enable Gutenberg</strong></td>
                   <td>Off</td>
-                  <td>New 3D Viewer posts open in the block editor instead of the classic metabox. This is the setting
-                    the setup wizard writes.</td>
+                  <td>New 3D Viewer posts open in the block editor instead of the classic metabox.</td>
                 </tr>
               </tbody>
             </table>

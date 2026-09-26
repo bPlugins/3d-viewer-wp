@@ -18,8 +18,8 @@ if (!defined('ABSPATH')) {
  * and whether they reached the end. That leaves the wizard incapable of
  * changing an existing site's behaviour, however it is entered or left.
  *
- * The guided setup is a free-plugin feature, so every entry point is gated on
- * is_available().
+ * The guided setup is a free-plugin feature, so every automatic entry point
+ * (redirect, notice, dashboard entry) is gated on is_available().
  */
 class Onboarding
 {
@@ -43,12 +43,12 @@ class Onboarding
 
     public function register(): void
     {
-        if (!self::is_available()) {
-            return;
-        }
-
+        // Licensed sites can still open the screen by URL, so progress saves for them too.
         add_action('wp_ajax_' . self::AJAX_ACTION, [$this, 'handle']);
-        add_action('admin_init', [$this, 'maybe_redirect']);
+
+        if (self::is_available()) {
+            add_action('admin_init', [$this, 'maybe_redirect']);
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3d model viewer, 360 product view, augmented reality, woocommerce, glb
 Tested up to: 7.1
-Stable tag: 1.9.3
+Stable tag: 1.9.4
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -260,6 +260,9 @@ The bundle also includes the following sub-dependencies:
 * External Services: The library may connect to bPlugins, WordPress.org, and Freemius services to list available add-ons, resolve download URLs, and manage licenses. Connections are made only from the plugin's admin dashboard.
 
 == Changelog ==
+
+= 1.9.4 - 26 September, 2026  =
+Changed: Redesigned the guided setup as a three-step onboarding.
 
 = 1.9.3 - 9 September, 2026  =
 New: Environment Image and HDR Skybox Image are now available in the free version, in the Gutenberg block, the Elementor widget, and the shortcode generator.

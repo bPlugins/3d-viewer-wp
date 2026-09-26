@@ -1,0 +1,679 @@
+/* ============================================================
+   Page shell
+   ============================================================ */
+.bp3d-ob-page {
+  position: relative;
+  min-height: var(--bp3d-viewport);
+  overflow: hidden;
+  padding: var(--bp3d-ob-pill-top) 20px 60px;
+  background: var(--bp3d-ob-page-bg);
+}
+
+/* wp-admin stretches the page to the admin menu's height, which can outgrow the
+   wizard; paint the shell to match. Literal = --bp3d-ob-page-bg (tokens stay off wp-admin). */
+body.wp-admin:has(.bp3d-ob-page) #wpwrap {
+  background: #eef1fa;
+}
+
+/* Fixed, not absolute: steps 2 and 3 run taller than most windows, and an
+   absolutely-positioned blob would sit below the fold the whole time. */
+.bp3d-ob-blob {
+  position: fixed;
+  right: -272px;
+  bottom: -67px; /* the PNG carries ~67px of transparent padding below the shape */
+  width: 483px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.bp3d-ob-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ---- brand pill ---- */
+.bp3d-ob-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 55px;
+  padding: 0 31px;
+  border-radius: 999px;
+  background: var(--bp3d-ob-card-bg);
+  margin-bottom: var(--bp3d-ob-pill-gap);
+}
+
+.bp3d-ob-brand__mark {
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+.bp3d-ob-brand__name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--bp3d-ob-text-brand);
+}
+
+/* ---- card ---- */
+.bp3d-ob-card {
+  width: var(--bp3d-ob-card-w);
+  max-width: 100%;
+  padding: var(--bp3d-ob-card-pad);
+  background: var(--bp3d-ob-card-bg);
+  border: 1px solid var(--bp3d-ob-card-border);
+  border-radius: var(--bp3d-ob-card-radius);
+}
+
+/* ============================================================
+   Stepper
+   ============================================================ */
+.bp3d-ob-stepper {
+  display: flex;
+  align-items: center;
+}
+
+.bp3d-ob-stepper__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.bp3d-ob-stepper__dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bp3d-ob-step-idle-bg);
+  color: var(--bp3d-ob-step-idle-num);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  flex: none;
+}
+
+.bp3d-ob-stepper__label {
+  font-size: var(--bp3d-ob-step-label-size);
+  font-weight: 500;
+  color: var(--bp3d-ob-step-idle-label);
+  white-space: nowrap;
+}
+
+.bp3d-ob-stepper__step--active .bp3d-ob-stepper__dot {
+  background: var(--bp3d-ob-step-active);
+  color: #fff;
+}
+
+.bp3d-ob-stepper__step--active .bp3d-ob-stepper__label {
+  color: var(--bp3d-ob-step-active);
+}
+
+.bp3d-ob-stepper__line {
+  width: 51px;
+  height: 2px;
+  background: var(--bp3d-ob-step-line);
+  margin: 0 12px;
+  flex: none;
+}
+
+.bp3d-ob-stepper__spacer {
+  flex: 1;
+}
+
+.bp3d-ob-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--bp3d-ob-step-label-size);
+  font-weight: 500;
+  color: var(--bp3d-ob-step-idle-label);
+}
+
+/* A single stroked circle-x glyph, ring and X the same flat colour. */
+.bp3d-ob-exit svg {
+  color: #e2e8f0;
+  flex: none;
+}
+
+/* ============================================================
+   Shared copy blocks
+   ============================================================ */
+.bp3d-ob-eyebrow {
+  margin: 36px 0 0;
+  font-size: var(--bp3d-ob-eyebrow-size);
+  font-weight: var(--bp3d-ob-eyebrow-weight);
+  line-height: var(--bp3d-ob-eyebrow-lh);
+  color: var(--bp3d-ob-text-eyebrow);
+}
+
+.bp3d-ob-eyebrow--muted {
+  margin-top: 34px;
+  font-size: var(--bp3d-ob-eyebrow-size-sm);
+  color: var(--bp3d-ob-text-eyebrow-muted);
+}
+
+.bp3d-ob-eyebrow--muted + .bp3d-ob-title {
+  margin-top: 18px;
+}
+
+.bp3d-ob-title {
+  margin: 19px 0 0;
+  font-size: var(--bp3d-ob-h2-size);
+  font-weight: var(--bp3d-ob-h2-weight);
+  line-height: var(--bp3d-ob-h2-lh);
+  letter-spacing: var(--bp3d-ob-h2-tracking);
+  color: var(--bp3d-ob-text-heading);
+}
+
+.bp3d-ob-lede {
+  margin: 20px 0 0;
+  font-size: var(--bp3d-ob-body-size);
+  font-weight: var(--bp3d-ob-body-weight);
+  line-height: var(--bp3d-ob-body-lh);
+  color: var(--bp3d-ob-text-body);
+}
+
+.bp3d-ob-lede--narrow {
+  max-width: 430px;
+}
+
+.bp3d-ob-lede--mid {
+  max-width: 470px;
+}
+
+.bp3d-ob-section-label {
+  margin: 0 0 16px;
+  font-size: var(--bp3d-ob-label-size);
+  font-weight: var(--bp3d-ob-label-weight);
+  color: var(--bp3d-ob-text-title);
+}
+
+.bp3d-ob-divider {
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--bp3d-ob-divider);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.bp3d-ob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 45px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: var(--bp3d-ob-btn-size);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.bp3d-ob-btn--primary {
+  background: var(--bp3d-ob-primary);
+  color: #fff;
+}
+
+.bp3d-ob-btn--primary:hover {
+  background: #2f45e0;
+}
+
+.bp3d-ob-btn--ghost {
+  padding: 0 18px;
+  border: 1px solid var(--bp3d-ob-row-border);
+  background: #fff;
+  color: var(--bp3d-ob-text-quiet);
+}
+
+.bp3d-ob-btn--ghost:hover {
+  background: var(--bp3d-ob-row-bg-neutral);
+}
+
+.bp3d-ob-btn--link {
+  height: 45px;
+  padding: 0;
+  letter-spacing: 0;
+  color: var(--bp3d-ob-text-eyebrow);
+  font-weight: 500;
+}
+
+.bp3d-ob-btn--link:hover {
+  color: var(--bp3d-ob-text-heading);
+}
+
+/* Keyboard-only ring. :focus-visible never matches a mouse click in Chromium,
+   so this cannot appear in the pixel-fidelity renders. */
+.bp3d-ob-page :focus-visible {
+  outline: 2px solid var(--bp3d-ob-step-active);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- footer row ---- */
+.bp3d-ob-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 37px;
+}
+
+.bp3d-ob-footer__end {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* ============================================================
+   Screen 1 — Welcome
+   ============================================================ */
+.bp3d-ob-hero {
+  width: 100%;
+  margin-top: 26px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bp3d-ob-hero img {
+  width: 100%;
+  height: auto;
+}
+
+.bp3d-ob-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 19px;
+  margin-top: 36px;
+}
+
+.bp3d-ob-highlight {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  column-gap: 14px;
+  row-gap: 4px;
+  align-items: start;
+  /* rows must not absorb a taller sibling column's leftover height, or columns
+     with fewer body lines drift down */
+  align-content: start;
+}
+
+.bp3d-ob-highlight__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  grid-row: span 2;
+}
+
+.bp3d-ob-highlight__icon--green {
+  background: var(--bp3d-ob-tile-green-bg);
+  color: var(--bp3d-ob-tile-green-fg);
+}
+
+.bp3d-ob-highlight__icon--blue {
+  background: var(--bp3d-ob-tile-blue-bg);
+  color: var(--bp3d-ob-tile-blue-fg);
+}
+
+.bp3d-ob-highlight__icon--purple {
+  background: var(--bp3d-ob-tile-purple-bg);
+  color: var(--bp3d-ob-tile-purple-fg);
+}
+
+.bp3d-ob-highlight__title {
+  margin: 0;
+  font-size: var(--bp3d-ob-card-header-size);
+  font-weight: var(--bp3d-ob-card-header-weight);
+  line-height: var(--bp3d-ob-card-header-lh);
+  color: var(--bp3d-ob-text-title);
+  align-self: center;
+}
+
+.bp3d-ob-highlight__body {
+  margin: 0;
+  font-size: var(--bp3d-ob-body-size);
+  font-weight: var(--bp3d-ob-body-weight);
+  line-height: var(--bp3d-ob-body-lh);
+  color: var(--bp3d-ob-text-body);
+  /* Reserve three lines so swapping the step-3 copy per method cannot change the
+     block's height and shift the divider and footer. The design's own tallest
+     column is already three lines, so this adds nothing on step 1. */
+  min-height: calc(var(--bp3d-ob-body-size) * var(--bp3d-ob-body-lh) * 3);
+}
+
+/* ---- help pill (screen 1 footer) ---- */
+.bp3d-ob-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 45px;
+  padding: 0 16px 0 10px;
+  border-radius: 8px;
+  background: var(--bp3d-ob-tile-blue-bg);
+  text-align: left;
+  text-decoration: none;
+}
+
+.bp3d-ob-help__play {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bp3d-ob-tile-blue-fg);
+  color: #fff;
+  flex: none;
+}
+
+.bp3d-ob-help__title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--bp3d-ob-tile-blue-fg);
+}
+
+.bp3d-ob-help__sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--bp3d-ob-text-quiet);
+}
+
+.bp3d-ob-video {
+  width: min(1200px, calc(100vw - 32px), calc((100vh - 120px) * 16 / 9)); /* height cap keeps the close button on screen */
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #000;
+  overflow: visible;
+}
+
+.bp3d-ob-video::backdrop {
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.bp3d-ob-video__frame {
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.bp3d-ob-video__frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.bp3d-ob-video__close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+}
+
+.bp3d-ob-video__close:hover,
+.bp3d-ob-video__close:focus-visible {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   Screen 2 — Feature grid
+   ============================================================ */
+.bp3d-ob-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 38px;
+}
+
+.bp3d-ob-feature {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  column-gap: 14px;
+  padding: 21px;
+  border: 1px solid var(--bp3d-ob-feature-card-border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.bp3d-ob-feature__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  color: var(--bp3d-ob-icon-dark);
+  flex: none;
+}
+
+/* Every glyph is the same dark navy; only the tile background differs. */
+.bp3d-ob-feature__icon--blue {
+  background: #eef2ff;
+}
+.bp3d-ob-feature__icon--violet {
+  background: #f5f3ff;
+}
+.bp3d-ob-feature__icon--mint {
+  background: #ecfdf5;
+}
+.bp3d-ob-feature__icon--rose {
+  background: #fdf2f8;
+}
+.bp3d-ob-feature__icon--lavender {
+  background: #faf5ff;
+}
+.bp3d-ob-feature__icon--sky {
+  background: #f0f9ff;
+}
+
+.bp3d-ob-feature__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bp3d-ob-feature__title {
+  margin: 0;
+  font-size: var(--bp3d-ob-card-header-size);
+  font-weight: var(--bp3d-ob-card-header-weight);
+  line-height: var(--bp3d-ob-card-header-lh);
+  color: var(--bp3d-ob-text-title);
+}
+
+.bp3d-ob-feature__body {
+  margin: 10px 0 0;
+  font-size: var(--bp3d-ob-body-size);
+  font-weight: var(--bp3d-ob-body-weight);
+  line-height: var(--bp3d-ob-body-lh);
+  color: var(--bp3d-ob-text-body);
+}
+
+.bp3d-ob-check {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--bp3d-ob-checkbox-fill);
+  color: #fff;
+  flex: none;
+}
+
+.bp3d-ob-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  margin-top: 13px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.bp3d-ob-badge--included {
+  background: var(--bp3d-ob-badge-included-bg);
+  color: var(--bp3d-ob-badge-included-fg);
+}
+
+.bp3d-ob-badge--pro {
+  background: var(--bp3d-ob-badge-pro-bg);
+  color: var(--bp3d-ob-badge-pro-fg);
+}
+
+/* ============================================================
+   Screen 3 — Method picker
+   ============================================================ */
+.bp3d-ob-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bp3d-ob-method {
+  /* Each tone only redefines these two; the selected rules below are written once. */
+  --bp3d-ob-method-accent: var(--bp3d-ob-gutenberg-fg);
+  --bp3d-ob-method-bg-on: var(--bp3d-ob-row-bg-neutral-on);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 75px;
+  padding: 0 18px;
+  border: 1px solid var(--bp3d-ob-row-border);
+  border-radius: 10px;
+  background: var(--bp3d-ob-row-bg-neutral);
+  text-align: left;
+  transition: box-shadow 0.15s ease;
+}
+
+.bp3d-ob-method--pink {
+  --bp3d-ob-method-accent: var(--bp3d-ob-elementor-fg);
+  --bp3d-ob-method-bg-on: var(--bp3d-ob-row-bg-pink-on);
+  background: var(--bp3d-ob-row-bg-pink);
+}
+.bp3d-ob-method--green {
+  --bp3d-ob-method-accent: var(--bp3d-ob-shortcode-fg);
+  --bp3d-ob-method-bg-on: var(--bp3d-ob-row-bg-green-on);
+  background: var(--bp3d-ob-row-bg-green);
+}
+
+/* Hover must not fight the selected ring, so it yields to it. */
+.bp3d-ob-method:hover:not([aria-checked='true']) {
+  box-shadow: 0 0 0 1px var(--bp3d-ob-card-border);
+}
+
+/* Selected: brand ring + deeper fill. The border and shadow together read as
+   2px without changing the box size, so nothing shifts when you pick a row. */
+.bp3d-ob-method[aria-checked='true'] {
+  border-color: var(--bp3d-ob-method-accent);
+  box-shadow: 0 0 0 1px var(--bp3d-ob-method-accent);
+  background: var(--bp3d-ob-method-bg-on);
+}
+
+.bp3d-ob-method[aria-checked='true'] .bp3d-ob-method__icon {
+  border-color: var(--bp3d-ob-method-accent);
+  color: var(--bp3d-ob-method-accent);
+}
+
+/* Filled brand disc with a white tick: selection never rests on colour alone. */
+.bp3d-ob-method__check {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--bp3d-ob-method-accent);
+  color: #fff;
+  flex: none;
+}
+
+.bp3d-ob-method__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--bp3d-ob-row-border);
+  background: #fff;
+  color: var(--bp3d-ob-icon-dark);
+  flex: none;
+}
+
+.bp3d-ob-method__title {
+  display: block;
+  margin: 0;
+  font-size: var(--bp3d-ob-card-header-size);
+  font-weight: var(--bp3d-ob-card-header-weight);
+  line-height: var(--bp3d-ob-card-header-lh);
+  color: var(--bp3d-ob-text-title);
+}
+
+.bp3d-ob-method--pink .bp3d-ob-method__title {
+  color: var(--bp3d-ob-elementor-fg);
+}
+.bp3d-ob-method--green .bp3d-ob-method__title {
+  color: var(--bp3d-ob-shortcode-fg);
+}
+
+.bp3d-ob-method__sub {
+  display: block;
+  margin: 4px 0 0;
+  font-size: var(--bp3d-ob-body-size);
+  font-weight: var(--bp3d-ob-body-weight);
+  line-height: var(--bp3d-ob-body-lh);
+  color: var(--bp3d-ob-text-body);
+}
+
+.bp3d-ob-note {
+  margin: 35px 0 16px;
+  font-size: var(--bp3d-ob-body-size);
+  font-weight: 700;
+  line-height: var(--bp3d-ob-body-lh);
+  color: var(--bp3d-ob-text-title);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 800px) {
+  .bp3d-ob-features,
+  .bp3d-ob-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .bp3d-ob-footer {
+    flex-wrap: wrap;
+  }
+
+  .bp3d-ob-stepper__line {
+    width: 24px;
+    margin: 0 8px;
+  }
+}
