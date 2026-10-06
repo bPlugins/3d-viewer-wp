@@ -1,0 +1,417 @@
+// Classic (legacy) Dokan product editor section.
+.bp3d-dokan {
+    .bp3d-dokan-field {
+        margin-bottom: 15px;
+    }
+
+    .bp3d-dokan-picker {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 120px;
+        padding: 15px;
+        border: 4px dashed #ddd;
+        background: #fff;
+        box-sizing: border-box;
+
+        &.has-value {
+            min-height: 0;
+            padding: 10px 12px;
+            border: 1px solid #ebebeb;
+        }
+    }
+
+    .bp3d-dokan-picker__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        color: #aaa;
+        text-align: center;
+
+        i {
+            font-size: 28px;
+        }
+    }
+
+    .bp3d-dokan-picker__value {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .bp3d-dokan-picker.has-value {
+        .bp3d-dokan-picker__empty {
+            display: none;
+        }
+
+        .bp3d-dokan-picker__value {
+            display: flex;
+        }
+    }
+
+    .bp3d-dokan-picker__thumb {
+        flex: none;
+        width: 48px;
+        height: 48px;
+        border: 1px solid #ebebeb;
+        object-fit: cover;
+
+        &:not([src]),
+        &[src=""] {
+            display: none;
+        }
+    }
+
+    .bp3d-dokan-picker__name {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        color: #555;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .bp3d-dokan-pick:hover,
+    .bp3d-dokan-pick:focus {
+        border-color: var(--dokan-button-background-color, #7047EB);
+        background: var(--dokan-button-background-color, #7047EB);
+        color: #fff;
+    }
+
+    .bp3d-dokan-replace {
+        flex: none;
+        color: var(--dokan-link-color, #7047EB);
+        font-size: 13px;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            text-decoration: underline;
+        }
+    }
+
+    .bp3d-dokan-remove {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 3px;
+        color: #F23030;
+        font-size: 20px;
+        line-height: 1;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            background: #FEF3F3;
+            color: #BC1C21;
+        }
+    }
+
+    .bp3d-dokan-help {
+        margin: 6px 0 0;
+        color: #888;
+        font-size: 12px;
+    }
+
+    .bp3d-dokan-error {
+        margin: 8px 0 0;
+        padding: 8px 12px;
+    }
+
+    .bp3d-dokan-preview {
+        display: none;
+        margin-bottom: 15px;
+        overflow: hidden;
+        border: 1px solid #ebebeb;
+        background: #f8f8f8;
+
+        &.has-preview {
+            display: block;
+        }
+
+        model-viewer {
+            display: block;
+            width: 100%;
+            height: 260px;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            max-height: 260px;
+            margin: 0 auto;
+        }
+    }
+
+    .bp3d-dokan-background__controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        label {
+            margin: 0;
+            font-weight: normal;
+        }
+    }
+
+    .bp3d-dokan-background__color {
+        width: 48px;
+        height: 32px;
+        padding: 2px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+
+        &.is-transparent {
+            opacity: 0.4;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    .bp3d-dokan-notice {
+        margin-bottom: 0;
+    }
+}
+
+// React (latest) Dokan product editor field.
+.dokan-form-field-bp3d_model .bp3d-dokan-react {
+    --bp3d-dokan-primary: var(--colors-primary-600, #7047eb);
+    --bp3d-dokan-border: var(--colors-gray-200, #e9e9e9);
+
+    font-size: 14px;
+
+    .bp3d-dokan-react__fields {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .bp3d-dokan-react__row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .bp3d-dokan-react__label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+
+    .bp3d-dokan-react__hint {
+        color: #757575;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .bp3d-dokan-react__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 120px;
+        padding: 16px;
+        border: 1px dashed var(--bp3d-dokan-border);
+        border-radius: 4px;
+        background: #fff;
+        text-align: center;
+    }
+
+    .bp3d-dokan-react__file {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 8px 8px 12px;
+        border: 1px solid var(--bp3d-dokan-border);
+        border-radius: 4px;
+        background: #fff;
+    }
+
+    .bp3d-dokan-react__icon {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        background: #f1edfd;
+        background: color-mix(in srgb, var(--bp3d-dokan-primary) 10%, #fff);
+        color: var(--bp3d-dokan-primary);
+    }
+
+    .bp3d-dokan-react__thumb {
+        flex: none;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--bp3d-dokan-border);
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    .bp3d-dokan-react__name {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .bp3d-dokan-react__button {
+        flex: none;
+    }
+
+    .bp3d-dokan-react__remove {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: #757575;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+            background: var(--dokan-danger-background-color, #fef3f3);
+            color: var(--dokan-danger-text-color, #bc1c21);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    }
+
+    .bp3d-dokan-react__preview {
+        overflow: hidden;
+        border: 1px solid var(--bp3d-dokan-border);
+        border-radius: 4px;
+        background: #f8f8f8;
+
+        model-viewer {
+            display: block;
+            width: 100%;
+            height: 260px;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            max-height: 260px;
+            margin: 0 auto;
+        }
+    }
+
+    .bp3d-dokan-react__select {
+        width: 100%;
+        max-width: 320px;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid var(--bp3d-dokan-border);
+        border-radius: 4px;
+        background-color: #fff;
+        font-size: 14px;
+
+        &:focus {
+            border-color: var(--bp3d-dokan-primary);
+            outline: none;
+            box-shadow: 0 0 0 1px var(--bp3d-dokan-primary);
+        }
+    }
+
+    .bp3d-dokan-react__color {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .bp3d-dokan-react__swatch {
+        width: 48px;
+        height: 32px;
+        padding: 2px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+
+        &.is-transparent {
+            opacity: 0.4;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    .bp3d-dokan-react__check {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .bp3d-dokan-react__notice {
+        padding: 12px 16px;
+        border-radius: 4px;
+        background: var(--dokan-info-background-color, #e9f9ff);
+        color: var(--dokan-info-text-color, #0b76b7);
+    }
+
+    .bp3d-dokan-react__error {
+        margin: 0;
+        color: var(--dokan-danger-text-color, #bc1c21);
+        font-size: 12px;
+    }
+
+    // Used only when Dokan's DokanButton component is unavailable.
+    .bp3d-dokan-btn {
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid var(--dokan-button-background-color, #7047EB);
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        cursor: pointer;
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    }
+
+    .bp3d-dokan-btn--primary,
+    .bp3d-dokan-btn--secondary:hover,
+    .bp3d-dokan-btn--secondary:focus-visible {
+        background: var(--dokan-button-background-color, #7047EB);
+        color: #fff;
+    }
+
+    .bp3d-dokan-btn--secondary,
+    .bp3d-dokan-btn--tertiary {
+        background: #fff;
+        color: var(--dokan-button-background-color, #7047EB);
+    }
+}

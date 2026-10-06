@@ -24,6 +24,56 @@ class Settings
   public function register(): void
   {
     add_action('init', [$this, 'init'], 0);
+    add_filter('csf_' . $this->prefix . '_save', [$this, 'preserveSettings'], 10, 2);
+  }
+
+  /**
+   * Keep stored keys this page does not declare (e.g. Pro settings) when saving.
+   *
+   * @param  mixed       $data      Declared fields from the form (already unslashed by CSF)
+   * @param  object|null $instance  CSF options instance
+   * @return array<string, mixed>
+   */
+  public function preserveSettings($data, $instance = null): array
+  {
+    if (!is_array($data)) {
+      $data = [];
+    }
+
+    return $this->overlayDeclared($data, $instance);
+  }
+
+  /**
+   * Overlay the declared field values onto the stored option.
+   *
+   * @param  array<string, mixed> $data
+   * @param  object|null          $instance
+   * @return array<string, mixed>
+   */
+  protected function overlayDeclared(array $data, $instance): array
+  {
+    $stored = get_option($this->prefix, []);
+    if (!is_array($stored) || empty($stored)) {
+      return $data;
+    }
+
+    $declared = [];
+    foreach ((is_object($instance) && !empty($instance->pre_fields)) ? $instance->pre_fields : [] as $field) {
+      if (!empty($field['id'])) {
+        $declared[] = $field['id'];
+      }
+    }
+    if (!$declared) {
+      $declared = array_keys($data);
+    }
+
+    foreach ($declared as $key) {
+      if (array_key_exists($key, $data)) {
+        $stored[$key] = $data[$key];
+      }
+    }
+
+    return $stored;
   }
 
   /**

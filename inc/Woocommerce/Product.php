@@ -35,13 +35,13 @@ class Product
     /**
      * Build the full model viewer attributes array for a WooCommerce product.
      *
-     * @param  array<string, mixed> $modelData  Raw model data from post meta
+     * @param  mixed $modelData  Raw model data from post meta (non-arrays are treated as empty)
      * @return array<string, mixed> Formatted attributes array
      */
-    public static function getProductAttributes(array $modelData = []): array
+    public static function getProductAttributes($modelData = []): array
     {
         if (!is_array($modelData)) {
-            return [];
+            $modelData = [];
         }
 
         global $product;
@@ -55,11 +55,33 @@ class Product
 
         $get_option = Utils::getSettings('_bp3d_settings_');
 
-        $model_src = $modelData['bp3d_model_src'] ?? $modelData['bp3d_models']['0']['model_src'] ?? '';
+        $model_src = self::effectiveModelUrl($modelData);
         $poster = $modelData['bp3d_poster_src'] ?? $modelData['bp3d_models']['0']['poster_src'] ?? '';
-        
 
-        return [
+        $model = [
+            'modelUrl' => $model_src,
+            'poster' => $poster,
+        ];
+        $ar_enabled = false;
+
+        // AR settings live on row 0, so pair them only with row 0's own model (a stale flat key would mismatch).
+        // Added only when AR is on, so products without AR keep byte-identical markup.
+        $row0 = $modelData['bp3d_models'][0] ?? null;
+        if (
+            is_array($row0)
+            && in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)
+            && trim($model_src) !== ''
+            && trim($model_src) === trim(self::urlOf($row0['model_src'] ?? ''))
+        ) {
+            $model['arEnabled'] = true;
+            $model['modelISOSrc'] = is_string($row0['model_iso_src'] ?? null) ? $row0['model_iso_src'] : '';
+            $model['arPlacement'] = in_array($row0['ar_placement'] ?? '', ['floor', 'wall'], true) ? $row0['ar_placement'] : 'floor';
+            $model['arMode'] = in_array($row0['ar_mode'] ?? '', ['webxr', 'scene-viewer', 'quick-look'], true) ? $row0['ar_mode'] : 'webxr';
+
+            $ar_enabled = true;
+        }
+
+        $attributes = [
             'align' => 'center',
             'uniqueId' => 'model' . get_the_ID(),
             'O3DVSettings' => [
@@ -67,10 +89,7 @@ class Product
                 'mouseControl' => true,
                 'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             ],
-            'model' => [
-                'modelUrl' => $model_src,
-                'poster' => $poster,
-            ],
+            'model' => $model,
             'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             'lazyLoad' => $get_option('bp_3d_loading', 'lazy') === 'lazy',
             'preload' => 'auto',
@@ -86,6 +105,34 @@ class Product
             'woo' => true,
             'placement' => 'shortcode',
         ];
+
+        if ($ar_enabled) {
+            $attributes['arLink'] = get_permalink($product_id);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Model URL as the front end resolves it: flat key first, then row 0.
+     *
+     * @param array<string, mixed> $modelData
+     */
+    private static function effectiveModelUrl(array $modelData): string
+    {
+        return self::urlOf($modelData['bp3d_model_src'] ?? $modelData['bp3d_models']['0']['model_src'] ?? '');
+    }
+
+    /**
+     * @param mixed $value  URL string or a media array with a 'url' key
+     */
+    private static function urlOf($value): string
+    {
+        if (is_array($value)) {
+            $value = $value['url'] ?? '';
+        }
+
+        return is_string($value) ? $value : '';
     }
 
     /**
@@ -135,6 +182,11 @@ class Product
         
         $meta = Utils::getPostMeta($product->get_id(), '_bp3d_product_');
         $modelData = $meta('all');
+
+        if (!is_array($modelData) || trim(self::effectiveModelUrl($modelData)) === '') {
+            return '';
+        }
+
         $finalData = self::getProductAttributes($modelData);
 
         $class = Utils::getThemeClass();
