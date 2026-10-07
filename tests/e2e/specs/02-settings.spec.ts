@@ -1,47 +1,64 @@
-import { test, expect } from '../fixtures';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../admin-ui';
+import { WP_3D_SETTINGS, adminUi, fieldRow, openSettingsTab, saveSettings } from '../helpers/wp-admin';
 
-const SETTINGS_QUERY = 'post_type=bp3d-model-viewer&page=3dviewer-settings';
+/** Whether a mime type is ticked: Codestar's checkbox, or bfields' tile (role=checkbox). */
+async function mimeChecked(page: Page, ext: string): Promise<boolean> {
+    if ((await adminUi(page)) === 'classic') {
+        return page.locator(`input[type="checkbox"][value="${ext}"]`).first().isChecked();
+    }
+    return (await mimeTile(page, ext).getAttribute('aria-checked')) === 'true';
+}
+
+function mimeTile(page: Page, ext: string) {
+    return page
+        .locator('.bfields-root[data-unique="_bp3d_settings_"] button.bfields-mime')
+        .filter({ has: page.locator('strong', { hasText: new RegExp(`^${ext}$`, 'i') }) })
+        .first();
+}
+
+async function setMime(page: Page, ext: string, on: boolean) {
+    if ((await mimeChecked(page, ext)) === on) return;
+    if ((await adminUi(page)) === 'classic') {
+        const box = page.locator(`input[type="checkbox"][value="${ext}"]`).first();
+        await (on ? box.check() : box.uncheck());
+    } else {
+        await mimeTile(page, ext).click();
+    }
+    expect(await mimeChecked(page, ext)).toBe(on);
+}
 
 /**
- * Toggles a mime checkbox, saves through the CSF form, and verifies the value
- * survives a reload — proving the settings round-trip works end to end.
+ * Toggles a mime checkbox, saves through the settings form, and verifies the value
+ * survives a reload — proving the settings round-trip works end to end, in either interface.
  */
 test.describe('Settings save round-trip', () => {
-    test('mime type checkbox persists across save + reload', async ({ page, admin }) => {
-        await admin.visitAdminPage('edit.php', SETTINGS_QUERY);
+    test('mime type checkbox persists across save + reload', async ({ page, adminUi: mode }) => {
+        await page.goto(WP_3D_SETTINGS);
+        const ui = await adminUi(page);
+        if (mode) expect(ui, 'Settings interface').toBe(mode);
 
-        const stl = page.locator('input[type="checkbox"][value="stl"]').first();
-        await expect(stl).toBeChecked(); // enabled by global-setup
+        expect(await mimeChecked(page, 'stl')).toBe(true); // enabled by global-setup
 
         // Uncheck and save
-        await stl.uncheck();
-        await page.locator('.csf-save').first().click();
-        // CSF saves via ajax; wait for the button to settle
-        await page.waitForTimeout(2500);
+        await setMime(page, 'stl', false);
+        await saveSettings(page);
 
         await page.reload();
-        await expect(
-            page.locator('input[type="checkbox"][value="stl"]').first()
-        ).not.toBeChecked();
+        expect(await mimeChecked(page, 'stl')).toBe(false);
 
         // Restore and save again
-        const stl2 = page.locator('input[type="checkbox"][value="stl"]').first();
-        await stl2.check();
-        await page.locator('.csf-save').first().click();
-        await page.waitForTimeout(2500);
+        await setMime(page, 'stl', true);
+        await saveSettings(page);
 
         await page.reload();
-        await expect(
-            page.locator('input[type="checkbox"][value="stl"]').first()
-        ).toBeChecked();
+        expect(await mimeChecked(page, 'stl')).toBe(true);
     });
 
-    test('Gutenberg editor switch exists in Shortcode Generator settings', async ({ page, admin }) => {
-        await admin.visitAdminPage('edit.php', SETTINGS_QUERY);
-        // gutenberg_enabled switcher field rendered by CSF
-        const field = page.locator(
-            '[data-depend-id="gutenberg_enabled"], input[name*="gutenberg_enabled"]'
-        );
-        await expect(field.first()).toBeAttached();
+    test('Gutenberg editor switch exists in Shortcode Generator settings', async ({ page }) => {
+        await page.goto(WP_3D_SETTINGS);
+        // gutenberg_enabled stays on the Shortcode Generator tab in both interfaces.
+        await openSettingsTab(page, 'shortcode-generator');
+        await expect(await fieldRow(page, '_bp3d_settings_[gutenberg_enabled]')).toBeAttached();
     });
 });

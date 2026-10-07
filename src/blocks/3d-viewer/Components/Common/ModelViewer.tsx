@@ -219,7 +219,6 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
 
                 <button type="button" slot="poster" id="default-poster" aria-label="A 3D model" style={modelPoster ? { backgroundImage: ` url("${modelPoster}")` } : {}}></button>
 
-                {/* {loadingPercentage && viewerRef.current && !viewerRef.current?.loaded && ( */}
                 {loadingPercentage && !loadFailed &&
                     !viewerRef.current?.loaded && ( // working fine on frontend with this condition
                         <div className="percentageWrapper" slot="progress-bar">
@@ -227,7 +226,6 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
                             <span className="percentage">0%</span>
                         </div>
                     )}
-                {/* working fine on frontend with this condition */}
                 {!viewerRef.current?.loaded && !loadingPercentage && !loadFailed && <div className="bp3d_loader" slot="progress-bar">
                     <div className="overlay"></div>
                     <img style={{ width: '100px', background: 'white', borderRadius: '5px', height: 'auto' }} src={loadingImgSrc} />

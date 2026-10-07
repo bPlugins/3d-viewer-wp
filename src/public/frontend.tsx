@@ -1,9 +1,6 @@
-import React from 'react';
-
-import './product';
 import './scss/themes/themes.scss';
 import './scss/themes/common.scss';
-import FrontEnd from './Components/FrontEnd';
+import FrontEnd, { FrontEndAttributes } from './Components/FrontEnd';
 import manageIncompatibleTheme from '../utils/manageIncompatibleTheme';
 import './elementor';
 import jsonParse from '../utils/jsonParse';
@@ -22,16 +19,6 @@ setTimeout(() => {
         backupModels.forEach((element: HTMLElement) => {
             if (element) {
                 element.style.display = 'block';
-                setTimeout(() => {
-                    const adminMessages = document.querySelectorAll('.bp3d_admin_message') as NodeListOf<HTMLElement>;
-                    if (adminMessages.length > 0) {
-                        adminMessages.forEach((adminMessage: HTMLElement) => {
-                            if (adminMessage) {
-                                adminMessage.style.display = 'block';
-                            }
-                        });
-                    }
-                }, 5000);
             }
         });
     }
@@ -55,12 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
             Object.keys(dom.dataset).forEach((key) => delete dom.dataset[key]);
         }, 10);
 
-        const attributes = jsonParse(dataset.attributes);
+        const attributes = jsonParse<FrontEndAttributes>(dataset.attributes);
         if (!attributes) return;
 
         const { is_not_compatible, placement } = attributes;
 
-        if (['product-gallery'].includes(placement)) {
+        if (placement === 'product-gallery') {
             if (is_not_compatible) {
                 manageIncompatibleTheme(attributes);
             } else {

@@ -16,24 +16,6 @@ if (!defined('ABSPATH')) {
  */
 final class Addons
 {
-    private const VERSION = '1.0.0';
-    private const MINIMUM_ELEMENTOR_VERSION = '2.0.0';
-    private const MINIMUM_PHP_VERSION = '7.0';
-
-    private static ?self $_instance = null;
-
-    /**
-     * Get singleton instance.
-     */
-    public static function instance(): self
-    {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new self();
-        }
-
-        return self::$_instance;
-    }
-
     /**
      * Register Elementor hooks.
      */

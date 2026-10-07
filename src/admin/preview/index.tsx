@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { __ } from '@wordpress/i18n';
 
 import Viewer from '../../blocks/3d-viewer/Components/Common/Viewer';
+import { applyModelView } from '../../utils/setView';
 
 // Use WordPress's bundled ReactDOM (React 18) rather than importing
 // `react-dom/client`, which would bundle the incompatible React 19 copy from
@@ -9,6 +11,41 @@ const { createRoot, createPortal } = (window as any).ReactDOM;
 
 const META_PREFIX = '_bp3dimages_';
 const COLLAPSE_KEY = 'bp3d_preview_collapsed';
+
+/*
+ * The new admin interface (bfields, inc/Base/AdminUi.php) draws this meta box
+ * without Codestar's inputs, so there the values come from its store instead of
+ * the DOM. The store holds the STORED shapes, so each reader below gets what
+ * the Codestar input for the same value would hold. The Classic (Codestar)
+ * paths are unchanged.
+ */
+const isModern = (): boolean => (window as any).bp3dPreview?.ui === 'modern';
+
+function storeValues(): Record<string, any> {
+    return (window as any).bfields?.getValues?.(META_PREFIX) || {};
+}
+
+/** A stored value as the Codestar input holding it reads (esc_attr of it). */
+function asInput(value: unknown): string {
+    if (value === true) return '1';
+    if (value === false || value === null || value === undefined) return '';
+    // A single button_set that Codestar's Reset stored as an array: its first
+    // element is the checked one.
+    if (Array.isArray(value)) return value.length ? asInput(value[0]) : '';
+    if (typeof value === 'object') return '';
+    return String(value);
+}
+
+/** Resolve a Codestar input name (`_bp3dimages_[a][b]`) against the store. */
+function storeVal(name: string): string {
+    const path = (name.slice(META_PREFIX.length).match(/\[([^\]]*)\]/g) || []).map((part) => part.slice(1, -1));
+    let node: any = storeValues();
+    for (const key of path) {
+        if (node === null || typeof node !== 'object') return '';
+        node = node[key];
+    }
+    return asInput(node);
+}
 
 // ── Inline SVG icons (small, self-contained) ──────────────────────────
 
@@ -33,17 +70,25 @@ const ChevronIcon = () => (
 );
 
 /**
- * Read a single CSF field value from the metabox DOM.
+ * Read a form control value by its exact Codestar `name`: from the bfields
+ * store in Modern, else from the metabox DOM (a `:checked` control first).
+ */
+function rawVal(name: string): string {
+    if (isModern()) return storeVal(name);
+    const escaped = name.replace(/([[\]])/g, '\\$1');
+    const checked = document.querySelector<HTMLInputElement>(`[name="${escaped}"]:checked`);
+    const el = checked || document.querySelector<HTMLInputElement>(`[name="${escaped}"]`);
+    return el ? el.value : '';
+}
+
+/**
+ * Read a single CSF field value.
  *
  * @param id  Field id (e.g. `bp_3d_src`).
  * @param sub Optional sub-key for nested fields (e.g. `url`, `width`, `unit`).
  */
 function fieldVal(id: string, sub?: string): string {
-    const name = sub ? `${META_PREFIX}[${id}][${sub}]` : `${META_PREFIX}[${id}]`;
-    const escaped = name.replace(/([[\]])/g, '\\$1');
-    const checked = document.querySelector<HTMLInputElement>(`[name="${escaped}"]:checked`);
-    const el = checked || document.querySelector<HTMLInputElement>(`[name="${escaped}"]`);
-    return el ? el.value : '';
+    return rawVal(sub ? `${META_PREFIX}[${id}][${sub}]` : `${META_PREFIX}[${id}]`);
 }
 
 /**
@@ -116,16 +161,78 @@ function readAttributes(): Record<string, any> {
     };
 }
 
-const PreviewApp: React.FC = () => {
+/** The viewer attributes the form holds right now, re-read on every edit. */
+function useLiveAttributes() {
     const [attrs, setAttrs] = useState<Record<string, any>>(() => readAttributes());
+
+    useEffect(() => {
+        let frame = 0;
+        const sync = () => {
+            window.cancelAnimationFrame(frame);
+            frame = window.requestAnimationFrame(() => {
+                const next = readAttributes();
+                setAttrs((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
+            });
+        };
+
+        // CSF updates fields via jQuery .trigger('change') (media select, color,
+        // sliders, switchers), which native listeners can miss — bind through
+        // jQuery when available, and keep a native fallback.
+        const $ = (window as any).jQuery;
+        const ns = `.bp3dPreview${Math.random().toString(36).slice(2, 8)}`;
+        const events = ['change', 'keyup', 'csf.change'].map((name) => name + ns).join(' ');
+
+        if ($) {
+            $(document).on(events, `[name^="${META_PREFIX}"]`, sync);
+        }
+        document.addEventListener('change', sync, true);
+        document.addEventListener('input', sync, true);
+
+        // The new interface: every edit lands in bfields' store.
+        const unsubscribe = isModern() ? (window as any).bfields?.subscribe?.(META_PREFIX, sync) : undefined;
+
+        return () => {
+            if (typeof unsubscribe === 'function') unsubscribe();
+            window.cancelAnimationFrame(frame);
+            if ($) {
+                $(document).off(ns);
+            }
+            document.removeEventListener('change', sync, true);
+            document.removeEventListener('input', sync, true);
+        };
+    }, []);
+
+    return [attrs, setAttrs] as const;
+}
+
+const hasModelIn = (attrs: Record<string, any>): boolean => !!attrs?.model?.modelUrl;
+
+/** The Viewer's setAttributes: a shallow merge into the local attributes. */
+const mergeAttrs = (setAttrs: React.Dispatch<React.SetStateAction<Record<string, any>>>) =>
+    (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
+
+const EmptyState: React.FC<{ text: string }> = ({ text }) => (
+    <div className="bp3d-model-preview__empty">
+        <span className="bp3d-model-preview__empty-icon">
+            <CubeIcon />
+        </span>
+        <span className="bp3d-model-preview__empty-text">
+            <strong>{__('No model selected', '3d-viewer')}</strong><br />
+            {text}
+        </span>
+    </div>
+);
+
+/** `bare`: inside the page editor's stage card, which draws its own header. */
+const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
+    const [attrs, setAttrs] = useLiveAttributes();
     const [collapsed, setCollapsed] = useState<boolean>(() => {
         try { return localStorage.getItem(COLLAPSE_KEY) === '1'; } catch { return false; }
     });
     const viewerRef = useRef<any>(null);
     const containerRef = useRef<HTMLElement>(null);
 
-    const __ = (text: string): string => text;
-    const setAttributes = (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
+    const setAttributes = mergeAttrs(setAttrs);
 
     const toggleCollapse = useCallback(() => {
         setCollapsed((prev) => {
@@ -140,53 +247,24 @@ const PreviewApp: React.FC = () => {
         setAttrs(readAttributes());
     }, []);
 
-    useEffect(() => {
-        let frame = 0;
-        const sync = () => {
-            window.cancelAnimationFrame(frame);
-            frame = window.requestAnimationFrame(() => setAttrs(readAttributes()));
-        };
-
-        // CSF updates fields via jQuery .trigger('change') (media select, color,
-        // sliders, switchers), which native listeners can miss — bind through
-        // jQuery when available, and keep a native fallback.
-        const $ = (window as any).jQuery;
-        const events = 'change.bp3dPreview keyup.bp3dPreview csf.change.bp3dPreview';
-
-        if ($) {
-            $(document).on(events, `[name^="${META_PREFIX}"]`, sync);
-        }
-        document.addEventListener('change', sync, true);
-        document.addEventListener('input', sync, true);
-
-        return () => {
-            window.cancelAnimationFrame(frame);
-            if ($) {
-                $(document).off('.bp3dPreview');
-            }
-            document.removeEventListener('change', sync, true);
-            document.removeEventListener('input', sync, true);
-        };
-    }, []);
-
-    const hasModel = !!attrs?.model?.modelUrl;
+    const hasModel = hasModelIn(attrs);
 
     return (
-        <div className={`bp3d-model-preview${collapsed ? ' bp3d-model-preview--collapsed' : ''}`}>
+        <div className={`bp3d-model-preview${collapsed && !bare ? ' bp3d-model-preview--collapsed' : ''}${bare ? ' bp3d-model-preview--bare' : ''}`}>
             {/* Header bar */}
-            <div className="bp3d-model-preview__header" onClick={toggleCollapse}>
+            {bare ? null : <div className="bp3d-model-preview__header" onClick={toggleCollapse}>
                 <span className="bp3d-model-preview__icon">
                     <CubeIcon />
                 </span>
-                <span className="bp3d-model-preview__title">{__('Live Preview')}</span>
+                <span className="bp3d-model-preview__title">{__('Live Preview', '3d-viewer')}</span>
                 {hasModel && (
-                    <span className="bp3d-model-preview__badge">{__('Live')}</span>
+                    <span className="bp3d-model-preview__badge">{__('Live', '3d-viewer')}</span>
                 )}
                 <span className="bp3d-model-preview__actions">
                     <button
                         type="button"
                         className="bp3d-model-preview__btn bp3d-model-preview__btn--refresh"
-                        title={__('Refresh Preview')}
+                        title={__('Refresh Preview', '3d-viewer')}
                         onClick={refreshPreview}
                     >
                         <RefreshIcon />
@@ -194,13 +272,13 @@ const PreviewApp: React.FC = () => {
                     <button
                         type="button"
                         className="bp3d-model-preview__btn bp3d-model-preview__btn--toggle"
-                        title={collapsed ? __('Expand Preview') : __('Collapse Preview')}
+                        title={collapsed ? __('Expand Preview', '3d-viewer') : __('Collapse Preview', '3d-viewer')}
                         onClick={(e) => { e.stopPropagation(); toggleCollapse(); }}
                     >
                         <ChevronIcon />
                     </button>
                 </span>
-            </div>
+            </div>}
 
             {/* Collapsible body */}
             <div className="bp3d-model-preview__body">
@@ -214,15 +292,7 @@ const PreviewApp: React.FC = () => {
                             containerRef={containerRef}
                         />
                     ) : (
-                        <div className="bp3d-model-preview__empty">
-                            <span className="bp3d-model-preview__empty-icon">
-                                <CubeIcon />
-                            </span>
-                            <span className="bp3d-model-preview__empty-text">
-                                <strong>{__('No model selected')}</strong><br />
-                                {__('Upload a 3D model in the Model tab to see a live preview here.')}
-                            </span>
-                        </div>
+                        <EmptyState text={__('Upload a 3D model in the Model tab to see a live preview here.', '3d-viewer')} />
                     )}
                 </div>
             </div>
@@ -230,25 +300,80 @@ const PreviewApp: React.FC = () => {
     );
 };
 
+/** The viewer at its real size and with its own buttons, as visitors get it. */
+const PreviewModal: React.FC<{ attributes: Record<string, any>; title: string; onClose: () => void }> = ({ attributes, title, onClose }) => {
+    const [attrs, setAttrs] = useState<Record<string, any>>(attributes);
+    const viewerRef = useRef<any>(null);
+    const containerRef = useRef<HTMLElement>(null);
+    const closeRef = useRef<HTMLButtonElement>(null);
+    const close = useRef(onClose);
+    close.current = onClose;
+    const setAttributes = mergeAttrs(setAttrs);
+
+    useEffect(() => {
+        const opener = document.activeElement as HTMLElement | null;
+        closeRef.current?.focus();
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') close.current();
+        };
+        document.addEventListener('keydown', onKey);
+        return () => {
+            document.removeEventListener('keydown', onKey);
+            opener?.focus?.();
+        };
+    }, []);
+
+    return createPortal(
+        <div className="bp3d-modal-overlay" onClick={() => close.current()}>
+            <div
+                className="bp3d-modal-container"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="bp3d-modal-title"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="bp3d-modal-header">
+                    <span className="bp3d-modal-title" id="bp3d-modal-title">
+                        {isModern() ? (
+                            <span style={{ display: 'inline-flex', width: '24px', height: '24px', marginRight: '6px', fill: '#2377f2' }}>
+                                <CubeIcon />
+                            </span>
+                        ) : (
+                            <span className="dashicons dashicons-cube" style={{ marginRight: '8px', color: '#2377f2', fontSize: '20px', width: '20px', height: '20px' }}></span>
+                        )}
+                        {title}
+                    </span>
+                    <button type="button" className="bp3d-modal-close" ref={closeRef} aria-label={__('Close preview', '3d-viewer')} onClick={() => close.current()}>
+                        &times;
+                    </button>
+                </div>
+                <div className={`bp3d-modal-body${isModern() && hasModelIn(attrs) ? ' bp3d-modal-body--viewer' : ''}`}>
+                    {hasModelIn(attrs) ? (
+                        <Viewer
+                            attributes={attrs}
+                            __={__}
+                            viewerRef={viewerRef}
+                            setAttributes={setAttributes}
+                            containerRef={containerRef}
+                        />
+                    ) : (
+                        <EmptyState text={__('Upload a 3D model in the Model tab to see the preview.', '3d-viewer')} />
+                    )}
+                </div>
+            </div>
+        </div>,
+        document.body
+    );
+};
+
 const PreviewPopupButton: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [attrs, setAttrs] = useState<Record<string, any>>(() => readAttributes());
-    const viewerRef = useRef<any>(null);
-    const containerRef = useRef<HTMLElement>(null);
 
     const openPopup = () => {
         setAttrs(readAttributes());
         setIsOpen(true);
     };
-
-    const closePopup = () => {
-        setIsOpen(false);
-    };
-
-    const __ = (text: string): string => text;
-    const setAttributes = (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
-
-    const hasModel = !!attrs?.model?.modelUrl;
 
     return (
         <>
@@ -258,51 +383,184 @@ const PreviewPopupButton: React.FC = () => {
                 onClick={openPopup}
             >
                 <span className="dashicons dashicons-visibility"></span>
-                {__('Live Preview')}
+                {__('Live Preview', '3d-viewer')}
             </button>
 
-            {isOpen && createPortal(
-                <div className="bp3d-modal-overlay" onClick={closePopup}>
-                    <div className="bp3d-modal-container" onClick={(e) => e.stopPropagation()}>
-                        <div className="bp3d-modal-header">
-                            <span className="bp3d-modal-title">
-                                <span className="dashicons dashicons-cube" style={{ marginRight: '8px', color: '#2377f2', fontSize: '20px', width: '20px', height: '20px' }}></span>
-                                {__('Model Live Preview')}
-                            </span>
-                            <button className="bp3d-modal-close" onClick={closePopup}>
-                                &times;
-                            </button>
-                        </div>
-                        <div className="bp3d-modal-body">
-                            {hasModel ? (
-                                <Viewer
-                                    attributes={attrs}
-                                    __={__}
-                                    viewerRef={viewerRef}
-                                    setAttributes={setAttributes}
-                                    containerRef={containerRef}
-                                />
-                            ) : (
-                                <div className="bp3d-model-preview__empty">
-                                    <span className="bp3d-model-preview__empty-icon">
-                                        <CubeIcon />
-                                    </span>
-                                    <span className="bp3d-model-preview__empty-text">
-                                        <strong>{__('No model selected')}</strong><br />
-                                        {__('Upload a 3D model in the Model tab to see the preview.')}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>,
-                document.body
-            )}
+            {isOpen ? <PreviewModal attributes={attrs} title={__('Model Live Preview', '3d-viewer')} onClose={() => setIsOpen(false)} /> : null}
         </>
     );
 };
 
+const icon = (d: React.ReactNode) => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
+);
+const EyeIcon = () => icon(<><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></>);
+const ScanEyeIcon = () => icon(<><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" /><circle cx="12" cy="12" r="1" /><path d="M18.9 12.3a1 1 0 0 0 0-.6 7.5 7.5 0 0 0-13.8 0 1 1 0 0 0 0 .6 7.5 7.5 0 0 0 13.8 0" /></>);
+const ResetIcon = () => icon(<><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" /><path d="M3 21v-5h5" /></>);
+const ZoomInIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M11 8v6M8 11h6" /></>);
+const ZoomOutIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M8 11h6" /></>);
+const FullIcon = () => icon(<><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></>);
+const CloseIcon = () => icon(<path d="M18 6 6 18M6 6l12 12" />);
+
+/**
+ * The page editor's side card (Figma "Live Preview"): the real viewer, small,
+ * with the card's own view controls instead of the viewer's buttons.
+ */
+const SidePreview: React.FC = () => {
+    const [attrs, setAttrs] = useLiveAttributes();
+    const viewerRef = useRef<any>(null);
+    const containerRef = useRef<HTMLElement>(null);
+    const stage = useRef<HTMLDivElement>(null);
+    const setAttributes = mergeAttrs(setAttrs);
+    const hasModel = hasModelIn(attrs);
+    const lite = (attrs.currentViewer || 'modelViewer') === 'modelViewer';
+    const [fullscreen, setFullscreen] = useState(false);
+    const [popup, setPopup] = useState(false);
+
+    useEffect(() => {
+        const onChange = () => setFullscreen(document.fullscreenElement === stage.current);
+        document.addEventListener('fullscreenchange', onChange);
+        return () => document.removeEventListener('fullscreenchange', onChange);
+    }, []);
+
+    // The card has its own controls and a 337×193 stage: the viewer's buttons and set size stay out.
+    const sideAttrs = useMemo(() => ({
+        ...attrs,
+        uniqueId: 'bp3dSidePreview',
+        fullscreen: false,
+        zoomInOutBtn: false,
+        cameraBtn: false,
+        resetViewBtn: false,
+        downloadBtn: false,
+        arEnabled: false,
+        model: { ...attrs.model, arEnabled: false },
+        O3DVSettings: { ...attrs.O3DVSettings, isFullscreen: false },
+        styles: { ...attrs.styles, width: '100%', height: '100%' },
+    }), [attrs]);
+
+    // The Advanced viewer only re-measures on window resize; dragging the sidebar resizes just the stage.
+    useEffect(() => {
+        const node = stage.current;
+        if (lite || !hasModel || !node || typeof ResizeObserver === 'undefined') return undefined;
+        let frame = 0;
+        const observer = new ResizeObserver(() => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        });
+        observer.observe(node);
+        return () => {
+            cancelAnimationFrame(frame);
+            observer.disconnect();
+        };
+    }, [lite, hasModel]);
+
+    const wheel = (deltaY: number) => {
+        stage.current?.querySelector('canvas')?.dispatchEvent(new WheelEvent('wheel', { deltaY, deltaMode: 0, bubbles: true }));
+    };
+    const zoom = (by: number) => {
+        if (lite) viewerRef.current?.zoom?.(by);
+        else wheel(by > 0 ? -100 : 100);
+    };
+    // The Advanced viewer has no camera API reachable from here, so reset re-mounts it (the file is cached).
+    const [mount, setMount] = useState(0);
+    const reset = () => {
+        if (!lite) {
+            setMount((n) => n + 1);
+            return;
+        }
+        if (viewerRef.current) applyModelView(viewerRef.current, undefined);
+    };
+
+    return (
+        <div className="bfields-preview bp3d-side-preview">
+            <div className="bfields-preview__head">
+                <h3 className="bfields-preview__title">
+                    <EyeIcon /> {__('Live Preview', '3d-viewer')}
+                </h3>
+                <button
+                    type="button"
+                    className="bfields-icon-btn"
+                    aria-label={__('Open a larger preview', '3d-viewer')}
+                    title={__('Open a larger preview', '3d-viewer')}
+                    disabled={!hasModel}
+                    onClick={() => setPopup(true)}
+                >
+                    <ScanEyeIcon />
+                </button>
+            </div>
+
+            <div className="bfields-preview__stage bp3d-side-preview__stage" ref={stage}>
+                {hasModel ? (
+                    <Viewer
+                        key={mount}
+                        attributes={sideAttrs}
+                        __={__}
+                        viewerRef={viewerRef}
+                        setAttributes={setAttributes}
+                        containerRef={containerRef}
+                    />
+                ) : (
+                    <span className="bp3d-side-preview__empty">
+                        <CubeIcon />
+                        {__('Add a 3D model on the Model tab to preview it here.', '3d-viewer')}
+                    </span>
+                )}
+                {fullscreen ? (
+                    <button
+                        type="button"
+                        className="bfields-icon-btn bp3d-side-preview__close"
+                        aria-label={__('Exit fullscreen', '3d-viewer')}
+                        onClick={() => document.exitFullscreen?.()}
+                    >
+                        <CloseIcon />
+                    </button>
+                ) : null}
+            </div>
+
+            <div className="bfields-preview__controls">
+                <div>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Reset view', '3d-viewer')} disabled={!hasModel} onClick={reset}>
+                        <ResetIcon />
+                    </button>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom in', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(2)}>
+                        <ZoomInIcon />
+                    </button>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom out', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(-2)}>
+                        <ZoomOutIcon />
+                    </button>
+                </div>
+                <button
+                    type="button"
+                    className="bfields-icon-btn"
+                    aria-label={__('Fullscreen', '3d-viewer')}
+                    disabled={!hasModel}
+                    onClick={() => stage.current?.requestFullscreen?.()}
+                >
+                    <FullIcon />
+                </button>
+            </div>
+
+            {popup ? (
+                <PreviewModal attributes={{ ...attrs, uniqueId: 'bp3dModalPreview' }} title={__('Live Preview', '3d-viewer')} onClose={() => setPopup(false)} />
+            ) : null}
+        </div>
+    );
+};
+
 const LOG = '[3D Viewer preview]';
+
+/** Render the preview panel into `node`; returns its root, or null after showing an error. */
+function renderPreviewInto(node: HTMLElement, bare: boolean): any {
+    try {
+        const root = createRoot(node);
+        root.render(<PreviewApp bare={bare} />);
+        return root;
+    } catch (err) {
+        console.error(`${LOG} failed to render`, err);
+        node.textContent = __('Model preview failed to load. See the browser console for details.', '3d-viewer');
+        return null;
+    }
+}
 
 /**
  * Inject the preview panel into the #bp3d-model-preview-root container
@@ -320,15 +578,7 @@ function mountPreview(): boolean {
     }
     mount.dataset.mounted = 'true';
 
-    try {
-        createRoot(mount).render(<PreviewApp />);
-        // eslint-disable-next-line no-console
-        console.log(`${LOG} mounted inside CSF Preview section`);
-    } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(`${LOG} failed to render`, err);
-        mount.textContent = 'Model preview failed to load — see console.';
-    }
+    renderPreviewInto(mount, false);
     return true;
 }
 
@@ -434,7 +684,64 @@ function initStickyPreviewBox(): boolean {
     return true;
 }
 
+/**
+ * The new interface renders only the open tab, so `#bp3d-model-preview-root`
+ * appears when the Preview tab opens and is replaced on every visit. Mount into
+ * each fresh node, and unmount the root of one that has gone.
+ */
+function initModern() {
+    const roots = new Map<HTMLElement, any>();
+    let frame = 0;
+
+    const scan = () => {
+        frame = 0;
+        mountPreviewButton();
+        initStickyPreviewBox();
+
+        roots.forEach((root, node) => {
+            if (!node.isConnected) {
+                root.unmount();
+                roots.delete(node);
+            }
+        });
+
+        const side = document.getElementById(`bfields-side-${META_PREFIX}`);
+        if (side && side.dataset.mounted !== 'true') {
+            side.dataset.mounted = 'true';
+            const mount = side.appendChild(document.createElement('div'));
+            const root = createRoot(mount);
+            root.render(<SidePreview />);
+            roots.set(side, root);
+
+            // The frame hides #submitdiv, so its interface switch row is copied under the card.
+            const row = document.querySelector('#submitdiv .bp3d-admin-ui-row');
+            if (row) {
+                const copy = row.cloneNode(true) as HTMLElement;
+                copy.classList.add('bp3d-admin-ui-row--side');
+                side.appendChild(copy);
+            }
+        }
+
+        const node = document.getElementById('bp3d-model-preview-root');
+        if (node && node.dataset.mounted !== 'true') {
+            node.dataset.mounted = 'true';
+            const root = renderPreviewInto(node, !!node.closest('.bfields-stagecard'));
+            if (root) roots.set(node, root);
+        }
+    };
+
+    scan();
+    new MutationObserver(() => {
+        if (!frame) frame = window.requestAnimationFrame(scan);
+    }).observe(document.body, { childList: true, subtree: true });
+}
+
 function init() {
+    if (isModern()) {
+        initModern();
+        return;
+    }
+
     let tries = 0;
     const tick = (): boolean => {
         const p = mountPreview();
@@ -453,7 +760,6 @@ function init() {
         if (tick() || tries > 40) {
             window.clearInterval(timer);
             if (tries > 40) {
-                // eslint-disable-next-line no-console
                 console.warn(`${LOG} no metabox found for "${META_PREFIX}" fields`);
             }
         }

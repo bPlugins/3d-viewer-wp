@@ -24,6 +24,31 @@ class Viewer
   public function register(): void
   {
     add_action('init', [$this, 'init'], 0);
+    add_filter('csf_' . $this->prefix . '_save', [$this, 'syncPremiumSource'], 20, 3);
+  }
+
+  /** Modern keeps undeclared keys; a premium row would otherwise resolve its old source. */
+  public function syncPremiumSource($data, $post_id = 0, $instance = null)
+  {
+    // A partial payload without the source has not changed it.
+    if (!is_array($data) || !array_key_exists('bp_3d_src', $data) || !($instance instanceof \BFields\Compat\Instance)) {
+      return $data;
+    }
+    $stored = get_post_meta((int) $post_id, $this->prefix, true);
+    if (!is_array($stored) || (!array_key_exists('bp_3d_src_type', $stored) && !array_key_exists('bp_3d_src_link', $stored))) {
+      return $data;
+    }
+    $new = is_array($data['bp_3d_src']) ? (string) ($data['bp_3d_src']['url'] ?? '') : '';
+    $old = is_array($stored['bp_3d_src'] ?? null) ? (string) ($stored['bp_3d_src']['url'] ?? '') : '';
+    // The posted copy is kses'd; a row written outside the form (Import) may not be.
+    if (trim(wp_kses_post($new)) === trim(wp_kses_post($old))) {
+      return $data;
+    }
+    $data['bp_3d_src_type'] = 'upload';
+    if (array_key_exists('bp_3d_src_link', $stored)) {
+      $data['bp_3d_src_link'] = $new;
+    }
+    return $data;
   }
 
   /**
@@ -36,7 +61,7 @@ class Viewer
 
   public function create_metabox()
   {
-    \CSF::createMetabox($this->prefix, array(
+    \BP3D\Helper\Registrar::createMetabox($this->prefix, array(
       'title' => __('3D Viewer Settings', '3d-viewer'),
       'post_type' => 'bp3d-model-viewer',
       'show_restore' => true,
@@ -109,6 +134,9 @@ class Viewer
     $fields = array_merge($fields, array(
       array(
         'id' => 'currentViewer',
+        'icon' => 'layers',
+        'option_meta' => \BP3D\Base\AdminUi::viewerModes(),
+        'layout' => 'mode-grid',
         'type' => 'button_set',
         'title' => __('Viewer.', '3d-viewer'),
         'subtitle' => __('Choose Viewer', '3d-viewer'),
@@ -122,6 +150,7 @@ class Viewer
       ),
       array(
         'id' => 'bp_3d_src',
+        'icon' => 'link',
         'type' => 'media',
         'button_title' => __('Upload Source', '3d-viewer'),
         'title' => __('3D Source', '3d-viewer'),
@@ -131,6 +160,7 @@ class Viewer
       // use decoder
       array(
         'id' => 'bp_3d_decoder',
+        'icon' => 'box',
         'type' => 'select',
         'title' => __('Decoder', '3d-viewer'),
         'subtitle' => __('Choose Decoder', '3d-viewer'),
@@ -145,6 +175,7 @@ class Viewer
       // upload field if decoder is draco
       array(
         'id' => 'bp_3d_decoder_draco_file',
+        'icon' => 'upload',
         'type' => 'media',
         'button_title' => __('Upload Decoder File', '3d-viewer'),
         'title' => __('Draco File', '3d-viewer'),
@@ -154,6 +185,7 @@ class Viewer
       ),
       array(
         'id' => 'bp_3d_poster',
+        'icon' => 'image',
         'type' => 'media',
         'button_title' => __('Upload Poster', '3d-viewer'),
         'title' => __('3D Poster Image', '3d-viewer'),
@@ -162,54 +194,69 @@ class Viewer
         'dependency' => array('currentViewer', '==', 'modelViewer'),
       ),
       array(
-        'id' => 'bp_3d_environment_image_preset',
-        'type' => 'select',
-        'title' => __('Environment Image', '3d-viewer'),
-        'subtitle' => __('Lighting and reflections', '3d-viewer'),
-        'desc' => __('Sets an environment image to improve lighting and reflections on the model.', '3d-viewer'),
-        'options' => array(
-          'neutral' => __('Neutral', '3d-viewer'),
-          'legacy' => __('Legacy', '3d-viewer'),
-          'custom' => __('Custom', '3d-viewer'),
+        'id' => 'bp3d_group_lighting',
+        'type' => 'field_group',
+        'title' => __('Lighting & Environment', '3d-viewer'),
+        'icon' => 'sun',
+        'collapsed' => true,
+        'fields' => array(
+          array(
+            'id' => 'bp_3d_environment_image_preset',
+            'icon' => 'sun',
+            'type' => 'select',
+            'title' => __('Environment Image', '3d-viewer'),
+            'subtitle' => __('Lighting and reflections', '3d-viewer'),
+            'desc' => __('Sets an environment image to improve lighting and reflections on the model.', '3d-viewer'),
+            'options' => array(
+              'neutral' => __('Neutral', '3d-viewer'),
+              'legacy' => __('Legacy', '3d-viewer'),
+              'custom' => __('Custom', '3d-viewer'),
+            ),
+            'default' => 'neutral',
+            'dependency' => array('currentViewer', '==', 'modelViewer'),
+          ),
+          array(
+            'id' => 'bp_3d_environment_image',
+            'icon' => 'image',
+            'type' => 'upload',
+            'button_title' => __('Upload', '3d-viewer'),
+            'title' => __('Custom Environment Image', '3d-viewer'),
+            'subtitle' => __('Your own image', '3d-viewer'),
+            'desc' => __('Upload or paste the URL of the image to use for lighting and reflections.', '3d-viewer'),
+            'dependency' => array('currentViewer|bp_3d_environment_image_preset', '==|==', 'modelViewer|custom'),
+          ),
+          array(
+            'id' => 'bp_3d_skybox_image',
+            'icon' => 'image',
+            'type' => 'upload',
+            'button_title' => __('Upload', '3d-viewer'),
+            'title' => __('HDR Skybox Image', '3d-viewer'),
+            'subtitle' => __('Background and environmental lighting', '3d-viewer'),
+            'desc' => __('Sets a skybox image that appears as the background and provides environmental lighting for the model. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
+            'dependency' => array('currentViewer', '==', 'modelViewer'),
+          ),
         ),
-        'default' => 'neutral',
-        'dependency' => array('currentViewer', '==', 'modelViewer'),
-      ),
-      array(
-        'id' => 'bp_3d_environment_image',
-        'type' => 'upload',
-        'button_title' => __('Upload', '3d-viewer'),
-        'title' => __('Custom Environment Image', '3d-viewer'),
-        'subtitle' => __('Your own image', '3d-viewer'),
-        'desc' => __('Upload or paste the URL of the image to use for lighting and reflections.', '3d-viewer'),
-        'dependency' => array('currentViewer|bp_3d_environment_image_preset', '==|==', 'modelViewer|custom'),
-      ),
-      array(
-        'id' => 'bp_3d_skybox_image',
-        'type' => 'upload',
-        'button_title' => __('Upload', '3d-viewer'),
-        'title' => __('HDR Skybox Image', '3d-viewer'),
-        'subtitle' => __('Background and environmental lighting', '3d-viewer'),
-        'desc' => __('Sets a skybox image that appears as the background and provides environmental lighting for the model. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
-        'dependency' => array('currentViewer', '==', 'modelViewer'),
       ),
     ));
 
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'title' => __('Model', '3d-viewer'),
       'icon' => 'fas fa-cube',
+      // Modern: one card per field, as the Add New design draws the Model tab.
+      'layout' => 'cards',
       'fields' => $fields
     ));
   }
 
   public function settings()
   {
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'title' => __('Settings', '3d-viewer'),
       'icon' => 'fas fa-sliders-h',
       'fields' => array(
         array(
           'id' => 'bp_camera_control',
+          'icon' => 'move',
           'type' => 'switcher',
           'title' => __('Moving Controls', '3d-viewer'),
           'desc' => __("Allows users to rotate, pan, and interact with the model using a mouse or touch input.", "3d-viewer"),
@@ -221,6 +268,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_zooming',
+          'icon' => 'zoom-in',
           'type' => 'switcher',
           'title' => __('Enable Zoom', '3d-viewer'),
           'subtitle' => __('Enable or Disable Zooming Behaviour', '3d-viewer'),
@@ -234,6 +282,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_fullscreen',
+          'icon' => 'maximize',
           'type' => 'switcher',
           'title' => __('Full Screen Button', '3d-viewer'),
           'subtitle' => __('Show/Hide Full Screen Button', '3d-viewer'),
@@ -244,6 +293,7 @@ class Viewer
         ),
         array(
           'id' => 'bp_3d_zoom_in_out_btn',
+          'icon' => 'zoom-out',
           'type' => 'switcher',
           'title' => __('Zoom In/Out Button', '3d-viewer'),
           'subtitle' => __('Show/Hide Zoom In/Out Button', '3d-viewer'),
@@ -255,6 +305,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_camera_btn',
+          'icon' => 'camera',
           'type' => 'switcher',
           'title' => __('Camera Button', '3d-viewer'),
           'subtitle' => __('Show/Hide Camera Button', '3d-viewer'),
@@ -267,6 +318,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_download_btn',
+          'icon' => 'download',
           'type' => 'switcher',
           'title' => __('3D File Download Button', '3d-viewer'),
           'subtitle' => __('Show/Hide 3D File Download Button', '3d-viewer'),
@@ -278,6 +330,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_loading',
+          'icon' => 'loader',
           'type' => 'radio',
           'title' => __('Loading Type', '3d-viewer'),
           'subtitle' => __('Choose Loading type, default:  \'Auto\' ', '3d-viewer'),
@@ -292,6 +345,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_progressbar',
+          'icon' => 'sliders',
           'type' => 'switcher',
           'title' => __('Progressbar', '3d-viewer'),
           'subtitle' => __('Show/Hide Progressbar', '3d-viewer'),
@@ -300,11 +354,11 @@ class Viewer
           'text_off' => __('NO', '3d-viewer'),
           'text_width' => 60,
           'default' => true,
-          // 'class'    => 'bp3d-readonly',
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
         ),
         array(
           'id' => '3d_exposure',
+          'icon' => 'sun',
           'type' => 'slider',
           'min' => 0.1,
           'max' => 5,
@@ -318,6 +372,7 @@ class Viewer
         ),
         array(
           'id' => '3d_shadow_intensity',
+          'icon' => 'cloud-drizzle',
           'type' => 'slider',
           'title' => __('shadow Intensity', '3d-viewer'),
           'subtitle' => __('Shadow Intensity for Model', '3d-viewer'),
@@ -330,6 +385,7 @@ class Viewer
         ),
         array(
           'id' => 'bp_3d_enable_ar',
+          'icon' => 'phone',
           'type' => 'switcher',
           'title' => __('Enable AR', '3d-viewer'),
           'desc' => __("Enables AR (Augmented Reality) so visitors can view the 3D model in their real environment on supported devices.", "3d-viewer"),
@@ -340,6 +396,7 @@ class Viewer
         ),
         array(
           'id' => 'model_iso_src',
+          'icon' => 'phone',
           'type' => 'upload',
           'title' => __('3D Source for iOS (Optional)', '3d-viewer'),
           'subtitle' => __('Upload Model Or Input Valid Model url', '3d-viewer'),
@@ -349,6 +406,7 @@ class Viewer
         ),
         array(
           'id' => 'ar_placement',
+          'icon' => 'phone',
           'type' => 'button_set',
           'title' => __('AR Placement', '3d-viewer'),
           'desc' => __("Defines how the model is placed in AR. Choose 'floor' to place the model on the ground or 'wall' to attach it to a vertical surface.", "3d-viewer"),
@@ -361,6 +419,7 @@ class Viewer
         ),
         array(
           'id' => 'ar_mode',
+          'icon' => 'phone',
           'type' => 'button_set',
           'title' => __('AR Mode', '3d-viewer'),
           'desc' => __("Selects the AR viewing mode. 'Quick Look' is used for iOS devices, while other modes enable AR on supported Android devices.", "3d-viewer"),
@@ -378,12 +437,13 @@ class Viewer
 
   public function style()
   {
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'title' => __('Style', '3d-viewer'),
       'icon' => 'fas fa-paint-brush',
       'fields' => array(
         array(
           'id' => 'bp_3d_width',
+          'icon' => 'move',
           'type' => 'dimensions',
           'title' => __('Width', '3d-viewer'),
           'desc' => __("Sets the width of the 3D viewer. You can use values like %, px, or vw for responsive layouts.", "3d-viewer"),
@@ -395,6 +455,7 @@ class Viewer
         ),
         array(
           'id' => 'bp_3d_height',
+          'icon' => 'maximize-2',
           'type' => 'dimensions',
           'title' => __('Height', '3d-viewer'),
           'desc' => __("Sets the height of the 3D viewer. Adjust this to control how much vertical space the model occupies.", "3d-viewer"),
@@ -408,6 +469,7 @@ class Viewer
 
         array(
           'id' => 'bp_3d_align',
+          'icon' => 'grid',
           'title' => __("Align", "3d-viewer"),
           'desc' => __("Controls the alignment of the 3D viewer within its container, such as left, center, or right.", "3d-viewer"),
           'type' => 'button_set',
@@ -420,12 +482,12 @@ class Viewer
         ),
         array(
           'id' => 'bp_model_bg',
+          'icon' => 'palette',
           'type' => 'color',
           'title' => __('Background Color', '3d-viewer'),
           'subtitle' => __('Set Background Color For 3d Model.If You don\'t need just leave blank. Default : \'transparent color\'', '3d-viewer'),
           'desc' => __("Sets the background color of the 3D viewer. Use transparent or any valid CSS color value.", "3d-viewer"),
           'default' => 'transparent',
-          // 'class' => 'bp3d-readonly',
         ),
       )
     ));
@@ -433,7 +495,7 @@ class Viewer
 
   public function preview()
   {
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'title' => __('Preview', '3d-viewer'),
       'icon' => 'fas fa-eye',
       'fields' => array(

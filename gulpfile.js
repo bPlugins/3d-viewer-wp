@@ -1,5 +1,4 @@
 const gulp = require("gulp");
-// const zip = require("gulp-zip");
 
 const fs_config = require("./fs-config.json");
 
@@ -15,18 +14,8 @@ require("gulp-freemius-deploy")(gulp, {
 
 function bundle() {
   return gulp
-    .src(["**/*", "!node_modules/**", "!pricing-page/**", "!src/**", "!zip/**", "!composer-lock.json", "!composer.json", "!todo.txt", "!fs-config.json", "!bundled/**", "!gulpfile.js", "!package.json", "!readme.md", "!package-lock.json", "!webpack.config.js", "!.gitignore"])
+    .src(["**/*", "!node_modules/**", "!pricing-page/**", "!src/**", "!zip/**", "!composer-lock.json", "!composer.json", "!todo.txt", "!fs-config.json", "!bundled/**", "!gulpfile.js", "!package.json", "!readme.md", "!package-lock.json", "!webpack.config.js", "!.gitignore", "!lib/bfields/README.md"])
     .pipe(gulp.dest("bundled/3d-viewer"));
 }
 
 exports.bundle = bundle;
-
-// exports.zip = () => {
-//   return (
-//     gulp
-//       .src(["bundled/**"])
-//       // .pipe(zip("3d-viewer-v1.3.20.zip"))
-//       .pipe(zip("3d-viewer.zip"))
-//       .pipe(gulp.dest("zip"))
-//   );
-// };

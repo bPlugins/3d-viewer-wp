@@ -37,6 +37,15 @@ export function wp(args: string[], { allowFail = false, retries = 2 }: WpOptions
     );
 }
 
+/**
+ * Runs a PHP file with `wp eval-file`. The path is passed relative to the site root and the
+ * arguments as `key=value` positionals (`$args` in the script), so Studio's sandboxed PHP sees both.
+ */
+export function wpEvalFile(file: string, args: Record<string, string | number> = {}, options: WpOptions = {}): string | null {
+    const positional = Object.entries(args).map(([k, v]) => `${k}=${v}`);
+    return wp(['eval-file', path.relative(SITE_ROOT, file), ...positional], options);
+}
+
 /** Starts the Studio site if it is not already online. */
 export function ensureSiteRunning(): void {
     // Only Studio can be started from here; any other host is expected to be up.

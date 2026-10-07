@@ -1,0 +1,200 @@
+/* Modern interface only (bfields). Values are bfields' tokens, which are declared on .bfields-app and so do not reach core boxes. */
+
+/* Publish box (plan D2, decision 5): restyled, nothing hidden or moved out of the box. */
+.post-type-bp3d-model-viewer #submitdiv {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: none;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.post-type-bp3d-model-viewer #submitdiv .postbox-header {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.post-type-bp3d-model-viewer #submitdiv .postbox-header h2 {
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #24242b;
+}
+
+.post-type-bp3d-model-viewer #submitdiv .inside {
+  margin: 0;
+  padding: 0;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #major-publishing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-top: 0;
+  background: #fff;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #major-publishing-actions .clear {
+  display: none;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #major-publishing-actions .bp3d-admin-ui-row {
+  flex: 1 0 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 0 12px;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.post-type-bp3d-model-viewer #submitdiv .bp3d-admin-ui-row strong {
+  font-weight: 600;
+  color: #24242b;
+}
+
+.post-type-bp3d-model-viewer #submitdiv .bp3d-admin-ui-row a,
+.post-type-bp3d-model-viewer #submitdiv .bp3d-admin-ui-row a:hover {
+  color: #1b5cf0;
+  font-weight: 500;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action {
+  order: 1;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 100%;
+  float: none;
+  text-align: initial;
+  line-height: normal;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .spinner {
+  float: none;
+  margin: 0;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .button-primary {
+  flex: 1 1 auto;
+  height: 45px;
+  min-height: 45px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #1b5cf0;
+  box-shadow: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 45px;
+  text-shadow: none;
+  transition: background-color 0.15s ease;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .button-primary:hover:not(:disabled) {
+  background: #1450d8;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .button-primary:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .button-primary:focus-visible {
+  outline: 2px solid #1b5cf0;
+  outline-offset: 1px;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #publishing-action .button-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #delete-action {
+  order: 2;
+  float: none;
+  line-height: normal;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #delete-action .submitdelete {
+  font-size: 13px;
+  color: #ef4444;
+  text-decoration: none;
+}
+
+.post-type-bp3d-model-viewer #submitdiv #delete-action .submitdelete:hover {
+  text-decoration: underline;
+}
+
+/* Viewer page editor (bfields `'frame' => 'page'`): the side card and the Preview tab's stage, src/admin/preview/. */
+.bfields-app .bp3d-side-preview__stage {
+  display: block;
+}
+
+/* Pinned to the stage: a percentage height let the Advanced viewer's canvas
+   grow the box past the stage, which clipped the thumbnail strip. */
+.bfields-app .bp3d-side-preview__stage > :not(.bp3d-side-preview__empty, .bp3d-side-preview__close) {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+}
+
+.bfields-app .bp3d-side-preview__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 32px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.bfields-app .bp3d-side-preview__empty svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* Fullscreen has no other way out than Esc, so the stage carries its own close. */
+.bfields-app .bp3d-side-preview__close {
+  position: absolute;
+  z-index: 10;
+  top: 16px;
+  inset-inline-end: 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+}
+
+.bfields-app .bp3d-model-preview--bare {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* The interface switch, copied out of the hidden #submitdiv by src/admin/preview/. */
+.bfields-app .bfields-side__slot .bp3d-admin-ui-row--side {
+  margin: 10px 0 0;
+  padding: 0 4px;
+  border: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--bfields-row-desc);
+}
+
+.bfields-app .bfields-side__slot .bp3d-admin-ui-row--side strong {
+  font-weight: 600;
+  color: var(--bfields-row-title);
+}
+
+.bfields-app .bfields-side__slot .bp3d-admin-ui-row--side a {
+  color: var(--bfields-primary);
+  font-weight: 500;
+}

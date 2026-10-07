@@ -136,35 +136,6 @@ class Product
     }
 
     /**
-     * Extract variant attribute keys from a variable product.
-     *
-     * @param  \WC_Product|null $product
-     * @return array<int, string>
-     */
-    private static function getVariantKeys($product)
-    {
-        $variant_keys = [];
-
-        if (!$product || !method_exists($product, 'get_available_variations')) {
-            return $variant_keys;
-        }
-
-        $variations = $product->get_available_variations();
-
-        if (!$variations) {
-            return $variant_keys;
-        }
-
-        $list = wp_list_pluck($variations, 'attributes');
-
-        if ($list && is_array($list[0])) {
-            $variant_keys = array_keys($list[0]);
-        }
-
-        return $variant_keys;
-    }
-
-    /**
      * Render the 3D model viewer HTML for a WooCommerce product.
      *
      * @param  bool   $return     True to return HTML, false to echo

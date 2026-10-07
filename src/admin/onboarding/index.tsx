@@ -1,4 +1,3 @@
-import React from 'react';
 import App from './App';
 
 // base.scss must come first: its element resets rely on losing the specificity

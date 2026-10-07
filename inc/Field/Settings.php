@@ -52,28 +52,7 @@ class Settings
    */
   protected function overlayDeclared(array $data, $instance): array
   {
-    $stored = get_option($this->prefix, []);
-    if (!is_array($stored) || empty($stored)) {
-      return $data;
-    }
-
-    $declared = [];
-    foreach ((is_object($instance) && !empty($instance->pre_fields)) ? $instance->pre_fields : [] as $field) {
-      if (!empty($field['id'])) {
-        $declared[] = $field['id'];
-      }
-    }
-    if (!$declared) {
-      $declared = array_keys($data);
-    }
-
-    foreach ($declared as $key) {
-      if (array_key_exists($key, $data)) {
-        $stored[$key] = $data[$key];
-      }
-    }
-
-    return $stored;
+    return \BP3D\Helper\Utils::overlayDeclared($this->prefix, $data, $instance);
   }
 
   /**
@@ -81,7 +60,7 @@ class Settings
    */
   public function init(): void
   {
-    \CSF::createOptions($this->prefix, array(
+    \BP3D\Helper\Registrar::createOptions($this->prefix, array(
       'menu_title' => 'Settings',
       'menu_slug' => '3dviewer-settings',
       'menu_type' => 'submenu',
@@ -99,12 +78,14 @@ class Settings
       $mime_options[$ext] = strtoupper($ext) . ' (.' . $ext . ')';
     }
 
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
+      'id' => 'general-settings',
       'title' => __('General Settings', '3d-viewer'),
       'icon' => 'fas fa-cog',
       'fields' => array(
         array(
           'id' => 'allowed_mime_types',
+          'layout' => 'tile-grid',
           'type' => 'checkbox',
           'title' => __('Allowed Mime Types', '3d-viewer'),
           'desc' => __('Select which 3D model and HDR file types can be uploaded to the media library. All supported formats are enabled by default; uncheck any you want to block.', '3d-viewer'),
@@ -114,6 +95,7 @@ class Settings
         // Delete data on uninstall
         array(
           'id' => 'delete_data_on_uninstall',
+          'layout' => 'danger',
           'type' => 'switcher',
           'title' => __('Delete data on uninstall', '3d-viewer'),
           'desc' => __('Delete data on uninstall', '3d-viewer'),
@@ -132,12 +114,14 @@ class Settings
   {
 
 
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
+      'id' => 'woocommerce-settings',
       'title' => __('Woocommerce Settings', '3d-viewer'),
       'icon' => 'fas fa-shopping-cart',
       'fields' => array(
         array(
           'id' => '3d_woo_switcher',
+          'icon' => 'cart',
           'type' => 'switcher',
           'title' => __('Woocommerce', '3d-viewer'),
           'subtitle' => __('Enable / Disable Woocommerce Feature for 3D Viewer.', '3d-viewer'),
@@ -146,21 +130,15 @@ class Settings
         ),
         array(
           'id' => 'is_not_compatible',
+          'icon' => 'warning',
           'type' => 'switcher',
           'title' => __('3D Viewer is not Compatible with this Theme', '3d-viewer'),
           'desc' => __('Enable if 3D Viewer is not compatible with this theme', '3d-viewer'),
           'default' => false,
         ),
-        // array(
-        //   'id'       => 'product_gallery_selector',
-        //   'type'      => 'text',
-        //   'title'    => __('Product Gallery Class or ID or Valid CSS Selector', '3d-viewer'),
-        //   'desc'     => __('Write here the product gallery class or id or any valid CSS selector', '3d-viewer'),
-        //   'default' => '.woocommerce-product-gallery',
-        //   'dependency' => array('is_not_compatible', '==', '1'),
-        // ),
         array(
           'id' => 'bp_camera_control',
+          'icon' => 'move',
           'type' => 'switcher',
           'title' => __('Moving Controls', '3d-viewer'),
           'desc' => __('Use The Moving controls to enable user interaction', '3d-viewer'),
@@ -170,6 +148,7 @@ class Settings
         ),
         array(
           'id' => 'bp_3d_zooming',
+          'icon' => 'zoom-in',
           'type' => 'switcher',
           'title' => __('Enable Zoom', '3d-viewer'),
           'subtitle' => __('Enable or Disable Zoom Behaviour', '3d-viewer'),
@@ -182,6 +161,7 @@ class Settings
 
         array(
           'id' => 'bp_3d_loading',
+          'icon' => 'loader',
           'type' => 'radio',
           'title' => __('Loading Type', '3d-viewer'),
           'subtitle' => __('Choose Loading type, default:  \'Auto\' ', '3d-viewer'),
@@ -200,13 +180,16 @@ class Settings
 
   public function woocommerce_selectors()
   {
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
+      'id' => 'woocommerce-selectors',
       'title' => __('Woocommerce Selectors', '3d-viewer'),
       'icon' => 'fas fa-crosshairs',
       'fields' => array(
         // 3D Model Options
         array(
           'id' => 'gallery',
+          'icon' => 'image',
+          'layout' => 'selector',
           'type' => 'text',
           'title' => __('Gallery Selector', '3d-viewer'),
           'desc' => __('Write here the gallery selector', '3d-viewer'),
@@ -214,6 +197,8 @@ class Settings
         ),
         array(
           'id' => 'gallery_item',
+          'icon' => 'image',
+          'layout' => 'selector',
           'type' => 'text',
           'title' => __('Gallery Item Selector', '3d-viewer'),
           'desc' => __('Write here the gallery item selector', '3d-viewer'),
@@ -221,6 +206,8 @@ class Settings
         ),
         array(
           'id' => 'gallery_item_active',
+          'icon' => 'check',
+          'layout' => 'selector',
           'type' => 'text',
           'title' => __('Gallery Item Active Selector', '3d-viewer'),
           'desc' => __('Write here the gallery item active selector', '3d-viewer'),
@@ -228,6 +215,8 @@ class Settings
         ),
         array(
           'id' => 'gallery_thumbnail_item',
+          'icon' => 'grid',
+          'layout' => 'selector',
           'type' => 'text',
           'title' => __('Gallery Thumbnail Item Selector', '3d-viewer'),
           'desc' => __('Write here the gallery thumbnail item selector', '3d-viewer'),
@@ -235,6 +224,8 @@ class Settings
         ),
         array(
           'id' => 'gallery_trigger',
+          'icon' => 'search',
+          'layout' => 'selector',
           'type' => 'text',
           'title' => __('Gallery Trigger Selector', '3d-viewer'),
           'desc' => __('Write here the gallery trigger selector', '3d-viewer'),
@@ -246,13 +237,15 @@ class Settings
 
   public function shortcode()
   {
-    \CSF::createSection($this->prefix, array(
+    \BP3D\Helper\Registrar::createSection($this->prefix, array(
+      'id' => 'shortcode-generator',
       'title' => __('Shortcode Generator', '3d-viewer'),
       'icon' => 'fas fa-code',
       'fields' => array(
         // 3D Model Options
         array(
           'id' => 'gutenberg_enabled',
+          'icon' => 'code',
           'type' => 'switcher',
           'title' => __('Enable Gutenberg', '3d-viewer'),
           'subtitle' => __('Enable / Disable Gutenberg Shortcode Generator.', '3d-viewer'),

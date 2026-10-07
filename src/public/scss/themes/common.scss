@@ -37,8 +37,6 @@
 }
 
 
-@media only screen and (min-width: 769px) {}
-
 .product-modal-wrap {
 
   &.kadence,
@@ -59,14 +57,6 @@
 
 }
 
-
-.product-modal-wrap.model-full-width {
-  width: 100%;
-
-  &.divi {
-    width: 50%;
-  }
-}
 
 .flex-viewport .position_merge_with_first_image {
   position: relative;
@@ -133,18 +123,6 @@
     .slideController {
       display: flex;
     }
-
-    // .fullscreen-open {
-    //   display: block;
-    // }
-
-    // .cameraBtn {
-    //   display: block;
-    // }
-
-    // .slideController {
-    //   display: block;
-    // }
   }
 
   .b3dviewer-wrapper:fullscreen {

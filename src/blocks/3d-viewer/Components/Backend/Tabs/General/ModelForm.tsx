@@ -121,7 +121,6 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
             __next40pxDefaultSize={true}
             __nextHasNoMarginBottom={true}
           />
-          {/* </PanelRow> */}
 
           {model?.decoder === "Draco" && (
             <>

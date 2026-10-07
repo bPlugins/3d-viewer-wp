@@ -16,6 +16,8 @@ playwright-report
 test-results
 .vscode
 build
+!/lib/bfields/build/
+!/lib/bfields/languages/
 tsconfig.json
 todo.txt
 temp.txt

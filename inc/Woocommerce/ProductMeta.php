@@ -4,6 +4,7 @@
 
 namespace BP3D\Woocommerce;
 
+use BP3D\Helper\Registrar;
 use BP3D\Helper\Utils;
 
 if (!defined('ABSPATH')) {
@@ -33,7 +34,7 @@ class ProductMeta
             return;
         }
 
-        add_filter('csf_' . $this->prefix . '_save', [$this, 'preserveProData'], 10, 2);
+        add_filter('csf_' . $this->prefix . '_save', [$this, 'preserveProData'], 10, 3);
 
         $settings = get_option('_bp3d_settings_', ['3d_woo_switcher' => '']);
 
@@ -41,13 +42,13 @@ class ProductMeta
             return;
         }
 
-        \CSF::createMetabox($this->prefix, [
+        Registrar::createMetabox($this->prefix, [
             'title' => esc_html__('3D Product Settings', '3d-viewer'),
             'post_type' => 'product',
             'show_restore' => false,
         ]);
 
-        \CSF::createSection($this->prefix, [
+        Registrar::createSection($this->prefix, [
             'fields' => $this->getFields(),
         ]);
     }
@@ -210,17 +211,23 @@ class ProductMeta
      * Rebuild the saved meta on top of what is stored, so keys this box does not declare
      * (Pro, vendor, future) survive a save from it.
      *
-     * CSF passes slashed form data and update_post_meta() unslashes the result, so stored values are re-slashed here.
+     * Codestar passes slashed data (re-slashed here for update_post_meta()); bfields passes it unslashed and slashes itself.
      *
-     * @param  mixed     $data     Sanitized declared fields from the form (slashed)
+     * @param  mixed     $data     Sanitized declared fields from the form
      * @param  int|mixed $post_id
+     * @param  mixed     $instance CSF_Metabox (Classic) or \BFields\Compat\Instance (Modern)
      * @return array<string, mixed>
      */
-    public function preserveProData($data, $post_id = 0): array
+    public function preserveProData($data, $post_id = 0, $instance = null): array
     {
         if (!is_array($data)) {
             $data = [];
         }
+
+        $slashed = !($instance instanceof \BFields\Compat\Instance);
+        $unslash = $slashed ? 'wp_unslash' : static function ($value) {
+            return $value;
+        };
 
         $stored = get_post_meta((int) $post_id, $this->prefix, true);
 
@@ -228,7 +235,7 @@ class ProductMeta
             return array_diff_key($data, self::TRANSPORT_KEYS);
         }
 
-        $merged = wp_slash($stored);
+        $merged = $slashed ? wp_slash($stored) : $stored;
         $row0 = isset($stored['bp3d_models'][0]) && is_array($stored['bp3d_models'][0]) ? $stored['bp3d_models'][0] : null;
 
         if (array_key_exists('bp_model_bg', $data)) {
@@ -242,7 +249,7 @@ class ProductMeta
 
             // The field showed the stored flat value, or row 0's value when the flat key was unset.
             $shown = isset($stored[$flat]) ? $stored[$flat] : ($row0[$field] ?? '');
-            $changed = !$this->sameValue(wp_unslash($data[$flat]), $shown);
+            $changed = !$this->sameValue($unslash($data[$flat]), $shown);
 
             // With row 0, an unchanged flat key stays byte-identical so it keeps matching row 0.
             if ($row0 === null || (array_key_exists($flat, $stored) && $changed)) {
@@ -261,16 +268,16 @@ class ProductMeta
             $merged['viewer_position'] = $posted_position;
         }
 
-        if ($row0 !== null && $this->transportPosted()) {
+        if ($row0 !== null && $this->transportPosted($data, $slashed)) {
             if (array_key_exists('bp3d_enable_ar', $data)) {
-                $ar_on = wp_unslash($data['bp3d_enable_ar']) === '1';
+                $ar_on = $unslash($data['bp3d_enable_ar']) === '1';
                 if ($ar_on !== in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)) {
                     $merged['bp3d_models'][0]['enable_ar'] = $ar_on ? '1' : '';
                 }
             }
 
             if (array_key_exists('bp3d_model_iso_src', $data)
-                && !$this->sameValue(wp_unslash($data['bp3d_model_iso_src']), $row0['model_iso_src'] ?? '')) {
+                && !$this->sameValue($unslash($data['bp3d_model_iso_src']), $row0['model_iso_src'] ?? '')) {
                 $merged['bp3d_models'][0]['model_iso_src'] = $data['bp3d_model_iso_src'];
             }
         }
@@ -281,8 +288,13 @@ class ProductMeta
     /**
      * Whether the AR fields were on the submitted form (not just declared at save time).
      */
-    private function transportPosted(): bool
+    private function transportPosted(array $data, bool $classic): bool
     {
+        // bfields posts every declared field, and getFields() declares these two only when row 0 exists.
+        if (!$classic) {
+            return array_key_exists('bp3d_enable_ar', $data) && array_key_exists('bp3d_model_iso_src', $data);
+        }
+
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Runs inside the CSF save filter, after CSF verified its nonce.
         $request = isset($_POST[$this->prefix]) && is_array($_POST[$this->prefix]) ? $_POST[$this->prefix] : [];
 

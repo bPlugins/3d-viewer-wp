@@ -43,7 +43,6 @@ const Settings = ({ attributes, setAttributes, postId, postType }: SettingsProps
               >
                 {copied ? __("Copied", "3d-viewer") : __("Copy Shortcode", "3d-viewer")}
               </ClipboardButton>
-              {/* {copied && <Snackbar>{__("Copied Succesfully", "3d-viewer")}</Snackbar>} */}
             </div>
           </PanelRow>
         </PanelBody>

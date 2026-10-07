@@ -39,7 +39,8 @@ for (const dir of readdirSync(RESULTS, { withFileTypes: true })) {
     const spec = specNames.find((s) => dir.name.startsWith(s)) || 'other';
     const label = dir.name
         .replace(new RegExp(`^${spec}-?`), '')
-        .replace(/-(chromium|firefox|webkit)(-retry\d+)?$/, '')
+        .replace(/-(chromium|firefox|webkit|core|crossmode)(-retry\d+)?$/, '')
+        .replace(/-admin-(classic|modern)(-retry\d+)?$/, ' [$1]')
         .replace(/-[0-9a-f]{5}-/g, ' … ') // playwright's truncation hash
         .replace(/-/g, ' ')
         .trim();

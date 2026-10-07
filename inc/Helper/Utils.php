@@ -16,7 +16,39 @@ if (!defined('ABSPATH')) {
  */
 class Utils
 {
-    public static ?string $theme_name = null;
+    /**
+     * Stored option overlaid with only the declared field values, so keys another
+     * screen owns (e.g. Pro settings) survive a CSF/bfields save.
+     *
+     * @param  array<string, mixed> $data      Declared fields from the form
+     * @param  object|null          $instance  CSF options instance
+     * @return array<string, mixed>
+     */
+    public static function overlayDeclared(string $option, array $data, $instance): array
+    {
+        $stored = get_option($option, []);
+        if (!is_array($stored) || empty($stored)) {
+            return $data;
+        }
+
+        $declared = [];
+        foreach ((is_object($instance) && !empty($instance->pre_fields)) ? $instance->pre_fields : [] as $field) {
+            if (!empty($field['id'])) {
+                $declared[] = $field['id'];
+            }
+        }
+        if (!$declared) {
+            $declared = array_keys($data);
+        }
+
+        foreach ($declared as $key) {
+            if (array_key_exists($key, $data)) {
+                $stored[$key] = $data[$key];
+            }
+        }
+
+        return $stored;
+    }
 
     /**
      * Every 3D/HDR file format the plugin knows how to register for upload.
@@ -42,63 +74,6 @@ class Utils
         'hdr' => 'image/vnd.radiance',
         'usdz' => 'model/vnd.pixar.usd',
     ];
-
-    public function __construct()
-    {
-        self::$theme_name = wp_get_theme()->name;
-    }
-
-    /**
-     * Safely get a value from an array by key.
-     *
-     * @param  array<string, mixed>  $array
-     * @param  string                $key
-     * @param  mixed                 $default
-     * @return mixed
-     */
-    public static function isset($array, $key, $default = false)
-    {
-        return $array[$key] ?? $default;
-    }
-
-    /**
-     * Safely get a nested value from a two-level array.
-     *
-     * @param  array<string, mixed>  $array
-     * @param  string                $key1
-     * @param  string                $key2
-     * @param  mixed                 $default
-     * @return mixed
-     */
-    public static function isset2($array, $key1, $key2, $default = false)
-    {
-        return $array[$key1][$key2] ?? $default;
-    }
-
-    /**
-     * Convert a hex color string to an RGB array.
-     *
-     * @param  string      $hex    Hex color (with or without #)
-     * @param  float|false $alpha  Optional alpha value
-     * @return array{r: int, g: int, b: int, a?: float}
-     */
-    public static function hexToRGB($hex, $alpha = false)
-    {
-        $hex = str_replace('#', '', $hex);
-        $length = strlen($hex);
-
-        $rgb = [
-            'r' => hexdec($length === 6 ? substr($hex, 0, 2) : ($length === 3 ? str_repeat(substr($hex, 0, 1), 2) : '0')),
-            'g' => hexdec($length === 6 ? substr($hex, 2, 2) : ($length === 3 ? str_repeat(substr($hex, 1, 1), 2) : '0')),
-            'b' => hexdec($length === 6 ? substr($hex, 4, 2) : ($length === 3 ? str_repeat(substr($hex, 2, 1), 2) : '0')),
-        ];
-
-        if ($alpha !== false) {
-            $rgb['a'] = $alpha;
-        }
-
-        return $rgb;
-    }
 
     /**
      * Get the WooCommerce product gallery CSS selector for a given theme.

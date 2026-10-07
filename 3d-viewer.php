@@ -115,6 +115,10 @@ if (function_exists('bp3d_fs')) {
     if (file_exists(BP3D_PATH . 'vendor/codestar-framework/codestar-framework.php')) {
         require_once BP3D_PATH . 'vendor/codestar-framework/codestar-framework.php';
     }
+    // bfields, the new admin interface (inc/Base/AdminUi.php picks it or Codestar per screen).
+    if (file_exists(__DIR__ . '/lib/bfields/php/bootstrap.php')) {
+        require_once __DIR__ . '/lib/bfields/php/bootstrap.php';
+    }
 
 
     if (!class_exists('BP3D')) {

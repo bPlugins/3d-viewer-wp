@@ -100,7 +100,6 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
               </>
             ) : (
               <>
-                {/* {__("This format does not support this plugin", "3d-viewer")} */}
                 <Basic3DViewer {...{ setAttributes, __, modelSrc, model: modelSrc, attributes }} />
               </>
             )}

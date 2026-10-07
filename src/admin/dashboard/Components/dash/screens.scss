@@ -1,0 +1,263 @@
+// Shared pieces for the Activation and Extensions screens, on the dashboard tokens (dash/dashboard.scss).
+
+.bp3d-x-skel {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #eef1f5 25%, #f6f8fb 37%, #eef1f5 63%) 0 0 / 400% 100%;
+  animation: bp3dXShimmer 1.4s ease infinite;
+}
+
+.bp3d-x-spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: bp3dXSpin 0.8s linear infinite;
+}
+
+/* ---- notices ---- */
+.bp3d-x-notices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:empty { display: none; }
+}
+
+.bp3d-x-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--bp3d-dash-ink);
+  background: #ebf3ff;
+  box-shadow: inset 0 0 0 1px #c7dbfe;
+
+  > svg { flex: none; }
+
+  > span { flex: 1; min-width: 0; }
+
+  &--success { background: #ecfdf5; box-shadow: inset 0 0 0 1px #a7f3d0; > svg { color: var(--bp3d-dash-green-ink); } }
+  &--warning { background: #fffaf0; box-shadow: inset 0 0 0 1px #fed7aa; > svg { color: var(--bp3d-dash-orange-ink); } }
+  &--error { background: #fff5f5; box-shadow: inset 0 0 0 1px #fecaca; color: #912018; > svg { color: #b42318; } }
+}
+
+.bp3d-x-notice__action {
+  flex: none;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--bp3d-dash-line);
+  font: inherit;
+  font-weight: 600;
+  color: var(--bp3d-dash-ink);
+  cursor: pointer;
+}
+
+.bp3d-x-notice__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--bp3d-dash-slate-2);
+  cursor: pointer;
+
+  &:hover { background: rgba(15, 23, 42, 0.06); }
+}
+
+/* ---- text field ---- */
+.bp3d-x-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--bp3d-dash-line);
+  color: var(--bp3d-dash-slate-2);
+
+  &:focus-within { box-shadow: inset 0 0 0 2px var(--bp3d-dash-blue-2); }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: 0;
+    font: inherit;
+    font-size: 14px;
+    color: var(--bp3d-dash-heading);
+
+    &:focus { box-shadow: none; outline: 0; }
+    &::placeholder { color: var(--bp3d-dash-slate-3); }
+  }
+
+  &--sm { height: 36px; }
+}
+
+/* ---- buttons that keep their box while the label changes ---- */
+.bp3d-x-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--bp3d-dash-line);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bp3d-dash-ink);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, background-color 0.15s ease;
+
+  &:hover:not(:disabled) { background: #f8fafc; color: var(--bp3d-dash-ink); }
+
+  &--primary {
+    background: var(--bp3d-dash-blue-2);
+    box-shadow: none;
+    color: #fff;
+
+    &:hover:not(:disabled) { background: var(--bp3d-dash-blue-2); color: #fff; filter: brightness(0.94); }
+  }
+
+  &--danger {
+    color: #b42318;
+
+    &:hover:not(:disabled) { background: #fff5f5; color: #b42318; }
+  }
+
+  &--danger-solid {
+    background: #d92d20;
+    box-shadow: none;
+    color: #fff;
+
+    &:hover:not(:disabled) { background: #d92d20; color: #fff; filter: brightness(0.94); }
+  }
+
+  &--sm { height: 36px; padding: 0 12px; font-size: 13px; }
+
+  &:disabled { opacity: 0.55; cursor: default; }
+
+  &:focus-visible { outline: 2px solid var(--bp3d-dash-blue-2); outline-offset: 2px; }
+}
+
+/* ---- switch ---- */
+.bp3d-x-switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    inset-inline-start: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.2);
+    transition: transform 0.15s ease;
+  }
+
+  &[aria-checked="true"] { background: var(--bp3d-dash-green); }
+  &[aria-checked="true"]::after { transform: translateX(18px); }
+  html[dir="rtl"] &[aria-checked="true"]::after { transform: translateX(-18px); }
+  &:disabled { opacity: 0.5; cursor: default; }
+  &.is-busy::after { opacity: 0; }
+
+  .bp3d-x-spinner {
+    position: absolute;
+    top: 4px;
+    left: 13px;
+    width: 14px;
+    height: 14px;
+    color: #fff;
+  }
+
+  &:focus-visible { outline: 2px solid var(--bp3d-dash-blue-2); outline-offset: 2px; }
+}
+
+/* ---- inline confirm ---- */
+.bp3d-x-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #fff5f5;
+  box-shadow: inset 0 0 0 1px #fecaca;
+
+  strong { font-size: 14px; color: #912018; }
+  p { margin: 0; font-size: 13px; line-height: 19px; color: var(--bp3d-dash-slate); }
+}
+
+.bp3d-x-confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---- modal (a confirm panel over the page) ---- */
+.bp3d-x-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.bp3d-x-modal__panel {
+  width: min(440px, 100%);
+  padding: 22px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+
+  strong { color: var(--bp3d-dash-heading); font-size: 16px; }
+}
+
+@keyframes bp3dXShimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+@keyframes bp3dXSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp3d-x-skel,
+  .bp3d-x-spinner { animation: none; }
+}

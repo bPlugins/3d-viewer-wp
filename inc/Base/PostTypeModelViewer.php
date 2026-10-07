@@ -257,6 +257,11 @@ class PostTypeModelViewer
             return;
         }
 
+        // Modern's page frame shows its own shortcode chip.
+        if (AdminUi::MODERN === AdminUi::mode('viewer')) {
+            return;
+        }
+
         global $post;
         $shortcode = "[3d_viewer id='" . esc_attr((string) $post->ID) . "']";
         ?>
@@ -290,6 +295,11 @@ class PostTypeModelViewer
      */
     public function addLivePreviewMetaBox(): void
     {
+        // Modern draws the editor as one page, with Live Preview in its own side card.
+        if (AdminUi::MODERN === AdminUi::mode('viewer')) {
+            return;
+        }
+
         add_meta_box(
             'bp3d_live_preview',
             __('Live Preview', '3d-viewer'),

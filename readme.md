@@ -73,14 +73,14 @@ npm start          # wp-scripts dev build with file watching
 | `npm run check-types` | Type-check the TypeScript source (`tsc --noEmit`) |
 | `npm run i18n` | Regenerate `.pot` / `.po` / `.json` / `.mo` translation files |
 | `npm run zip` | Package the distributable into `zip/3d-viewer.zip` |
-| `npm run bundle` / `npm run deploy` | Bundle and deploy via Freemius (Gulp) |
+| `npm run deploy` | Deploy via Freemius (Gulp) |
 
 
 ## Contributing
 
 Issues and pull requests are welcome at https://github.com/bPlugins/3d-viewer-wp.
 
-Before submitting a PR, run `npm run check-types` and `npx playwright test`.
+Before submitting a PR, run `npm run check-types` and `npm test`.
 
 ## License
 

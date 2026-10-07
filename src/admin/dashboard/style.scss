@@ -1,35 +1,146 @@
-:root {
-    --bpl-dashboard-primary-color: #146ef5;
-    --bpl-dashboard-primary-color-rgb: 20, 110, 245;
-    --bpl-dashboard-secondary-color: #ff7a00;
-    --bpl-dashboard-secondary-color-rgb: 255, 122, 0;
-    --bpl-dashboard-title-color: #070127;
-    --bpl-dashboard-title-color-rgb: 7, 1, 39;
-    --bpl-dashboard-content-color: #1b2e4b;
-    --bpl-dashboard-content-color-rgb: 27, 46, 75;
-}
-
-@import '../../../../bpl-tools/Admin/style.scss';
-
-// Your custom dashboard styles here
-.navBadge {
-    display: inline-block;
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 1;
-    margin-top: 2px;
-    padding: 3px 6px;
-    margin-left: 4px;
-    border-radius: 3px;
-    background: var(--bpl-dashboard-secondary-color, #f16522);
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
-}
-
-#wpbody-content .fs-notice.promotion,
-#wpbody-content .fs-notice.success,
-#wpbody-content .fs-notice.updated {
+// Hides admin notices on every 3D Viewer screen (inc/admin.php); kept from bpl-tools/Admin/style.scss.
+.notice,
+.fs-notice,
+.fs_notice_board,
+div.fs-notice.promotion,
+div.fs-notice.success,
+div.fs-notice.updated {
+    width: 0;
+    height: 0;
+    position: absolute !important;
+    top: -9999px;
+    left: -9999px;
+    opacity: 0;
+    visibility: hidden;
     display: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+// The only notice left visible: the new-interface choice (AdminUi::notice) must be seen to be made.
+.notice.bp3d-admin-ui-notice {
+    position: static !important;
+    display: block !important;
+    width: auto;
+    height: auto;
+    opacity: 1;
+    visibility: visible;
+    padding: 1px 12px !important;
+    margin-block: 20px 0 !important;
+    margin-inline: 0 20px !important;
+}
+
+// New interface: drawn as the one-line bar every 3D Viewer screen uses (bfields notices.css).
+body.bfields-notices .notice.bp3d-admin-ui-notice {
+    display: flex !important;
+    padding: 8px 16px !important;
+    margin-block: 12px !important;
+    margin-inline: 0 20px !important;
+}
+
+// Demos: Pro-only demos on the free plugin, in the corner the tag already leaves free.
+.bp3d-dash-demo__pro {
+  position: absolute;
+  top: 11.11px;
+  inset-inline-end: 11.11px;
+  padding: 3.7px 7.41px;
+  border-radius: 3.7px;
+  background: #fff7e6;
+  color: #b45309;
+  font-size: 9.26px;
+  font-weight: 700;
+  line-height: 11px;
+}
+
+/* ---- page width handle (Components/PageResize.tsx), drawn like bfields' splitter ---- */
+.bp3d-dash {
+  position: relative;
+  margin-inline: auto;
+}
+
+.bp3d-page-handle {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  width: 16px;
+  cursor: col-resize;
+  touch-action: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 3px;
+    background: #1b5cf0;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &--start {
+    left: -20px;
+  }
+
+  &--end {
+    right: -20px;
+  }
+
+  &:hover::after,
+  &--active::after {
+    opacity: 0.45;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+.bp3d-page-handle__grip {
+  position: sticky;
+  z-index: 1;
+  top: calc(50vh - 18px);
+  align-self: flex-start;
+  box-sizing: border-box;
+  width: 8px;
+  height: 36px;
+  margin-top: 140px;
+  padding: 8px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, #6b7280 1px, transparent 1.5px) center / 4px 6px repeat-y content-box,
+    #fff padding-box;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition: border-color 0.15s ease;
+}
+
+.bp3d-page-handle:hover .bp3d-page-handle__grip,
+.bp3d-page-handle--active .bp3d-page-handle__grip,
+.bp3d-page-handle:focus-visible .bp3d-page-handle__grip {
+  border-color: #1b5cf0;
+  background:
+    radial-gradient(circle, #fff 1px, transparent 1.5px) center / 4px 6px repeat-y content-box,
+    #1b5cf0 padding-box;
+}
+
+body.bp3d-resizing,
+body.bp3d-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+@media (max-width: 782px) {
+  .bp3d-page-handle {
+    display: none;
+  }
 }

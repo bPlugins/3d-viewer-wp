@@ -1,0 +1,285 @@
+/*
+ * Port-only rules: what the plugin needs on top of the design's dashboard.css.
+ * Nothing here changes a static 1440px render of the design's own screens except
+ * where the comments say so.
+ */
+
+/* WordPress draws its own footer below the page (the design's footer was a mock of it). */
+.bp3d-dash-page {
+  min-height: calc(var(--bp3d-viewport) - 65px);
+}
+
+.bp3d-app :where(a, button, input):focus-visible {
+  outline: 2px solid var(--bp3d-dash-blue-2);
+  outline-offset: 2px;
+}
+
+/* ---- navbar: real plugin name/version and up to eight tabs ---- */
+.bp3d-dash-brand__name,
+.bp3d-dash-brand__ver {
+  width: auto;
+  white-space: nowrap;
+}
+
+.bp3d-dash-brand__name { min-width: 77px; }
+.bp3d-dash-brand__ver { min-width: 39.17px; }
+
+.bp3d-dash-nav {
+  height: auto;
+  min-height: 57.6px;
+}
+
+/* 57.6 like the nav, so a single row keeps the nav at the file's height */
+.bp3d-dash-tab { height: 57.6px; }
+
+/* wp-admin rings every focused link, mouse clicks included; keyboard focus keeps the outline above. */
+.bp3d-dash-tab:focus {
+  box-shadow: none;
+}
+
+.bp3d-dash-tab:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.bp3d-dash-tabs {
+  flex-wrap: wrap;
+  min-width: 0;
+  column-gap: 22px;
+  row-gap: 0;
+}
+
+@media (max-width: 1439px) {
+  .bp3d-dash-tabs { column-gap: 16px; }
+}
+
+/* ---- heroes below the 1440px frame: move the art, never clip it ---- */
+.bp3d-dash-hero {
+  container: bp3d-hero / inline-size;
+}
+
+/* Pinned to the right edge at every width, not only when the hero is wider than the frame. */
+.bp3d-dash-hero--wide .bp3d-dash-hero__art {
+  left: calc(100% - 1185px);
+}
+
+/* Welcome's frame is 815px; the viewer chips go first, the headphones fit down to 700px. */
+@container bp3d-hero (max-width: 814px) {
+  .bp3d-dash-home .bp3d-dash-ctrls { display: none; }
+}
+
+@container bp3d-hero (max-width: 699px) {
+  .bp3d-dash-home .bp3d-dash-hero__art { display: none; }
+}
+
+/* Demos: the thumbnails meet the copy below 1000px. */
+@container bp3d-hero (max-width: 999px) {
+  .bp3d-dash-wide .bp3d-dash-hero__art { display: none; }
+}
+
+/* Our Plugins: the headphones reach the copy first; the stats card holds on longer. */
+@container bp3d-hero (max-width: 1218px) {
+  :is(.bp3d-dash-hero--plugins, .bp3d-dash-hero--extensions) :is(.bp3d-dash-hero__model, .bp3d-dash-degree, .bp3d-dash-hero__blob) { display: none; }
+}
+
+@container bp3d-hero (max-width: 910px) {
+  :is(.bp3d-dash-hero--plugins, .bp3d-dash-hero--extensions) .bp3d-dash-hero__art { display: none; }
+}
+
+/* ---- Welcome ---- */
+.bp3d-dash-step__link {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--bp3d-dash-blue);
+}
+
+.bp3d-dash-text :where(strong) { font-weight: 600; color: var(--bp3d-dash-title); }
+
+.bp3d-dash-text :where(code) {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  font-size: 12px;
+}
+
+@media (max-width: 1180px) {
+  .bp3d-dash-home { grid-template-columns: minmax(0, 1fr); }
+  .bp3d-dash-quick__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bp3d-dash-support { grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto; }
+}
+
+/* ---- Demos ---- */
+.bp3d-dash-demos__empty {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1180px) {
+  .bp3d-dash-demos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bp3d-dash-filters { flex-wrap: wrap; }
+}
+
+.bp3d-dash-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+.bp3d-dash-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.bp3d-dash-modal__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1200px, 100%);
+  height: min(820px, 100%);
+  overflow: hidden;
+  border-radius: 13.17px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+
+.bp3d-dash-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px 12px 20px;
+  box-shadow: inset 0 -1px 0 var(--bp3d-dash-line);
+}
+
+.bp3d-dash-modal__title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+
+.bp3d-dash-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp3d-dash-modal__actions .bp3d-dash-btn {
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--bp3d-dash-ink);
+}
+
+.bp3d-dash-modal__close {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  color: var(--bp3d-dash-slate);
+}
+
+.bp3d-dash-modal__close:hover { background: #f1f5f9; }
+
+.bp3d-dash-modal__stage {
+  position: relative;
+  flex: 1;
+  background: #f8fafc;
+}
+
+.bp3d-dash-modal__stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.bp3d-dash-modal__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.bp3d-dash-modal__nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+  color: var(--bp3d-dash-ink);
+}
+
+.bp3d-dash-modal__nav--prev { inset-inline-start: 12px; }
+.bp3d-dash-modal__nav--prev svg { transform: rotate(180deg); }
+.bp3d-dash-modal__nav--next { inset-inline-end: 12px; }
+
+/* Forward-pointing arrows mirror in RTL; `scale` composes with any transform already on them. */
+html[dir="rtl"] .bp3d-dash-rtl-flip { scale: -1 1; }
+
+/* ---- Pricing / Feature Comparison ---- */
+/* Freemius sells monthly, yearly and lifetime, so Pricing gets Comparison's three-way toggle. */
+.bp3d-dash-billing--3 {
+  width: 370px;
+  gap: 25px;
+  padding-inline-start: 30px;
+}
+
+.bp3d-dash-billing--3 .bp3d-dash-billing__opt--monthly { width: 55px; }
+
+.bp3d-dash-billing--3 .bp3d-dash-billing__opt--lifetime {
+  width: 73px;
+  padding: 8px 16px 8px 0;
+}
+
+.bp3d-dash-billing__opt { min-width: max-content; }
+
+.bp3d-dash-plan__buy:disabled,
+.bp3d-dash-extcard__cta:disabled {
+  cursor: default;
+  filter: none;
+  opacity: 0.7;
+}
+
+.bp3d-dash-loading {
+  padding: 48px 0;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1180px) {
+  .bp3d-dash-plans { flex-wrap: wrap; }
+  .bp3d-dash-plan { flex-basis: 360px; }
+  .bp3d-dash-assure { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---- Our Plugins and Extensions (both use the design's Extensions cards) ---- */
+.bp3d-dash-extcard__shot .bp3d-dash-tag--active {
+  box-shadow: inset 0 0 0 1px #a7f3d0;
+  color: var(--bp3d-dash-green-ink);
+}
+
+/* Plugin and extension icons are square; keep them icon-sized instead of filling the banner. */
+.bp3d-dash-ext--plugins .bp3d-dash-extcard__shot img,
+.bp3d-dash-ext--extensions .bp3d-dash-extcard__shot img {
+  inset: 34px auto auto 50%;
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+  border-radius: 20px;
+}
+
+.bp3d-dash-ext--plugins .bp3d-dash-extcard__author svg { color: #f59e0b; }

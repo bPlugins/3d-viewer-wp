@@ -1,4 +1,3 @@
-import React from 'react';
 import FrontEnd from '../public/Components/FrontEnd';
 
 const { createRoot } = (window as any).ReactDOM;

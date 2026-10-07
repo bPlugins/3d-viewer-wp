@@ -45,14 +45,6 @@ class Blocks
             'all'
         );
 
-        wp_register_style(
-            'bp3d-custom-style',
-            BP3D_DIR . 'public/css/custom-style.css',
-            [],
-            BP3D_VERSION,
-            'all'
-        );
-
         // Frontend script
         wp_register_script(
             'bp3d-public',
@@ -71,9 +63,6 @@ class Blocks
             'o3dviewerSrc' => BP3D_DIR . 'public/js/o3dv.min.js',
             'selectors' => [
                 'gallery' => $this->get_default_selector($settings('gallery', $settings('product_gallery_selector')), '.woocommerce-product-gallery'),
-                'gallery_item' => $this->get_default_selector($settings('gallery_item'), '.woocommerce-product-gallery__image'),
-                'gallery_item_active' => $this->get_default_selector($settings('gallery_item_active'), '.woocommerce-product-gallery__image.flex-active-slide'),
-                'gallery_thumbnail_item' => $this->get_default_selector($settings('gallery_thumbnail_item'), '.flex-control-thumbs li'),
                 'gallery_trigger' => $this->get_default_selector($settings('gallery_trigger'), '.woocommerce-product-gallery__trigger'),
             ]
         ]);
@@ -98,21 +87,6 @@ class Blocks
      */
     public function enqueueEditorAssets()
     {
-        $presets_raw = get_posts([
-            'post_type' => 'bp3d-preset',
-            'posts_per_page' => -1,
-        ]);
-
-        $presets = [];
-        foreach ($presets_raw as $preset) {
-            $block_content = \BP3D\Helper\Block::getBlock($preset->ID);
-            $presets[] = [
-                'id' => $preset->ID,
-                'title' => $preset->post_title,
-                'attributes' => $block_content['attrs'] ?? [],
-            ];
-        }
-
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
             'admin_url' => admin_url(),
             'allowedMimeTypes' => Utils::getAllowedMimeTypes(),

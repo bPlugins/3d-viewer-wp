@@ -25,7 +25,8 @@ class Settings
 
     public function register(): void
     {
-        if (!is_admin()) {
+        // bfields saves this page through POST /bfields/v1/options/bp3d_dokan_settings; init() checks the mode.
+        if (!is_admin() && !(function_exists('bfields_is_rest_request') && bfields_is_rest_request(self::OPTION))) {
             return;
         }
 
@@ -40,11 +41,16 @@ class Settings
 
     public function init(): void
     {
-        if (!class_exists('CSF')) {
+        // Read at init, not dokan_loaded, so a theme's bp3d_admin_ui filters count.
+        if (!is_admin() && !\BP3D\Base\AdminUi::isBfieldsRestRequest(self::OPTION)) {
             return;
         }
 
-        \CSF::createOptions(self::OPTION, [
+        if (!class_exists('CSF') && !\BP3D\Helper\Registrar::modern(self::OPTION)) {
+            return;
+        }
+
+        \BP3D\Helper\Registrar::createOptions(self::OPTION, [
             'menu_title' => __('Marketplace (Dokan)', '3d-viewer'),
             'menu_slug' => 'bp3d-dokan',
             'menu_type' => 'submenu',
@@ -62,7 +68,7 @@ class Settings
             'save_defaults' => false,
         ]);
 
-        \CSF::createSection(self::OPTION, [
+        \BP3D\Helper\Registrar::createSection(self::OPTION, [
             'title' => __('Vendors', '3d-viewer'),
             'icon' => 'fas fa-store',
             'fields' => $this->fields(),
@@ -70,7 +76,7 @@ class Settings
     }
 
     /**
-     * Stored option overlaid with the declared keys only (premium Field\Settings::overlayDeclared).
+     * Stored option overlaid with the declared keys only.
      *
      * @param mixed $data
      * @param mixed $instance CSF options instance.
@@ -82,28 +88,7 @@ class Settings
             $data = [];
         }
 
-        $stored = get_option(self::OPTION, []);
-        if (!is_array($stored) || empty($stored)) {
-            return $data;
-        }
-
-        $declared = [];
-        foreach ((is_object($instance) && !empty($instance->pre_fields)) ? $instance->pre_fields : [] as $field) {
-            if (!empty($field['id'])) {
-                $declared[] = $field['id'];
-            }
-        }
-        if (!$declared) {
-            $declared = array_keys($data);
-        }
-
-        foreach ($declared as $key) {
-            if (array_key_exists($key, $data)) {
-                $stored[$key] = $data[$key];
-            }
-        }
-
-        return $stored;
+        return \BP3D\Helper\Utils::overlayDeclared(self::OPTION, $data, $instance);
     }
 
     /**
@@ -118,6 +103,7 @@ class Settings
             'id' => 'enabled',
             'type' => 'switcher',
             'title' => __('Allow vendors to add 3D models', '3d-viewer'),
+            'icon' => 'cart',
             'desc' => __('Vendors can add a GLB model, a poster image, an optional USDZ file for iOS AR, a viewer position and a background color to their own products in the Dokan dashboard. Off by default.', '3d-viewer'),
             'text_on' => __('Yes', '3d-viewer'),
             'text_off' => __('No', '3d-viewer'),

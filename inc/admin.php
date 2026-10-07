@@ -19,6 +19,8 @@ if (!class_exists('BP3DAdmin')) {
         /** Slug used up to 1.9.3, redirected to SETUP_SLUG. */
         const LEGACY_SETUP_SLUG = '3d-viewer-setup';
 
+        private $dashboard_hook = '';
+
         public function __construct()
         {
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
@@ -125,34 +127,37 @@ if (!class_exists('BP3DAdmin')) {
                 return;
             }
 
+            // The stylesheet keeps its old scope: it also hides admin notices on these screens.
             wp_enqueue_style(
                 'bp3d-dashboard',
                 BP3D_DIR . 'build/dashboard.css',
                 [],
-                BP3D_VERSION
+                \BP3D\Base\EnqueueAssets::styleVersion('build/dashboard.css')
             );
 
+            if (!$this->dashboard_hook || $hook !== $this->dashboard_hook) {
+                return;
+            }
+
+            $asset = \BP3D\Base\EnqueueAssets::buildAsset('dashboard');
+            $deps = array_values(array_unique(array_merge(
+                (array) ($asset['dependencies'] ?? ['react', 'wp-api-fetch', 'wp-data', 'wp-i18n']),
+                ['react-dom', 'wp-util']
+            )));
+
+            // Not 'bp3d-admin-script': EnqueueAssets registers build/admin.js under that handle.
             wp_enqueue_script(
-                'bp3d-admin-script',
+                'bp3d-dashboard',
                 BP3D_DIR . 'build/dashboard.js',
-                [
-                    'react',
-                    'react-dom',
-                    'wp-components',
-                    'wp-i18n',
-                    'wp-api',
-                    'wp-util',
-                    'lodash',
-                    'wp-media-utils',
-                    'wp-data',
-                    'wp-core-data',
-                    'wp-api-request',
-                ],
-                BP3D_VERSION,
+                $deps,
+                // The build hash, so a rebuilt bundle is never served from the browser cache.
+                $asset['version'] ?? BP3D_VERSION,
                 true
             );
 
-            wp_localize_script('bp3d-admin-script', 'bp3dDashboard', [
+            wp_set_script_translations('bp3d-dashboard', '3d-viewer', BP3D_PATH . 'languages');
+
+            wp_localize_script('bp3d-dashboard', 'bp3dDashboard', [
                 'dir' => BP3D_DIR,
             ]);
         }
@@ -166,8 +171,7 @@ if (!class_exists('BP3DAdmin')) {
         private function enqueue_setup_scripts()
         {
             // Build hash busts the browser cache between releases, not just on a version bump.
-            $asset_file = BP3D_PATH . 'build/onboarding.asset.php';
-            $asset = file_exists($asset_file) ? include $asset_file : [];
+            $asset = \BP3D\Base\EnqueueAssets::buildAsset('onboarding');
             $version = $asset['version'] ?? BP3D_VERSION;
 
             wp_enqueue_style(
@@ -197,9 +201,7 @@ if (!class_exists('BP3DAdmin')) {
          */
         public function register_admin_menus()
         {
-
-
-            add_submenu_page(
+            $this->dashboard_hook = (string) add_submenu_page(
                 'edit.php?post_type=bp3d-model-viewer',
                 __('Demo and Help - 3D Viewer', '3d-viewer'),
                 '<span style="color: #f18500;">' . __('Help & Demos', '3d-viewer') . '</span>',
@@ -251,10 +253,65 @@ if (!class_exists('BP3DAdmin')) {
                 'onboarding' => class_exists('\BP3D\Base\Onboarding')
                     ? \BP3D\Base\Onboarding::state()
                     : ['completed' => true, 'percent' => 100],
-            ]);
+                'canManageOptions' => current_user_can('manage_options'),
+                // Our Plugins hides Install/Activate for users the REST plugins route would refuse.
+                'canInstallPlugins' => current_user_can('install_plugins'),
+                'canActivatePlugins' => current_user_can('activate_plugins'),
+                'extensions' => $this->extensions_data(),
+            ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
             ?>
             <div id="bp3dAdminDashboard" data-info="<?php echo esc_attr($info); ?>"></div>
             <?php
+        }
+
+        /** The BPEM manager for this plugin, when the extension manager booted. */
+        private function extension_manager()
+        {
+            if (!class_exists('\\BPEM\\ExtensionRegistry', false)) {
+                return null;
+            }
+
+            $manager = \BPEM\ExtensionRegistry::instance()->get_manager('3d-viewer');
+
+            return $manager && $manager->extensions_enabled() ? $manager : null;
+        }
+
+        /**
+         * What the dashboard's Extensions screen needs: the same list as BPEM's REST route, preloaded so
+         * the cards paint at once. Null when BPEM is absent or the user cannot manage extensions.
+         */
+        private function extensions_data()
+        {
+            $manager = $this->extension_manager();
+
+            if (!$manager || !current_user_can($manager->get_config('capability', 'manage_options'))) {
+                return null;
+            }
+
+            $slug = $manager->get_slug();
+            $user = wp_get_current_user();
+
+            try {
+                $items = array_values((array) $manager->catalog()->get_merged($manager));
+            } catch (\Throwable $e) {
+                $items = [];
+            }
+
+            return [
+                'items' => $items,
+                'restPath' => '/bpem/' . $slug . '/v1',
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'ajaxNonce' => wp_create_nonce('bpem_' . $slug . '_admin'),
+                'licenseAction' => 'bpem_' . $slug . '_license',
+                'isMaxPlan' => (bool) $manager->is_max_plan(),
+                'canInstall' => current_user_can('install_plugins'),
+                'checkoutEnabled' => (bool) $manager->freemius_checkout_enabled(),
+                'buyer' => [
+                    'email' => $user->user_email,
+                    'first' => $user->user_firstname,
+                    'last' => $user->user_lastname,
+                ],
+            ];
         }
 
         /**

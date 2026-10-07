@@ -2,14 +2,9 @@ declare const jQuery: any;
 
 /**
  * Admin page initialization.
- * Handles Codestar Framework field customization, shortcode copying,
- * and WooCommerce admin notice dismissal.
+ * Handles shortcode copying
  */
 jQuery(document).ready(function ($: any) {
-    $("[name='_bp3dimages_[angle_property][top]']").attr('placeholder', 'X');
-    $("[name='_bp3dimages_[angle_property][right]']").attr('placeholder', 'Y');
-    $("[name='_bp3dimages_[angle_property][bottom]']").attr('placeholder', 'Z');
-
     $(document).on('click', '.bp3d_shortcode_copy_icon', function (this: HTMLElement, e: Event) {
         e.preventDefault();
 
@@ -50,13 +45,4 @@ jQuery(document).ready(function ($: any) {
             $(this).text('Copy Shortcode');
         }, 2000);
     });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Custom CSS subtitle
-    const subtitleElement = document.querySelector('.custom-css .csf-subtitle-text') as HTMLElement | null;
-    if (subtitleElement) {
-        const postId = (window as any).post_ID?.value;
-        subtitleElement.innerText = `#bp_model_id_${parseInt(postId)}`;
-    }
 });

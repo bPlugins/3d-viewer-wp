@@ -173,31 +173,6 @@ class Dokan
         }
     }
 
-    public static function editorIsLegacy(): bool
-    {
-        try {
-            $class = 'WeDevs\\Dokan\\Admin\\Dashboard\\LegacySwitcher';
-
-            if (function_exists('dokan_get_container')) {
-                $container = dokan_get_container();
-
-                if (is_object($container) && method_exists($container, 'has') && $container->has($class)) {
-                    $switcher = $container->get($class);
-
-                    if (is_object($switcher) && method_exists($switcher, 'is_product_editor_legacy_preferred')) {
-                        return (bool) $switcher->is_product_editor_legacy_preferred();
-                    }
-                }
-            }
-
-            $appearance = get_option('dokan_appearance', []);
-
-            return !(is_array($appearance) && ($appearance['vendor_product_editor'] ?? 'legacy') === 'latest');
-        } catch (\Throwable $e) {
-            return true;
-        }
-    }
-
     public static function debugLog(string $message): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {

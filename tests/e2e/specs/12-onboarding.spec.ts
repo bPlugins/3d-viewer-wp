@@ -3,6 +3,7 @@ import { wp } from '../wp';
 
 const SETUP_QUERY = 'post_type=bp3d-model-viewer&page=bp3d-setup-wizard';
 const DASHBOARD_QUERY = 'post_type=bp3d-model-viewer&page=3d-viewer';
+const DASH_NAV = '.bp3d-dash-nav, .bPlDashboardNav';
 
 const START_LABEL = "Let's Get Started";
 const FINISH_LABEL = 'Add Your First 3D Model';
@@ -111,9 +112,10 @@ test.describe('Guided setup wizard', () => {
         await page.locator('.bp3d-ob-exit').click();
         await page.waitForURL(/page=3d-viewer(&|$)/, { timeout: 30_000 });
 
-        const resume = page.locator('.bPlDashboardNav').getByRole('link', { name: /Guided Setup/ });
+        // The redesigned dashboard (.bp3d-dash-nav) or the earlier one (.bPlDashboardNav).
+        const resume = page.locator(DASH_NAV).getByRole('link', { name: /Guided Setup/ }).first();
         await expect(resume).toBeVisible();
-        await expect(resume.locator('.navBadge')).toHaveText('33%');
+        await expect(resume.locator('.bp3d-dash-new, .navBadge').first()).toHaveText('33%');
 
         // And it goes back to the wizard. Followed by href: Playwright's click
         // stability check stalls on this page under the suite's tracing.
@@ -151,7 +153,7 @@ test.describe('Guided setup wizard', () => {
 
         // A completed run takes its dashboard entry with it.
         await admin.visitAdminPage('edit.php', DASHBOARD_QUERY);
-        await expect(page.locator('.bPlDashboardNav')).toBeAttached();
-        await expect(page.locator('.bPlDashboardNav').getByRole('link', { name: /Guided Setup/ })).toHaveCount(0);
+        await expect(page.locator(DASH_NAV).first()).toBeAttached();
+        await expect(page.locator(DASH_NAV).getByRole('link', { name: /Guided Setup/ })).toHaveCount(0);
     });
 });

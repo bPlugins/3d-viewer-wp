@@ -36,11 +36,6 @@ export interface Styles {
 	[key: string]: unknown;
 }
 
-export interface AppliedTextures {
-	modelUrl: string | null;
-	[key: string]: unknown;
-}
-
 export interface ViewerAttributes {
 	tonMapping: string;
 	[key: string]: unknown;

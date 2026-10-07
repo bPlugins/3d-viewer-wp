@@ -1,4 +1,3 @@
-import React from 'react';
 import { jsonParse } from 'bp-utils';
 import FrontEnd, { FrontEndAttributes } from './Components/FrontEnd';
 

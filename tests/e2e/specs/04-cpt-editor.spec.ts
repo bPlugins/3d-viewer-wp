@@ -1,4 +1,6 @@
-import { test, expect, expectNoFatal } from '../fixtures';
+import { expectNoFatal } from '../fixtures';
+import { test, expect } from '../admin-ui';
+import { adminUi, editUrl, openMetaboxTab, shortcodeButton } from '../helpers/wp-admin';
 
 test.describe('3D Model CPT editor', () => {
     test('Add New model opens the block editor with the viewer block pre-inserted', async ({
@@ -39,40 +41,54 @@ test.describe('3D Model CPT editor', () => {
         }
     });
 
-    test('classic (CSF metabox) model edit screen renders metabox + shortcode area', async ({
+    test('classic-editor model edit screen renders the fields + shortcode', async ({
         page,
-        admin,
         state,
+        adminUi: mode,
     }) => {
         // The classic-mode fixture post was seeded with _bp3d_is_gutenberg=0.
         // Its edit screen should NOT load the block editor.
-        await admin.visitAdminPage('post.php', `post=${state.models.classic.id}&action=edit`);
+        await page.goto(editUrl(state.models.classic.id));
         await expectNoFatal(page);
         await expect(page.locator('body')).not.toHaveClass(/block-editor-page/);
 
-        // CSF metabox with the viewer fields
-        await expect(page.locator('#_bp3dimages_')).toBeAttached();
+        const ui = await adminUi(page);
+        if (mode) expect(ui, 'viewer screen interface').toBe(mode);
+        const shortcode = `[3d_viewer id='${state.models.classic.id}']`;
 
-        // Copyable shortcode under the title (new in 1.9.x)
-        await expect(page.locator('.bp3d_shortcode_area_after_title')).toBeAttached();
-        await expect(page.locator('.bp3d_shortcode_copy_btn').first()).toBeVisible();
+        if (ui === 'classic') {
+            // Codestar metabox + copyable shortcode under the title (new in 1.9.x)
+            await expect(page.locator('#_bp3dimages_')).toBeAttached();
+            await expect(page.locator('.bp3d_shortcode_area_after_title')).toBeAttached();
+            await expect(page.locator('.bp3d_shortcode_copy_btn').first()).toBeVisible();
+            await expect(shortcodeButton(page)).toContainText(shortcode);
+            return;
+        }
+
+        // Modern: bfields draws the whole page; the shortcode is its chip, not the PHP bar.
+        await expect(page.locator('.bfields-root[data-unique="_bp3dimages_"][data-frame="page"]')).toBeAttached();
+        await expect(page.locator('.bfields-shortcode__chip').first()).toContainText(shortcode);
+        await expect(page.locator('.bp3d_shortcode_area_after_title')).toHaveCount(0);
+        // The interface line moves from the hidden Publish box into the side card.
+        await expect(page.locator('#submitdiv .bp3d-admin-ui-row')).toBeAttached();
     });
 
-    test('live preview panel renders in the classic editor Preview section', async ({
-        page,
-        admin,
-        state,
-    }) => {
-        await admin.visitAdminPage('post.php', `post=${state.models.classic.id}&action=edit`);
+    test('live preview renders for the classic-editor model', async ({ page, state, adminUi: mode }) => {
+        await page.goto(editUrl(state.models.classic.id));
+        const ui = await adminUi(page);
+        if (mode) expect(ui, 'viewer screen interface').toBe(mode);
 
-        // The Preview section is a CSF metabox tab — open it.
-        await page
-            .locator('#_bp3dimages_ .csf-nav a, #_bp3dimages_ .csf-nav .csf-tab-title')
-            .filter({ hasText: /^Preview$/ })
-            .first()
-            .click();
+        if (ui === 'modern') {
+            // The side card previews the model next to the fields.
+            const side = page.locator('#bfields-side-_bp3dimages_');
+            await expect(side).toBeAttached({ timeout: 30_000 });
+            await expect(side.locator('.bp3d-side-preview__stage').first()).toBeAttached({ timeout: 30_000 });
+            await expect(side.locator('model-viewer').first()).toBeAttached({ timeout: 30_000 });
+        }
 
-        const root = page.locator('#bp3d-model-preview-root');
+        // The Preview section (a Codestar tab, or bfields' stage card) mounts the React app.
+        await openMetaboxTab(page, 'Preview');
+        const root = page.locator('#bp3d-model-preview-root').locator('visible=true').first();
         await expect(root).toBeAttached();
         await expect
             .poll(async () => root.evaluate((el) => el.children.length).catch(() => 0), {
@@ -81,13 +97,24 @@ test.describe('3D Model CPT editor', () => {
             })
             .toBeGreaterThan(0);
 
-        await expect(page.locator('.bp3d-model-preview__title').first()).toContainText(
-            /Live Preview/i
-        );
+        if (ui === 'classic') {
+            await expect(page.locator('.bp3d-model-preview__title').first()).toContainText(/Live Preview/i);
+        } else {
+            // Inside the stage card the preview is drawn bare (no own header).
+            await expect(root.locator('.bp3d-model-preview--bare').first()).toBeAttached();
+        }
     });
 
-    test('preview popup opens from the shortcode area button', async ({ page, admin, state }) => {
-        await admin.visitAdminPage('post.php', `post=${state.models.classic.id}&action=edit`);
+    test('preview popup opens from the Live Preview box button', async ({ page, state, adminUi: mode }) => {
+        await page.goto(editUrl(state.models.classic.id));
+        const ui = await adminUi(page);
+        if (mode) expect(ui, 'viewer screen interface').toBe(mode);
+
+        if (ui === 'modern') {
+            // Modern previews in the side card; the Live Preview box is not registered.
+            await expect(page.locator('#bp3d_live_preview')).toHaveCount(0);
+            return;
+        }
 
         const trigger = page.locator('#bp3d-preview-btn-root .bp3d-preview-popup-trigger');
         await expect(trigger).toBeVisible({ timeout: 20_000 });

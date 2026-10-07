@@ -32,7 +32,6 @@ const ARQRCode = ({ viewerRef, arLink, placement }: ARQRCodeProps) => {
     }, []);
 
     useEffect(() => {
-        // alert('AR is loaded');
         if (viewerRef.current?.loaded) {
             if (params['bp3d-action'] === 'view-ar' && viewerRef.current?.canActivateAR) {
                 viewerRef.current?.activateAR();

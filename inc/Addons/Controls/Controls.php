@@ -16,17 +16,6 @@ if (!defined('ABSPATH')) {
  */
 final class Controls
 {
-    private static ?self $_instance = null;
-
-    public static function instance(): self
-    {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new self();
-        }
-
-        return self::$_instance;
-    }
-
     public function __construct()
     {
         add_action('elementor/controls/register', [$this, 'registerControls']);
