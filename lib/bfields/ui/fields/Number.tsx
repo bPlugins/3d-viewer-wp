@@ -3,7 +3,7 @@
  *
  * Ported from 3d-viewer-new-ui `controls.jsx` → `Slider`: a 350px track that
  * fills blue up to the thumb via the `--bfields-range-pct` custom property,
- * with the current value in a bordered readout beside it.
+ * with the current value in an editable number box beside it.
  *
  * `number` and `spinner` render ./NumberInput.tsx: the number box and the
  * stepper.
@@ -29,6 +29,26 @@ export default function NumberField(props: FieldComponentProps) {
 	const hi = Number(max ?? 100);
 	const current = text === '' ? lo : Number(text);
 	const pct = hi > lo ? ((current - lo) / (hi - lo)) * 100 : 0;
+	const grid = Number(step ?? 1) > 0 ? Number(step ?? 1) : 1;
+
+	// Clamp and snap only on blur, so partial input like "0." survives typing.
+	const settle = () => {
+		if (text.trim() === '') {
+			return;
+		}
+
+		const n = Number(text);
+		if (!Number.isFinite(n)) {
+			onChange(String(lo));
+			return;
+		}
+
+		const places = (String(grid).split('.')[1] ?? '').length;
+		const snapped = lo + Math.round((Math.min(hi, Math.max(lo, n)) - lo) / grid) * grid;
+		const next = String(Number(Math.min(hi, snapped).toFixed(places)));
+
+		next !== text && onChange(next);
+	};
 
 	return (
 		<div className="bfields-slider">
@@ -44,7 +64,18 @@ export default function NumberField(props: FieldComponentProps) {
 				style={{ '--bfields-range-pct': `${Math.max(0, Math.min(100, pct))}%` } as React.CSSProperties}
 				onChange={(event) => onChange(event.target.value)}
 			/>
-			<span className="bfields-slider__value">{text}</span>
+			<input
+				type="number"
+				className="bfields-slider__value"
+				value={text}
+				min={lo}
+				max={hi}
+				step={step ?? 1}
+				disabled={locked}
+				aria-label={field.title || undefined}
+				onChange={(event) => onChange(event.target.value)}
+				onBlur={settle}
+			/>
 		</div>
 	);
 }

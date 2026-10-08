@@ -147,6 +147,7 @@ function readAttributes(): Record<string, any> {
         fullscreen: boolVal('bp_3d_fullscreen', true),
         zoomInOutBtn: boolVal('bp_3d_zoom_in_out_btn', false),
         cameraBtn: boolVal('bp_3d_camera_btn', false),
+        downloadBtn: boolVal('bp_3d_download_btn', false),
         progressBar: boolVal('bp_3d_progressbar', false),
         environmentImage: resolveEnvironmentImage(fieldVal('bp_3d_environment_image_preset'), fieldVal('bp_3d_environment_image')),
         exposure: fieldVal('3d_exposure') || '1',
@@ -397,14 +398,10 @@ const icon = (d: React.ReactNode) => (
 const EyeIcon = () => icon(<><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></>);
 const ScanEyeIcon = () => icon(<><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" /><circle cx="12" cy="12" r="1" /><path d="M18.9 12.3a1 1 0 0 0 0-.6 7.5 7.5 0 0 0-13.8 0 1 1 0 0 0 0 .6 7.5 7.5 0 0 0 13.8 0" /></>);
 const ResetIcon = () => icon(<><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" /><path d="M3 21v-5h5" /></>);
-const ZoomInIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M11 8v6M8 11h6" /></>);
-const ZoomOutIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M8 11h6" /></>);
-const FullIcon = () => icon(<><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></>);
-const CloseIcon = () => icon(<path d="M18 6 6 18M6 6l12 12" />);
 
 /**
- * The page editor's side card (Figma "Live Preview"): the real viewer, small,
- * with the card's own view controls instead of the viewer's buttons.
+ * The page editor's side card (Figma "Live Preview"): the real viewer with the
+ * same buttons and size as the Preview tab, plus a reset control.
  */
 const SidePreview: React.FC = () => {
     const [attrs, setAttrs] = useLiveAttributes();
@@ -414,29 +411,9 @@ const SidePreview: React.FC = () => {
     const setAttributes = mergeAttrs(setAttrs);
     const hasModel = hasModelIn(attrs);
     const lite = (attrs.currentViewer || 'modelViewer') === 'modelViewer';
-    const [fullscreen, setFullscreen] = useState(false);
     const [popup, setPopup] = useState(false);
 
-    useEffect(() => {
-        const onChange = () => setFullscreen(document.fullscreenElement === stage.current);
-        document.addEventListener('fullscreenchange', onChange);
-        return () => document.removeEventListener('fullscreenchange', onChange);
-    }, []);
-
-    // The card has its own controls and a 337×193 stage: the viewer's buttons and set size stay out.
-    const sideAttrs = useMemo(() => ({
-        ...attrs,
-        uniqueId: 'bp3dSidePreview',
-        fullscreen: false,
-        zoomInOutBtn: false,
-        cameraBtn: false,
-        resetViewBtn: false,
-        downloadBtn: false,
-        arEnabled: false,
-        model: { ...attrs.model, arEnabled: false },
-        O3DVSettings: { ...attrs.O3DVSettings, isFullscreen: false },
-        styles: { ...attrs.styles, width: '100%', height: '100%' },
-    }), [attrs]);
+    const sideAttrs = useMemo(() => ({ ...attrs, uniqueId: 'bp3dSidePreview' }), [attrs]);
 
     // The Advanced viewer only re-measures on window resize; dragging the sidebar resizes just the stage.
     useEffect(() => {
@@ -454,13 +431,6 @@ const SidePreview: React.FC = () => {
         };
     }, [lite, hasModel]);
 
-    const wheel = (deltaY: number) => {
-        stage.current?.querySelector('canvas')?.dispatchEvent(new WheelEvent('wheel', { deltaY, deltaMode: 0, bubbles: true }));
-    };
-    const zoom = (by: number) => {
-        if (lite) viewerRef.current?.zoom?.(by);
-        else wheel(by > 0 ? -100 : 100);
-    };
     // The Advanced viewer has no camera API reachable from here, so reset re-mounts it (the file is cached).
     const [mount, setMount] = useState(0);
     const reset = () => {
@@ -489,7 +459,7 @@ const SidePreview: React.FC = () => {
                 </button>
             </div>
 
-            <div className="bfields-preview__stage bp3d-side-preview__stage" ref={stage}>
+            <div className={`bfields-preview__stage bp3d-side-preview__stage ${hasModel ? 'bp3d-side-preview__stage--sized' : ''}`} ref={stage}>
                 {hasModel ? (
                     <Viewer
                         key={mount}
@@ -505,39 +475,14 @@ const SidePreview: React.FC = () => {
                         {__('Add a 3D model on the Model tab to preview it here.', '3d-viewer')}
                     </span>
                 )}
-                {fullscreen ? (
-                    <button
-                        type="button"
-                        className="bfields-icon-btn bp3d-side-preview__close"
-                        aria-label={__('Exit fullscreen', '3d-viewer')}
-                        onClick={() => document.exitFullscreen?.()}
-                    >
-                        <CloseIcon />
-                    </button>
-                ) : null}
             </div>
 
             <div className="bfields-preview__controls">
                 <div>
-                    <button type="button" className="bfields-icon-btn" aria-label={__('Reset view', '3d-viewer')} disabled={!hasModel} onClick={reset}>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Reset view', '3d-viewer')} title={__('Reset view', '3d-viewer')} disabled={!hasModel} onClick={reset}>
                         <ResetIcon />
                     </button>
-                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom in', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(2)}>
-                        <ZoomInIcon />
-                    </button>
-                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom out', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(-2)}>
-                        <ZoomOutIcon />
-                    </button>
                 </div>
-                <button
-                    type="button"
-                    className="bfields-icon-btn"
-                    aria-label={__('Fullscreen', '3d-viewer')}
-                    disabled={!hasModel}
-                    onClick={() => stage.current?.requestFullscreen?.()}
-                >
-                    <FullIcon />
-                </button>
             </div>
 
             {popup ? (

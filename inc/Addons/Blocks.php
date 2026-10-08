@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+use BP3D\Base\EnqueueAssets;
 use BP3D\Helper\Utils;
 
 /**
@@ -41,7 +42,7 @@ class Blocks
             'bp3d-frontend',
             BP3D_DIR . 'build/frontend.css',
             [],
-            BP3D_VERSION,
+            EnqueueAssets::styleVersion('build/frontend.css'),
             'all'
         );
 
@@ -50,7 +51,7 @@ class Blocks
             'bp3d-public',
             BP3D_DIR . 'build/frontend.js',
             ['react', 'react-dom', 'wp-i18n'],
-            BP3D_VERSION,
+            EnqueueAssets::buildVersion('frontend'),
             true
         );
 

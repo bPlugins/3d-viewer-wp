@@ -110,7 +110,7 @@ class ProductMeta
                 'style'   => 'info',
                 'content' => sprintf(
                     /* translators: %s: URL to the settings page. */
-                    __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
+                    __('Uploading 3D files (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) is allowed by default. You can turn any format off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
                     admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
                 ),
             ];
@@ -121,10 +121,10 @@ class ProductMeta
             [
                 'id' => 'meta_heading',
                 'type' => 'content',
-                'title' => 'Support',
-                'content' => 'Please leave a message if you encounter any issues on the product page. '
-                    . '<a href="https://bplugins.com/support" target="_blank"><b>Support Center</b></a><br />'
-                    . '<cite style="color:#2271b1; font-weight: bold">The premium version also supports the following formats: obj, stl, 3dm, 3ds, 3mf, amf, bim, brep, dae, fbx, fcstd, gltf, ifc, iges, step, off, ply, and wrl.</cite>',
+                'title' => esc_html__('Support', '3d-viewer'),
+                'content' => esc_html__('Please leave a message if you encounter any issues on the product page.', '3d-viewer') . ' '
+                    . '<a href="https://bplugins.com/support" target="_blank"><b>' . esc_html__('Support Center', '3d-viewer') . '</b></a><br />'
+                    . '<cite style="color:#2271b1; font-weight: bold">' . esc_html__('The free product viewer displays GLB and GLTF models. Premium adds OBJ, STL, 3DM, 3DS, 3MF, AMF, BIM, BREP, DAE, FBX, FCSTD, IFC, IGES, STEP, OFF, PLY and WRL.', '3d-viewer') . '</cite>',
             ],
 
             [
@@ -132,7 +132,7 @@ class ProductMeta
                 'type' => 'upload',
                 'title' => esc_html__('3D Source', '3d-viewer'),
                 'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
-                'desc' => esc_html__('Upload / Paste Model url. Supported file types: glb, gltf, obj, stl, fbx, dae, 3ds, 3mf, step, wrl, usdz.', '3d-viewer'),
+                'desc' => esc_html__('Upload or paste a model URL. GLB and GLTF are supported; other formats need Premium.', '3d-viewer'),
                 'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
                 'default' => $models[0]['model_src'] ?? '',
             ],
@@ -159,7 +159,7 @@ class ProductMeta
                     'top' => esc_html__('Top of the product image', '3d-viewer'),
                     'bottom' => esc_html__('Bottom of the product image', '3d-viewer'),
                     'replace' => esc_html__('Replace Product Image with 3D', '3d-viewer'),
-                    'merge_with_first_image' => 'Show 3D on First Image of Woocommerce Gallery',
+                    'merge_with_first_image' => esc_html__('Show 3D on First Image of Woocommerce Gallery', '3d-viewer'),
                 ],
                 'default' => 'none',
             ],

@@ -11,12 +11,6 @@
 .shoppingcart,
 .estore,
 .astra {
-  &.position_top {
-    .woocommerce-product-gallery__trigger {
-      margin-top: 40px;
-    }
-  }
-
   &.position_top .modelViewerBlock {
     margin-bottom: 10px;
   }
@@ -57,6 +51,22 @@
 
 }
 
+
+// Top mode: --bp3d-viewer-h is the viewer's bottom edge, set from Product3DViewer.
+.product-modal-wrap.position_top .woocommerce-product-gallery .woocommerce-product-gallery__trigger {
+  top: calc(var(--bp3d-viewer-h, 0px) + .875em) !important;
+}
+
+// First-image mode with the model shown: hide the photo behind it and Woo's zoom trigger.
+.woocommerce-product-gallery.bp3d-3d-active {
+  .woocommerce-product-gallery__wrapper > .woocommerce-product-gallery__image:first-child img {
+    visibility: hidden;
+  }
+
+  .woocommerce-product-gallery__trigger {
+    display: none !important;
+  }
+}
 
 .flex-viewport .position_merge_with_first_image {
   position: relative;

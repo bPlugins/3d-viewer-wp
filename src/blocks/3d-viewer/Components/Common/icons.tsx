@@ -3,7 +3,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
     <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        id="Capa_1"
         x="0px"
         y="0px"
         viewBox="0 0 512 512"
@@ -12,14 +11,12 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
             enableBackground: "new 0 0 512 512",
         }}
         xmlSpace="preserve"
-        className="ar-qr-opener"
         width={size}
         height={size}
         {...props}
     >
-        <g id="XMLID_100_">
+        <g>
             <line
-                id="XMLID_108_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -34,7 +31,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 y2={461.837}
             />
             <path
-                id="XMLID_107_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -46,7 +42,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 d="&#10;&#9;&#9;M97.65,199.11V44.14c0-18.86,15.28-34.14,34.14-34.14h212.86c18.86,0,34.14,15.28,34.14,34.14v36.15"
             />
             <path
-                id="XMLID_109_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -58,7 +53,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 d="&#10;&#9;&#9;M97.65,312.89v154.97c0,18.86,15.28,34.14,34.14,34.14h212.86c18.86,0,34.14-15.28,34.14-34.14c0-16.94,0-117.03,0-154.97&#10;&#9;&#9;c0-0.25,0-0.5,0-0.75"
             />
             <polyline
-                id="XMLID_110_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -122,7 +116,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 d="&#10;&#9;&#9;M443.052,168.838c0,10.088-8.846,18.267-19.3,18.267c-5.186,0-18.548,0.081-18.548,0.081c-0.178-50.176-0.117-32.87-0.13-36.614&#10;&#9;&#9;c0,0,12.551,0,18.678,0C434.206,150.571,443.052,158.75,443.052,168.838z"
             />
             <path
-                id="XMLID_112_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -134,7 +127,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 d="&#10;&#9;&#9;M313.258,220.857l26.392-69.296c0.54-1.318,2.406-1.32,2.948-0.003l26.152,69.299"
             />
             <line
-                id="XMLID_113_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -149,7 +141,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 y2={203.599}
             />
             <polyline
-                id="XMLID_111_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -161,7 +152,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 points="&#10;&#9;&#9;395.951,299.85 378.79,312.89 238.221,419.67 97.65,312.89 22.76,256 238.221,92.33 286.961,129.35 &#9;"
             />
             <polyline
-                id="XMLID_114_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -173,7 +163,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 points="&#10;&#9;&#9;293.451,260.85 293.451,287.88 238.221,319.77 183.001,287.88 183.001,224.12 238.221,192.23 270.13,210.66 &#9;"
             />
             <polyline
-                id="XMLID_115_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -185,7 +174,6 @@ export const ARQROPenerIcon = ({ size = 35, ...props }: React.SVGProps<SVGSVGEle
                 points="&#10;&#9;&#9;183.001,224.12 238.221,256 276.98,233.63 &#9;"
             />
             <line
-                id="XMLID_116_"
                 style={{
                     fill: "none",
                     stroke: "#000000",
@@ -251,7 +239,7 @@ export const Fullscreen = ({ size = 35, className, onClick, ...props }: { size?:
         onClick={onClick}
         {...props}
     >
-        <g id="Solid">
+        <g>
             <path d="m104 72h48a24 24 0 0 0 24-24 24 24 0 0 0 -24-24h-104a24 24 0 0 0 -24 24v104a24 24 0 0 0 48 0v-48l116 116a22.627 22.627 0 0 0 32 0 22.627 22.627 0 0 0 0-32z" />
             <path d="m220 292a22.627 22.627 0 0 0 -32 0l-116 116v-48a24 24 0 0 0 -48 0v104a24 24 0 0 0 24 24h104a24 24 0 0 0 24-24 24 24 0 0 0 -24-24h-48l116-116a22.627 22.627 0 0 0 0-32z" />
             <path d="m464 24h-104a24 24 0 0 0 -24 24 24 24 0 0 0 24 24h48l-116 116a22.627 22.627 0 0 0 0 32 22.627 22.627 0 0 0 32 0l116-116v48a24 24 0 0 0 48 0v-104a24 24 0 0 0 -24-24z" />

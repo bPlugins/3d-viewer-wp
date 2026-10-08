@@ -29,7 +29,7 @@ class BP3DProductModel extends \Elementor\Widget_Base
      */
     public function get_title(): string
     {
-        return esc_html__('Product Model', '3d-viewer');
+        return esc_html__('3D Product Model', '3d-viewer');
     }
 
     /**
@@ -37,7 +37,7 @@ class BP3DProductModel extends \Elementor\Widget_Base
      */
     public function get_icon(): string
     {
-        return 'eicon-preview-medium';
+        return 'bp3d-eicon-cube';
     }
 
     /**
@@ -57,7 +57,7 @@ class BP3DProductModel extends \Elementor\Widget_Base
      */
     public function get_keywords(): array
     {
-        return ['3d embed', '3d viewer', 'model viewer', 'product model'];
+        return ['3d', '3d embed', '3d viewer', '3d model', 'model viewer', 'product model', 'product', 'woocommerce', 'glb', 'gltf', 'ar'];
     }
 
     /**

@@ -76,6 +76,23 @@ const Product3DViewer: React.FC<Product3DViewerProps> = ({ ...restProps }) => {
         }
     }, [containerRef.current]);
 
+    // In "Top" mode Woo's zoom trigger sits in the same gallery; push it below the viewer.
+    useEffect(() => {
+        const el = containerRef.current;
+        const gallery = el?.closest('.woocommerce-product-gallery') as HTMLElement | null;
+        if (position !== 'top' || !el || !gallery || typeof ResizeObserver === 'undefined') return;
+
+        const update = () => {
+            const offset = el.getBoundingClientRect().bottom - gallery.getBoundingClientRect().top;
+            gallery.style.setProperty('--bp3d-viewer-h', `${Math.max(0, Math.round(offset))}px`);
+        };
+        const observer = new ResizeObserver(update);
+        observer.observe(el);
+        update();
+
+        return () => observer.disconnect();
+    }, [containerRef.current, position]);
+
     return (
         <>
             <style>{css}</style>

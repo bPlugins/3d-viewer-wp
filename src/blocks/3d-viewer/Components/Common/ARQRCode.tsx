@@ -1,8 +1,10 @@
 import QRCode from 'qrcode'
 import { useEffect, useState } from 'react';
+import { __ } from '@wordpress/i18n';
 import { ARQROPenerIcon, Close } from './icons';
 import modifyUrlParams from '../../../../utils/modifyUrlParams';
 import getUrlParams from '../../../../utils/getUrlParams';
+import ControlButton from './ControlButton';
 
 
 interface ARQRCodeProps {
@@ -42,18 +44,18 @@ const ARQRCode = ({ viewerRef, arLink, placement }: ARQRCodeProps) => {
     return <>
         <div className={`ar-qrcode ${qrVisible ? 'active' : ''}`} >
             <div className="qr-content">
-                <strong>QR Code</strong>
-                {placement !== 'shop-loop-item' && <p>Scan QR code to view in AR on mobile</p>}
-                <img src={qrSrc} width="100%" />
+                <strong>{__('QR Code', '3d-viewer')}</strong>
+                {placement !== 'shop-loop-item' && <p>{__('Scan QR code to view in AR on mobile', '3d-viewer')}</p>}
+                <img src={qrSrc} width="100%" alt={__('QR code to view in AR', '3d-viewer')} />
             </div>
-            <ARQROPenerIcon className="control-btn ar-qr-opener" onClick={() => {
+            <ControlButton className="ar-qr-opener" label={__('View in AR', '3d-viewer')} aria-expanded={qrVisible} onClick={() => {
                 if (viewerRef.current?.canActivateAR) {
                     viewerRef.current?.activateAR();
                 } else {
                     setQrVisible(true);
                 }
-            }} />
-            <Close className="control-btn close" onClick={() => setQrVisible(false)} />
+            }}><ARQROPenerIcon /></ControlButton>
+            <ControlButton className="close" label={__('Close QR code', '3d-viewer')} onClick={() => setQrVisible(false)}><Close /></ControlButton>
         </div>
 
 

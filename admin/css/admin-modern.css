@@ -137,7 +137,7 @@
 
 /* Pinned to the stage: a percentage height let the Advanced viewer's canvas
    grow the box past the stage, which clipped the thumbnail strip. */
-.bfields-app .bp3d-side-preview__stage > :not(.bp3d-side-preview__empty, .bp3d-side-preview__close) {
+.bfields-app .bp3d-side-preview__stage > :not(.bp3d-side-preview__empty) {
   position: absolute;
   inset: 0;
   width: auto;
@@ -163,14 +163,19 @@
   height: 40px;
 }
 
-/* Fullscreen has no other way out than Esc, so the stage carries its own close. */
-.bfields-app .bp3d-side-preview__close {
-  position: absolute;
-  z-index: 10;
-  top: 16px;
-  inset-inline-end: 16px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+/* With a model the stage takes the viewer's own width and height, as the Preview tab does. */
+.bfields-app .bp3d-side-preview__stage.bp3d-side-preview__stage--sized {
+  aspect-ratio: auto;
+  background: none;
+}
+
+.bfields-app .bp3d-side-preview__stage.bp3d-side-preview__stage--sized > * {
+  position: static;
+}
+
+.bfields-app .bp3d-side-preview__stage--sized .b3dviewer-wrapper {
+  max-width: 100%;
+  max-height: 60vh;
 }
 
 .bfields-app .bp3d-model-preview--bare {

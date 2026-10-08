@@ -72,6 +72,7 @@ class Product
             ],
             'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             'lazyLoad' => $get_option('bp_3d_loading', 'lazy') === 'lazy',
+            'loading' => $get_option('bp_3d_loading', 'lazy') === 'lazy' ? 'lazy' : 'eager',
             'preload' => 'auto',
             'mouseControl' => $get_option('bp_camera_control', '1', true),
             'fullscreen' => $get_option('bp_3d_fullscreen', '1', true),

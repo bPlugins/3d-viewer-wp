@@ -110,7 +110,7 @@ class EnqueueAssets
     }
 
     /** BP3D_VERSION plus the build hash from build/<entry>.asset.php. */
-    private static function buildVersion(string $entry): string
+    public static function buildVersion(string $entry): string
     {
         $asset = self::buildAsset($entry);
 

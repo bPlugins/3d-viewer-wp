@@ -898,6 +898,30 @@
 	color: var(--bfields-row-title);
 }
 
+/* The readout is an editable number box: room for "0.25", no spin buttons. */
+.bfields-app .bfields-slider input.bfields-slider__value {
+	width: 64px;
+	min-height: 0;
+	margin: 0;
+	box-shadow: none;
+	text-align: center;
+	line-height: normal;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+.bfields-app .bfields-slider input.bfields-slider__value::-webkit-outer-spin-button,
+.bfields-app .bfields-slider input.bfields-slider__value::-webkit-inner-spin-button {
+	margin: 0;
+	-webkit-appearance: none;
+}
+
+.bfields-app .bfields-slider input.bfields-slider__value:focus {
+	border-color: var(--bfields-primary);
+	outline: none;
+	box-shadow: 0 0 0 1px var(--bfields-primary);
+}
+
 /* ---- dimensions ---- */
 
 .bfields-app .bfields-dim {

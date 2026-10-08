@@ -285,6 +285,23 @@ The bundle also includes the following sub-dependencies:
 * Changed: The classic product meta box no longer shows Restore, which deleted the whole saved row.
 * Fixed: Saving a product no longer drops 3D model rows added with the Pro version.
 * Fixed: A product with malformed 3D Viewer data no longer causes a fatal error.
+* Fixed: Opening a page with the 3D Model Viewer block no longer marks it as changed.
+* Fixed: The block's Additional CSS class(es) now reach the frontend.
+* Fixed: The block's Lazy Load setting now works; blocks with it on (the default) now load lazily.
+* Fixed: Typing a URL into the block's empty-state Model URL field no longer cuts it off after one letter.
+* Fixed: The block's zoom buttons now work in the editor.
+* Fixed: Viewers no longer get "position_undefined" or "alignundefined" classes.
+* Fixed: The Elementor widget's width is no longer applied twice on the frontend.
+* Changed: The Elementor widgets are now "3D Model Viewer" and "3D Product Model", with a cube icon and more search keywords.
+* Changed: The Elementor widget shows the Zoom In/Out toggle in Advanced mode too.
+* Fixed: WooCommerce "Show 3D on first image" no longer shows the product photo or zoom icon over the model.
+* Fixed: WooCommerce's zoom icon no longer covers the viewer in the "Top" position.
+* Fixed: WooCommerce product viewers now follow the Lazy Load setting.
+* Fixed: Clarified the supported formats text in the WooCommerce product box.
+* Changed: Viewer controls are now keyboard-accessible buttons with labels; custom CSS that targets `svg.control-btn` should use `.control-btn`.
+* Fixed: The Live Preview card now shows the viewer's buttons and size, like the Preview tab.
+* Fixed: The Download button toggle now shows in the admin previews.
+* Fixed: Exposure and Shadow values can now be typed in.
 
 = 1.9.4 - 26 September, 2026  =
 * Changed: Redesigned the guided setup as a three-step onboarding.

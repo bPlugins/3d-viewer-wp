@@ -24,6 +24,8 @@ final class Addons
         add_action('elementor/widgets/register', [$this, 'registerWidgets']);
         add_action('elementor/frontend/after_register_scripts', [$this, 'registerFrontendScripts']);
         add_action('elementor/editor/before_enqueue_scripts', [$this, 'enqueueEditorScripts']);
+        add_action('elementor/editor/after_enqueue_styles', [$this, 'enqueueEditorStyles']);
+        add_action('admin_init', [$this, 'refreshElementorCss']);
         add_action('elementor/preview/enqueue_scripts', [$this, 'enqueuePreviewScripts']);
     }
 
@@ -53,7 +55,7 @@ final class Addons
         }
 
         if (!wp_style_is('bp3d-frontend', 'registered')) {
-            wp_register_style('bp3d-frontend', BP3D_DIR . 'build/frontend.css', [], BP3D_VERSION, 'all');
+            wp_register_style('bp3d-frontend', BP3D_DIR . 'build/frontend.css', [], \BP3D\Base\EnqueueAssets::styleVersion('build/frontend.css'), 'all');
         }
 
         if (!wp_script_is('bp3d-public', 'registered')) {
@@ -65,7 +67,7 @@ final class Addons
                 $deps[] = 'elementor-frontend';
             }
 
-            wp_register_script('bp3d-public', BP3D_DIR . 'build/frontend.js', $deps, BP3D_VERSION, true);
+            wp_register_script('bp3d-public', BP3D_DIR . 'build/frontend.js', $deps, \BP3D\Base\EnqueueAssets::buildVersion('frontend'), true);
             wp_set_script_translations('bp3d-public', '3d-viewer', BP3D_PATH . 'languages');
         }
     }
@@ -123,6 +125,32 @@ final class Addons
         // Older WordPress: the classic handle is turned into a module tag by
         // EnqueueAssets::addModuleTypeAttribute().
         wp_enqueue_script('bp3d-lib-model-viewer');
+    }
+
+    /**
+     * 2.0.0 changed the widget's width selectors; regenerate Elementor's cached CSS once.
+     */
+    public function refreshElementorCss(): void
+    {
+        if (get_option('bp3d_elementor_css_ver') === '2.0.0' || !class_exists('\\Elementor\\Plugin')) {
+            return;
+        }
+
+        \Elementor\Plugin::$instance->files_manager->clear_cache();
+        update_option('bp3d_elementor_css_ver', '2.0.0');
+    }
+
+    /**
+     * Cube icon for the widgets in the Elementor panel (Elementor has no 3D eicon).
+     */
+    public function enqueueEditorStyles(): void
+    {
+        $svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/><path d='m3.3 7 8.7 5 8.7-5'/><path d='M12 22V12'/></svg>";
+        $mask = 'url("data:image/svg+xml,' . rawurlencode($svg) . '") center / contain no-repeat';
+
+        wp_register_style('bp3d-elementor-editor', false, [], BP3D_VERSION);
+        wp_enqueue_style('bp3d-elementor-editor');
+        wp_add_inline_style('bp3d-elementor-editor', ".bp3d-eicon-cube{display:inline-block;width:1em;height:1em;background-color:currentColor;-webkit-mask:{$mask};mask:{$mask}}");
     }
 
     /**

@@ -182,29 +182,28 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
                 }
             })
 
-            const handleMouseEnter = () => {
-                if (mouseControl) {
-                    toggleAttr(viewerRef.current, true, 'camera-controls', '');
-                }
-            };
-
-            const handleMouseLeave = () => {
-                if (mouseControl) {
-                    toggleAttr(viewerRef.current, false, 'camera-controls', '');
-                }
-            };
-
-            viewerRef.current?.addEventListener('mouseenter', handleMouseEnter);
-            viewerRef.current?.addEventListener('mouseleave', handleMouseLeave);
-
-
-            return () => {
-                viewerRef.current?.removeEventListener('mouseenter', handleMouseEnter);
-                viewerRef.current?.removeEventListener('mouseleave', handleMouseLeave);
-            };
         }
 
     }, [viewerRef?.current, mouseControl])
+
+    // Editor only: camera controls follow the pointer so the page can scroll. Watch the whole
+    // viewer box, not just <model-viewer>, or the zoom buttons switch the controls off.
+    useEffect(() => {
+        const viewer = viewerRef?.current;
+        if (!isBackend || !mouseControl || !viewer) return;
+
+        const area = viewer.closest('.bp_model_parent') ?? viewer;
+        const handleMouseEnter = () => toggleAttr(viewer, true, 'camera-controls', '');
+        const handleMouseLeave = () => toggleAttr(viewer, false, 'camera-controls', '');
+
+        area.addEventListener('mouseenter', handleMouseEnter);
+        area.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            area.removeEventListener('mouseenter', handleMouseEnter);
+            area.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, [viewerRef?.current, mouseControl, isBackend])
 
 
     if (!currentModel) return <></>

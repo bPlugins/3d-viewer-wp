@@ -352,6 +352,36 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
     z-index: 999 !important;
   }
 
+  // Controls are real buttons now: neutralise theme button styles so they look as before.
+  button.control-btn {
+    appearance: none;
+    margin: 0;
+    font-size: 0;
+    line-height: 0;
+    color: inherit !important;
+    text-transform: none;
+    box-shadow: none !important;
+    text-shadow: none;
+    letter-spacing: normal;
+    transform: none;
+
+    svg {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #2271b1 !important;
+      outline-offset: 2px;
+    }
+  }
+
 
   .ar-qrcode {
     display: flex;

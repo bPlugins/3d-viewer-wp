@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { __ as t } from "@wordpress/i18n";
 
 import Style from "./Style";
 import Basic3DViewer from "./Basic3DViewer";
@@ -13,6 +14,7 @@ import closeFullscreen from "../../../../utils/closeFullscreen";
 
 import ModelViewer from "./ModelViewer";
 import ARQRCode from "./ARQRCode";
+import ControlButton from "./ControlButton";
 
 import './../../style.scss'
 // interface
@@ -85,11 +87,11 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
 
 
   return (<>
-    <div ref={containerRef} id={`${uniqueId}`} className={`modelViewerBlock b3dviewer position_${position}  ${woo ? "woocommerce" : ""}`}>
+    <div ref={containerRef} id={`${uniqueId}`} className={`modelViewerBlock b3dviewer ${position ? `position_${position}` : ""} ${woo ? "woocommerce" : ""}`}>
       <Style attributes={attributes} />
 
 
-      <div className={`b3dviewer-wrapper bp_model_parent align${align}`}>
+      <div className={`b3dviewer-wrapper bp_model_parent ${align ? `align${align}` : ""}`}>
 
         {modelSrc && isValid && (
           <>
@@ -108,34 +110,33 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
 
 
         <div className="position-top-right">
-          <Close className="control-btn fullscreen-close" onClick={closeFullscreen} />
+          <ControlButton className="fullscreen-close" label={t("Exit fullscreen", "3d-viewer")} onClick={closeFullscreen}><Close /></ControlButton>
         </div>
 
 
         <div className="position-bottom-right">
-          {/* click hoyna ken */}
           {zoomInOutBtn && placement !== 'shop-loop-item' && <>
-            <Plus className="control-btn" onClick={zoomIn} />
-            <Minus className="control-btn" onClick={zoomOut} />
+            <ControlButton className="zoomInBtn" label={t("Zoom in", "3d-viewer")} onClick={zoomIn}><Plus /></ControlButton>
+            <ControlButton className="zoomOutBtn" label={t("Zoom out", "3d-viewer")} onClick={zoomOut}><Minus /></ControlButton>
           </>}
           {['product-gallery-inline'].includes(placement) && <ShopLoopItemComponents container={containerRef} />}
           {((fullscreen && currentViewer === "modelViewer") || (currentViewer === "O3DViewer" && isFullscreen)) && (
             <>
-              <Fullscreen size={20} className="control-btn fullscreen-open" onClick={() => {
+              <ControlButton className="fullscreen-open" label={t("Enter fullscreen", "3d-viewer")} onClick={() => {
                 openFullscreen(containerRef?.current?.querySelector(".bp_model_parent"));
-              }} />
+              }}><Fullscreen size={20} /></ControlButton>
             </>
           )}
         </div>
 
         <div className="position-bottom-left">
           {currentViewer === 'modelViewer' && <>
-            {cameraBtn && <Camera className="control-btn cameraBtn" onClick={() => downloadImageFromDataUrl(viewerRef.current.toDataURL(), 'model.png')} />}
+            {cameraBtn && <ControlButton className="cameraBtn" label={t("Take screenshot", "3d-viewer")} onClick={() => downloadImageFromDataUrl(viewerRef.current.toDataURL(), 'model.png')}><Camera /></ControlButton>}
             {currentModel?.arEnabled && (
               <ARQRCode {...{ viewerRef, arLink, placement }} />
             )}
           </>}
-          {downloadBtn && modelSrc && <Download className="control-btn downloadBtn" onClick={() => download3DFile(modelSrc)} />}
+          {downloadBtn && modelSrc && <ControlButton className="downloadBtn" label={t("Download 3D model", "3d-viewer")} onClick={() => download3DFile(modelSrc)}><Download /></ControlButton>}
         </div>
       </div>
 
