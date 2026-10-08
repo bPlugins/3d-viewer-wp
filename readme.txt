@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3d model viewer, 360 product view, augmented reality, woocommerce, glb
 Tested up to: 7.1
-Stable tag: 1.9.4
+Stable tag: 2.0.0
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -213,6 +213,24 @@ This plugin bundles the following third-party JavaScript/PHP libraries.
 * **License:** GPLv2 or later – [https://github.com/Codestar/codestar-framework/blob/master/LICENSE.md](https://github.com/Codestar/codestar-framework/blob/master/LICENSE.md)
 * **Purpose:** Provides the options framework for the plugin's settings and shortcode generator.
 
+= bfields =
+
+* **Folder:** `lib/bfields/`
+* **Author:** bPlugins
+* **GitHub:** [https://github.com/bPlugins/bfields](https://github.com/bPlugins/bfields) (this plugin ships release `v1.1.0`)
+* **Download:** [bfields 1.1.0 (zip)](https://github.com/bPlugins/bfields/releases/download/v1.1.0/bfields.zip) – the same `php/`, `build/` and `languages/` this plugin bundles in `lib/bfields/`.
+* **Source:** The compiled files in `lib/bfields/build/` are built from the TypeScript/CSS in `lib/bfields/ui/` (also in the repository above) with `npm ci && npm run build`. Build steps and a file-by-file source map are in the repository's README.
+* **License:** GPLv2 or later – [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
+* **Purpose:** Draws the new admin interface for the settings page and the viewer and product meta boxes.
+
+= Inter (font) =
+
+* **Files:** `build/fonts/inter-*.woff2`, `lib/bfields/build/fonts/inter-*.woff2`
+* **Author:** Rasmus Andersson
+* **GitHub:** [https://github.com/rsms/inter](https://github.com/rsms/inter)
+* **License:** SIL Open Font License 1.1 – [https://github.com/rsms/inter/blob/master/LICENSE.txt](https://github.com/rsms/inter/blob/master/LICENSE.txt)
+* **Purpose:** The typeface of the Help & Demos, onboarding and new admin interface screens. Self-hosted; no requests to Google Fonts.
+
 = Freemius SDK =
 
 * **Source:** [https://freemius.com/](https://freemius.com/)
@@ -260,6 +278,13 @@ The bundle also includes the following sub-dependencies:
 * External Services: The library may connect to bPlugins, WordPress.org, and Freemius services to list available add-ons, resolve download URLs, and manage licenses. Connections are made only from the plugin's admin dashboard.
 
 == Changelog ==
+
+= 2.0.0 - 15 October, 2026 =
+* New: New admin interface for Settings, viewers and WooCommerce products; switch back to the classic interface any time from Settings.
+* New: Redesigned Help & Demos dashboard.
+* Changed: The classic product meta box no longer shows Restore, which deleted the whole saved row.
+* Fixed: Saving a product no longer drops 3D model rows added with the Pro version.
+* Fixed: A product with malformed 3D Viewer data no longer causes a fatal error.
 
 = 1.9.4 - 26 September, 2026  =
 * Changed: Redesigned the guided setup as a three-step onboarding.

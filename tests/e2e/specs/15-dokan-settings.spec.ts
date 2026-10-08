@@ -18,6 +18,8 @@ const TARGET = { options: [OPTION] };
 const dokanActive = () => wp(['plugin', 'is-active', 'dokan-lite'], { allowFail: true, retries: 0 }) !== null;
 
 test.describe('Marketplace (Dokan) settings', () => {
+    test.skip(true, 'The Dokan module is not loaded in 2.0.0');
+
     let start: Raw | null = null;
 
     test.beforeAll(() => {

@@ -22,9 +22,6 @@ class ProductMeta
 {
     protected string $prefix = '_bp3d_product_';
 
-    /** Form-only keys mirrored into row 0 of bp3d_models and never stored top-level. */
-    private const TRANSPORT_KEYS = ['bp3d_enable_ar' => 'enable_ar', 'bp3d_model_iso_src' => 'model_iso_src'];
-
     /**
      * Register the metabox.
      */
@@ -62,14 +59,8 @@ class ProductMeta
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading post ID to render the metabox, no form data is processed.
         $post_id = isset($_GET['post']) ? absint(wp_unslash($_GET['post'])) : get_the_ID();
-        // The save request carries post_ID only; the AR fields must be declared there too or CSF drops them.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Only selects which fields to declare; CSF verifies its nonce before saving.
-        if (!$post_id && isset($_POST['post_ID'])) {
-            $post_id = absint(wp_unslash($_POST['post_ID'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        }
         $meta = Utils::getPostMeta($post_id, '_bp3d_product_');
         $models = $meta('bp3d_models', [], false);
-        $row0 = is_array($models) && isset($models[0]) && is_array($models[0]) ? $models[0] : null;
 
         $model_src = '';
         if (isset($models[0]['model_src'])) {
@@ -156,25 +147,6 @@ class ProductMeta
             ],
         ]);
 
-        // Only products that already have a model row (Pro or vendor data) get the AR fields.
-        if ($row0 !== null) {
-            $fields[] = [
-                'id' => 'bp3d_enable_ar',
-                'type' => 'switcher',
-                'title' => esc_html__('Enable AR', '3d-viewer'),
-                'desc' => esc_html__('Let visitors view the model in their own space on supported devices.', '3d-viewer'),
-                'default' => in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true),
-            ];
-            $fields[] = [
-                'id' => 'bp3d_model_iso_src',
-                'type' => 'upload',
-                'title' => esc_html__('USDZ model (iOS AR)', '3d-viewer'),
-                'desc' => esc_html__('Optional .usdz file used for AR on iPhone and iPad.', '3d-viewer'),
-                'default' => is_string($row0['model_iso_src'] ?? null) ? $row0['model_iso_src'] : '',
-                'dependency' => ['bp3d_enable_ar', '==', '1'],
-            ];
-        }
-
         $fields = array_merge($fields, [
             // Viewer position
             [
@@ -232,7 +204,7 @@ class ProductMeta
         $stored = get_post_meta((int) $post_id, $this->prefix, true);
 
         if (!is_array($stored) || !$stored) {
-            return array_diff_key($data, self::TRANSPORT_KEYS);
+            return $data;
         }
 
         $merged = $slashed ? wp_slash($stored) : $stored;
@@ -268,37 +240,7 @@ class ProductMeta
             $merged['viewer_position'] = $posted_position;
         }
 
-        if ($row0 !== null && $this->transportPosted($data, $slashed)) {
-            if (array_key_exists('bp3d_enable_ar', $data)) {
-                $ar_on = $unslash($data['bp3d_enable_ar']) === '1';
-                if ($ar_on !== in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)) {
-                    $merged['bp3d_models'][0]['enable_ar'] = $ar_on ? '1' : '';
-                }
-            }
-
-            if (array_key_exists('bp3d_model_iso_src', $data)
-                && !$this->sameValue($unslash($data['bp3d_model_iso_src']), $row0['model_iso_src'] ?? '')) {
-                $merged['bp3d_models'][0]['model_iso_src'] = $data['bp3d_model_iso_src'];
-            }
-        }
-
-        return array_diff_key($merged, self::TRANSPORT_KEYS);
-    }
-
-    /**
-     * Whether the AR fields were on the submitted form (not just declared at save time).
-     */
-    private function transportPosted(array $data, bool $classic): bool
-    {
-        // bfields posts every declared field, and getFields() declares these two only when row 0 exists.
-        if (!$classic) {
-            return array_key_exists('bp3d_enable_ar', $data) && array_key_exists('bp3d_model_iso_src', $data);
-        }
-
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Runs inside the CSF save filter, after CSF verified its nonce.
-        $request = isset($_POST[$this->prefix]) && is_array($_POST[$this->prefix]) ? $_POST[$this->prefix] : [];
-
-        return isset($request['bp3d_enable_ar'], $request['bp3d_model_iso_src']);
+        return $merged;
     }
 
     /**

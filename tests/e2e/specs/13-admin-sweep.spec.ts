@@ -138,6 +138,7 @@ test.describe('Admin screen sweep', () => {
     });
 
     test('Marketplace (Dokan)', async ({ page, adminUi: mode }) => {
+        test.skip(true, 'The Dokan module is not loaded in 2.0.0');
         test.skip(wp(['plugin', 'is-active', 'dokan-lite'], { allowFail: true, retries: 0 }) === null, 'Dokan is not active');
         const errors = captureConsoleErrors(page);
         await open(page, WP_3D_DOKAN, 'Dokan');

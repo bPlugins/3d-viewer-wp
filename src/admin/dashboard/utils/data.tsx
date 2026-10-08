@@ -159,10 +159,10 @@ export const welcomeInfo = (cleanAdminUrl: string) => {
         },
         // Newest first; the Welcome tab shows these rows as they are.
         changelogs: [
+            { version: '2.0.0', date: '2026-10-15', tag: 'plugin', text: __('New admin interface, with a switch back to Classic in Settings', '3d-viewer') },
+            { version: '2.0.0', date: '2026-10-15', tag: 'plugin', text: __('Redesigned Help & Demos dashboard', '3d-viewer') },
             { version: '1.9.4', date: '2026-09-26', tag: 'plugin', text: __('Redesigned the guided setup as a three-step onboarding', '3d-viewer') },
-            { version: '1.9.4', date: '2026-09-26', tag: 'plugin', text: __('Added a Monthly billing cycle to the Pricing page', '3d-viewer') },
-            { version: '1.9.3', date: '2026-09-09', tag: 'viewer', text: __('Environment Image and HDR Skybox Image are now free', '3d-viewer') },
-            { version: '1.9.3', date: '2026-09-09', tag: 'viewer', text: __('A missing or broken model file now shows a message instead of a spinner', '3d-viewer') }
+            { version: '1.9.4', date: '2026-09-26', tag: 'plugin', text: __('Added a Monthly billing cycle to the Pricing page', '3d-viewer') }
         ],
         changelogsUrl: `https://wordpress.org/plugins/${slug}/#developers`,
         // Pro-only in source (hotspots, galleries, per-variation models); AR and lighting are free.

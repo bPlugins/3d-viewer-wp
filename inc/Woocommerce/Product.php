@@ -58,30 +58,7 @@ class Product
         $model_src = self::effectiveModelUrl($modelData);
         $poster = $modelData['bp3d_poster_src'] ?? $modelData['bp3d_models']['0']['poster_src'] ?? '';
 
-        $model = [
-            'modelUrl' => $model_src,
-            'poster' => $poster,
-        ];
-        $ar_enabled = false;
-
-        // AR settings live on row 0, so pair them only with row 0's own model (a stale flat key would mismatch).
-        // Added only when AR is on, so products without AR keep byte-identical markup.
-        $row0 = $modelData['bp3d_models'][0] ?? null;
-        if (
-            is_array($row0)
-            && in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)
-            && trim($model_src) !== ''
-            && trim($model_src) === trim(self::urlOf($row0['model_src'] ?? ''))
-        ) {
-            $model['arEnabled'] = true;
-            $model['modelISOSrc'] = is_string($row0['model_iso_src'] ?? null) ? $row0['model_iso_src'] : '';
-            $model['arPlacement'] = in_array($row0['ar_placement'] ?? '', ['floor', 'wall'], true) ? $row0['ar_placement'] : 'floor';
-            $model['arMode'] = in_array($row0['ar_mode'] ?? '', ['webxr', 'scene-viewer', 'quick-look'], true) ? $row0['ar_mode'] : 'webxr';
-
-            $ar_enabled = true;
-        }
-
-        $attributes = [
+        return [
             'align' => 'center',
             'uniqueId' => 'model' . get_the_ID(),
             'O3DVSettings' => [
@@ -89,7 +66,10 @@ class Product
                 'mouseControl' => true,
                 'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             ],
-            'model' => $model,
+            'model' => [
+                'modelUrl' => $model_src,
+                'poster' => $poster,
+            ],
             'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             'lazyLoad' => $get_option('bp_3d_loading', 'lazy') === 'lazy',
             'preload' => 'auto',
@@ -105,12 +85,6 @@ class Product
             'woo' => true,
             'placement' => 'shortcode',
         ];
-
-        if ($ar_enabled) {
-            $attributes['arLink'] = get_permalink($product_id);
-        }
-
-        return $attributes;
     }
 
     /**
@@ -153,11 +127,6 @@ class Product
         
         $meta = Utils::getPostMeta($product->get_id(), '_bp3d_product_');
         $modelData = $meta('all');
-
-        if (!is_array($modelData) || trim(self::effectiveModelUrl($modelData)) === '') {
-            return '';
-        }
-
         $finalData = self::getProductAttributes($modelData);
 
         $class = Utils::getThemeClass();

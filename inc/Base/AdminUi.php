@@ -24,7 +24,6 @@ final class AdminUi
         '_bp3d_settings_' => 'settings',
         '_bp3dimages_' => 'viewer',
         '_bp3d_product_' => 'product',
-        'bp3d_dokan_settings' => 'dokan',
     ];
 
     /** @var string|null The site-wide mode, resolved once per request. */

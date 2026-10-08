@@ -42,9 +42,6 @@ class Init
             Base\Import::class,
             Shortcode\Shortcode::class,
             Base\ExtendMimeType::class,
-            Base\Marketplace::class,
-            Base\RestMetaGuard::class,
-            Base\VendorUploadGuard::class,
             Base\Onboarding::class,
             Base\OnboardingNotice::class,
             Field\Viewer::class,
@@ -52,8 +49,7 @@ class Init
             Woocommerce\SingleProduct::class,
             Addons\Blocks::class,
             Addons\Addons::class,
-            Addons\Controls\Controls::class,
-            Integrations\Dokan\Dokan::class, // Optional Dokan module; remove this line and inc/Integrations/Dokan to drop it.
+            Addons\Controls\Controls::class
         ];
     }
 
