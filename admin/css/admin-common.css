@@ -281,6 +281,22 @@
 }
 
 /* --- Empty state --- */
+/* Live Preview: a model the Lite viewer can't open (src/admin/preview). */
+p.bp3d-lite-notice {
+  margin: 12px 12px 0;
+  padding: 6px 10px;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+  background: var(--bfields-warn-bg, #fffbeb);
+  color: var(--bfields-warn-fg, #92400e);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.bp3d-side-preview > p.bp3d-lite-notice {
+  margin: 12px 15px 0;
+}
+
 .bp3d-model-preview__empty {
   display: flex;
   flex-direction: column;
@@ -407,6 +423,56 @@
 /* The body hugs the viewer, so its buttons sit the same distance from every edge. */
 .bp3d-modal-body--viewer {
   min-height: 0;
+}
+
+.bp3d-modal-frame {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bp3d-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bp3d-modal-devices {
+  display: flex;
+  gap: 7px;
+}
+
+.bp3d-modal-device {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 29px;
+  padding: 0 14px 0 13px;
+  border: 1px solid #e5ecf5;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 11px;
+  line-height: 1;
+  color: #1f3861;
+  cursor: pointer;
+}
+
+.bp3d-modal-device:hover {
+  border-color: #c7d6ec;
+}
+
+.bp3d-modal-device[aria-pressed="true"] {
+  border-color: #5892ff;
+  color: #1b6cff;
+}
+
+@media (max-width: 600px) {
+  .bp3d-modal-device {
+    padding: 0 9px;
+  }
+
+  .bp3d-modal-device__label {
+    display: none;
+  }
 }
 
 /* Loading indicator. It is slotted into <model-viewer slot="progress-bar">, so

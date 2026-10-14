@@ -29,14 +29,17 @@ class Import
      */
     public function init()
     {
-        $imported = get_option('bp3d_imported', 0);
+        // Has its own one-time flag, so it runs whether or not the model migration is done.
+        $this->migrateAllowedMimeTypes();
 
-        if ($imported < BP3D_IMPORT_VER) {
-            $this->migrateModelData();
-            update_option('bp3d_imported', BP3D_IMPORT_VER);
+        if (version_compare((string) get_option('bp3d_imported', '0'), BP3D_IMPORT_VER, '>=')) {
+            return;
         }
 
-        $this->migrateAllowedMimeTypes();
+        if ($this->migrateModelData(100)) {
+            update_option('bp3d_imported', BP3D_IMPORT_VER);
+            delete_option('bp3d_import_offset');
+        }
     }
 
     /**
@@ -76,48 +79,55 @@ class Import
     /**
      * Migrate legacy model source data to the new format.
      *
-     * Converts old `model_src.url` references to flat `model_link` values
-     * in the `_bp3dimages_` post meta for all model viewer posts.
+     * Copies old `model_src.url` references into each row's `model_link`
+     * in the `_bp3dimages_` post meta for all model viewer posts. Processes
+     * up to $limit posts per request (offset kept in the `bp3d_import_offset`
+     * option) so large catalogs can't exhaust memory; the completion flag is
+     * only set once every post is done. The transform is idempotent, so
+     * concurrent requests running the same batch are harmless.
+     *
+     * @return bool True when no posts remain to migrate.
      */
-    private function migrateModelData(): void
+    private function migrateModelData(int $limit): bool
     {
-        $query = new \WP_Query([
+        $offset = (int) get_option('bp3d_import_offset', 0);
+
+        $post_ids = get_posts([
             'post_type' => 'bp3d-model-viewer',
-            'posts_per_page' => 500,
+            'post_status' => 'any',
+            'posts_per_page' => $limit,
+            'offset' => $offset,
+            'fields' => 'ids',
         ]);
 
-        while ($query->have_posts()) {
-            $query->the_post();
-            $post_id = get_the_ID();
-
+        foreach ($post_ids as $post_id) {
             $viewers = get_post_meta($post_id, '_bp3dimages_', true);
 
-            if (!is_array($viewers)) {
-                $viewers = [];
-            }
-
-            $models = $viewers['bp_3d_models'] ?? [];
-            $viewers['bp_3d_models'] = [];
-
-            if (!is_array($models)) {
+            if (!is_array($viewers) || !isset($viewers['bp_3d_models']) || !is_array($viewers['bp_3d_models'])) {
                 continue;
             }
 
-            foreach ($models as $item) {
+            $models = $viewers['bp_3d_models'];
+
+            // In place: only model_link changes; every other per-model key is kept.
+            foreach ($models as $index => $item) {
                 if (
                     is_array($item)
                     && isset($item['model_src']['url'])
                     && $item['model_src']['url'] !== ''
                 ) {
-                    $viewers['bp_3d_models'][]['model_link'] = $item['model_src']['url'];
-                } else {
-                    $viewers['bp_3d_models'][]['model_link'] = $item['model_link'] ?? '';
+                    $models[$index]['model_link'] = $item['model_src']['url'];
                 }
             }
 
-            update_post_meta($post_id, '_bp3dimages_', $viewers);
+            if ($models !== $viewers['bp_3d_models']) {
+                $viewers['bp_3d_models'] = $models;
+                update_post_meta($post_id, '_bp3dimages_', $viewers);
+            }
         }
 
-        wp_reset_postdata();
+        update_option('bp3d_import_offset', $offset + count($post_ids), false);
+
+        return count($post_ids) < $limit;
     }
 }

@@ -8,6 +8,7 @@ import { Button, PanelRow, TextControl } from "@wordpress/components";
 import Settings from "./settings";
 import Viewer from "../Common/Viewer";
 import ThreeDIcons from "../../../../icons/ThreeDIcons";
+import { MODEL_MEDIA_TYPES } from "../../../../utils/modelMediaTypes";
 import { BlockAttributes } from "../../types";
 
 interface EditProps {
@@ -107,7 +108,7 @@ const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: Edi
                 onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && commitDraftUrl()}
               />
               <MediaUpload
-                allowedTypes={["model/gltf-binary", "model/obj", "application/octet-stream", "application/x-3ds", "application/vnd.ms-pki.stl", "text/vnd.in3d.3dml", "application/collada+xml", "model/vrml", "application/vnd.ms-3mfdocument"]}
+                allowedTypes={MODEL_MEDIA_TYPES}
                 onSelect={(media: any) => setAttributes({ model: { ...model, modelUrl: media.url } })}
                 render={({ open }: any) => (
                   <Button className="button button-primary" onClick={open} label={__("Upload 3D model", "3d-viewer")}>

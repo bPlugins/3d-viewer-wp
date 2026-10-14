@@ -42,6 +42,29 @@ class PostTypeModelViewer
         add_action('admin_init', [$this, 'setMetaData']);
         add_action('use_block_editor_for_post', [$this, 'useBlockEditorForPost'], 999, 2);
         add_filter('filter_block_editor_meta_boxes', [$this, 'removeMetabox']);
+        add_filter('admin_body_class', [$this, 'addListBodyClass']);
+    }
+
+    /** The viewer list screen in the Modern interface; Classic keeps WordPress's table. */
+    public static function isModernList(): bool
+    {
+        // Quick Edit re-renders the row over AJAX, where there is no current screen.
+        if (wp_doing_ajax()) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read-only check; core verifies the nonce.
+            return isset($_POST['action'], $_POST['screen']) && 'inline-save' === $_POST['action'] && 'edit-bp3d-model-viewer' === $_POST['screen']
+                && AdminUi::MODERN === AdminUi::mode('viewer');
+        }
+
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+
+        return $screen && 'edit' === $screen->base && 'bp3d-model-viewer' === $screen->post_type
+            && AdminUi::MODERN === AdminUi::mode('viewer');
+    }
+
+    /** Spaces on both sides: other plugins append without one. */
+    public function addListBodyClass($classes)
+    {
+        return self::isModernList() ? $classes . ' bp3d-list-modern ' : $classes;
     }
 
     /**
@@ -133,9 +156,11 @@ class PostTypeModelViewer
      */
     public function addShortcodeColumn($defaults)
     {
+        // Keep core's translated Date label.
+        $date = $defaults['date'] ?? __('Date', '3d-viewer');
         unset($defaults['date']);
-        $defaults['shortcode'] = 'ShortCode';
-        $defaults['date'] = 'Date';
+        $defaults['shortcode'] = __('Shortcode', '3d-viewer');
+        $defaults['date'] = $date;
 
         return $defaults;
     }
@@ -149,7 +174,24 @@ class PostTypeModelViewer
             return;
         }
 
-        $shortcode = '[3d_viewer id=' . esc_attr((string) $post_id) . ']';
+        $shortcode = '[3d_viewer id="' . (int) $post_id . '"]';
+
+        // Same chip as the Modern editor's title row; src/admin/list copies it.
+        if (self::isModernList()) {
+            printf(
+                '<button type="button" class="bp3d-list-shortcode" data-clipboard-text="%1$s" aria-label="%2$s" title="%3$s"><code>%4$s</code><span class="bp3d-list-shortcode__icon" aria-hidden="true">'
+                . '<svg class="bp3d-list-shortcode__copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+                . '<svg class="bp3d-list-shortcode__check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+                . '</span></button>',
+                esc_attr($shortcode),
+                /* translators: %s: the viewer's shortcode. */
+                esc_attr(sprintf(__('Copy shortcode: %s', '3d-viewer'), $shortcode)),
+                esc_attr__('Copy To Clipboard', '3d-viewer'),
+                esc_html($shortcode)
+            );
+            return;
+        }
+
         echo "<div class='b3dviewer_front_shortcode'>"
             . "<input value='" . esc_attr($shortcode) . "' >"
             . "<span class='htooltip'>" . esc_html__('Copy To Clipboard', '3d-viewer') . "</span>"
@@ -216,7 +258,7 @@ class PostTypeModelViewer
 
 
     /**
-     * Remove "View" and "Quick Edit" row actions for this post type.
+     * Remove the "View" row action; the post type has no front-end page.
      *
      * @return array<string, string>
      */
@@ -225,7 +267,7 @@ class PostTypeModelViewer
         global $post;
 
         if ($post->post_type === $this->post_type) {
-            unset($actions['view'], $actions['inline hide-if-no-js']);
+            unset($actions['view']);
         }
 
         return $actions;
@@ -263,17 +305,17 @@ class PostTypeModelViewer
         }
 
         global $post;
-        $shortcode = "[3d_viewer id='" . esc_attr((string) $post->ID) . "']";
+        $shortcode = '[3d_viewer id="' . (int) $post->ID . '"]';
         ?>
         <div class="bp3d_shortcode_area_after_title">
             <label><?php esc_html_e('Copy and paste this shortcode into your posts, pages and widget', '3d-viewer'); ?></label>
             <div class="shortcode_area">
-                <button class="button button-bplugins button-large bp3d_shortcode_copy_btn"
+                <button type="button" class="button button-bplugins button-large bp3d_shortcode_copy_btn"
                     data-clipboard-text="<?php echo esc_attr($shortcode); ?>">
                     <?php echo esc_html($shortcode); ?>
                 </button>
                 <svg class="bp3d_shortcode_copy_icon"
-                    data-clipboard-text='[3d_viewer id="<?php echo esc_attr((string) $post->ID); ?>"]' width="22px"
+                    data-clipboard-text="<?php echo esc_attr($shortcode); ?>" width="22px"
                     height="22px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M8 4V16C8 17.1046 8.89543 18 10 18L18 18C19.1046 18 20 17.1046 20 16V7.24162C20 6.7034 19.7831 6.18789 19.3982 5.81161L16.0829 2.56999C15.7092 2.2046 15.2074 2 14.6847 2H10C8.89543 2 8 2.89543 8 4Z"

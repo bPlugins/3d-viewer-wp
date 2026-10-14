@@ -1,6 +1,6 @@
 import { SelectControl, PanelBody, ToggleControl } from "@wordpress/components";
 
-import { __ } from "@wordpress/i18n";
+import { __, sprintf } from "@wordpress/i18n";
 import BtnGroup from '../../../../../../../../bpl-tools/Components/BtnGroup/BtnGroup'
 import { InlineMediaUpload } from '../../../../../../../../bpl-tools/Components/MediaControl/MediaControl'
 
@@ -9,6 +9,7 @@ import { defaultEnvironmentImages, modelViewers } from "../../../../data";
 import ThreeDIcons from "../../../../../../icons/ThreeDIcons";
 import Title from "../../../../../../components/Title";
 import BInfoControl from "../../../../../../components/BInfoControl";
+import { MODEL_MEDIA_TYPES } from "../../../../../../utils/modelMediaTypes";
 import { helpText, pricingUrl } from "../../../../../../utils/constant";
 import { PremiumPanel } from "../../../../../../../../bpl-tools/ProControls";
 
@@ -34,9 +35,12 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
   const supportedMimeTypes = Object.keys(supportedMimes);
 
   // The media picker lists whatever is still uploadable, so a format switched
-  // off in settings drops out of it too.
-  const modelMimeTypes = Array.from(new Set(allowedMimeTypes.map((ext) => supportedMimes[ext]).filter(Boolean)));
+  // off in settings drops out of it too. HDR and MTL are ticked there but aren't models.
+  const modelMimeTypes = Array.from(new Set(allowedMimeTypes.filter((ext) => !['hdr', 'mtl'].includes(ext)).map((ext) => supportedMimes[ext]).filter(Boolean)));
   const modelUrl = model?.modelUrl || '';
+
+  const disabledSome = supportedMimeTypes.some((ext) => !allowedMimeTypes.includes(ext));
+  const enabledList = supportedMimeTypes.filter((ext) => allowedMimeTypes.includes(ext)).join(', ').toUpperCase();
 
   let showNotice = false;
   let noticeMessage = '';
@@ -76,7 +80,10 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
         <div style={{ fontSize: '11px', color: '#666', marginBottom: '15px', display: 'flex', alignItems: 'flex-start', gap: '4px', lineHeight: '1.4' }}>
           <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#46b450', marginTop: '4px', flexShrink: 0 }}></span>
           <span>
-            {__("All supported 3D formats are enabled for upload by default. You can turn any of them off in ", "3d-viewer")}
+            {disabledSome
+              // translators: %s: comma-separated file extensions.
+              ? sprintf(__("Enabled for upload: %s. You can change this in ", "3d-viewer"), enabledList)
+              : __("All supported 3D formats are enabled for upload by default. You can turn any of them off in ", "3d-viewer")}
             <a href={settingsUrl} target="_blank" rel="noreferrer" style={{ color: '#2271b1', textDecoration: 'underline' }}>
               {__("Settings", "3d-viewer")}
             </a>.
@@ -92,7 +99,7 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
         onChange={(modelUrl) => {
           setAttributes({ model: { ...model, initialView: null, modelUrl, ext: modelUrl.split(".")?.[modelUrl.split(".").length - 1] }, O3DVSettings: { ...O3DVSettings, camera: null } });
         }}
-        types={modelMimeTypes.length ? modelMimeTypes : Object.values(supportedMimes)}
+        types={modelMimeTypes.length ? modelMimeTypes : MODEL_MEDIA_TYPES}
         label={__("Model URL", "3d-viewer")}
         info={helpText.modelUrl}
       />

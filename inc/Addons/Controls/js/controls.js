@@ -75,14 +75,14 @@
       event.preventDefault();
 
       // Rebuilt per click so the frame always reflects the current selection.
-      // No `library.type` filter: the control picks 3D models (.glb, .gltf,
-      // .usdz) and .bin decoder files, which none of Elementor's media types
-      // cover.
+      // The `library` setting filters it to models; decoder and image fields leave it empty.
       var self = this;
+      var library = self.model.get("library");
       var frame = wp.media({
         title: elementor.translate ? elementor.translate("Upload File") : "Upload File",
         button: { text: "Get Link" },
         multiple: false,
+        library: library && library.length ? { type: library } : {},
       });
 
       frame.on("select", function () {

@@ -8,7 +8,7 @@
     "i18n": "npm run i18n-pot && npm run copy && npm run i18n-json && npm run i18n-mo",
     "copy": "cp ./languages/3d-viewer.pot ./languages/3d-viewer-en_US.po",
     "build": "wp-scripts build --webpack-copy-php && npm run i18n && find . -name '.DS_Store' -delete && npm run zip",
-    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc languages lib public vendor 3d-viewer.php readme.txt composer.json uninstall.php -x 'lib/bfields/README.md' 'inc/Integrations/Dokan/*' 'inc/Base/Marketplace.php' 'inc/Base/RestMetaGuard.php' 'inc/Base/VendorUploadGuard.php' '*.map' '*.DS_Store'",
+    "zip": "rm -f zip/3d-viewer.zip && zip -r zip/3d-viewer.zip 3d-viewer-block/ admin/ build/ inc languages lib public vendor 3d-viewer.php readme.txt composer.json uninstall.php -x 'lib/bfields/README.md' 'lib/bfields/ui/*' 'lib/bfields/node_modules/*' 'lib/bfields/package.json' 'lib/bfields/composer.json' 'lib/bfields/tsconfig.json' 'lib/bfields/webpack.config.js' 'lib/bfields/languages/*.po' 'inc/Integrations/Dokan/*' 'inc/Base/Marketplace.php' 'inc/Base/RestMetaGuard.php' 'inc/Base/VendorUploadGuard.php' 'vendor/codestar-framework/samples/*' 'vendor/bp-extension-manager/README.md' 'vendor/bp-extension-manager/CONTRIBUTING.md' 'vendor/bp-extension-manager/catalog/sample-host.json' 'public/images/envmaps/*' '*.map' '*.DS_Store'",
     "clean": "find . -name '.DS_Store' -type f -delete",
     "deploy": "gulp freemius-deploy",
     "test:e2e": "playwright test -c tests/e2e/playwright.config.ts",

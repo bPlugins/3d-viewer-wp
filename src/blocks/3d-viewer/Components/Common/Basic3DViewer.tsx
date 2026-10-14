@@ -7,6 +7,7 @@ import negx from "../../../../../public/images/envmaps/fishermans_bastion/negx.j
 import negy from "../../../../../public/images/envmaps/fishermans_bastion/negy.jpg";
 import negz from "../../../../../public/images/envmaps/fishermans_bastion/negz.jpg";
 import hexToRGB from "../../../../utils/hexToRGB";
+import matchProtocol from "../../../../utils/matchProtocol";
 
 
 
@@ -21,7 +22,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
   const { mouseControl, zoom = true } = O3DVSettings;
   const currentModel = model;
 
-  const [viewerLoaded, setViewerLoaded] = useState(false);
+  const [, setViewerLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   const parentDiv = useRef<HTMLDivElement>(null);
@@ -29,6 +30,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
   const instanceRef = useRef<any>(null);
 
   useEffect(() => {
+    const container = parentDiv.current;
 
     if (modelSrc && typeof window.OV !== 'undefined') {
       viewerRef.current?.Destroy();
@@ -43,7 +45,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
           environmentSettings: new window.OV.EnvironmentSettings([posx, negx, posy, negy, posz, negz], false),
         });
 
-        const models = [modelSrc?.replace(/https?:/, window.location.protocol)];
+        const models = [matchProtocol(modelSrc)];
         instanceRef.current.LoadModelFromUrlList(models);
         viewerRef.current = instanceRef.current;
         window.VR = instanceRef.current;
@@ -52,7 +54,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
         // handle zoom functionality
         instanceRef.current.viewer.navigation.SetZoomStatus(zoom);
       } else {
-        viewerRef.current.LoadModelFromUrlList([modelSrc?.replace(/https?:/, window.location.protocol)]);
+        viewerRef.current.LoadModelFromUrlList([matchProtocol(modelSrc)]);
         const Coord3D = new window.OV.Coord3D(0.0, 0.0, 0.0);
         viewerRef.current.viewer.SetCamera(new window.OV.Camera(new window.OV.Coord3D(0.0, 0.0, 1.0), Coord3D, new window.OV.Coord3D(0.0, 1.0, 0.0), 45.0));
         setTimeout(() => {
@@ -63,7 +65,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
     }
 
     return () => {
-      if (viewerRef.current !== null && parentDiv.current !== null && viewerLoaded) {
+      if (viewerRef.current !== null && parentDiv.current !== null) {
         delete viewerRef.current.model;
         viewerRef.current.viewer?.renderer?.resetState();
         viewerRef.current.viewer?.Clear();
@@ -84,8 +86,14 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
         viewerRef.current = null;
         setViewerLoaded(false);
       }
+      // OV leaves its status text ("Failed to import model…") after Destroy(). Hidden, not removed:
+      // a load still in flight removes its own progress node when it finishes, and throws if it's gone.
+      Array.from(container?.children || []).forEach((el) => {
+        if (!Object.keys(el).some((key) => key.startsWith("__reactFiber$"))) (el as HTMLElement).style.display = "none";
+      });
     };
-  }, [modelSrc, currentModel, viewerLoaded]);
+    // Not viewerLoaded: the effect sets it, so it re-ran and fetched the model a second time.
+  }, [modelSrc, currentModel]);
 
   useEffect(() => {
     if (viewerRef.current?.viewer) {

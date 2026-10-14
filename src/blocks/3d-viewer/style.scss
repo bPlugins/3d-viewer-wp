@@ -315,16 +315,22 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
     right: 10px;
   }
 
-  .fullscreen-close {
+  .fullscreen-close,
+  .fullscreen-exit {
     display: none;
   }
 
-  .b3dviewer-wrapper.fullscreen .fullscreen-close {
+  .b3dviewer-wrapper.fullscreen :is(.fullscreen-close, .fullscreen-exit) {
     display: block;
   }
 
+  .b3dviewer-wrapper.fullscreen .fullscreen-open {
+    display: none;
+  }
+
   .bp_model_parent:fullscreen {
-    .fullscreen-close {
+    .fullscreen-close,
+    .fullscreen-exit {
       display: block;
     }
 
@@ -474,4 +480,15 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
     max-height: fit-content !important;
     height: auto !important;
   }
+}
+
+// Top viewer placed above Woo's gallery block (block themes): keep the old 10px gap to the image.
+.bp3d-woo-top-viewer .position_top {
+  margin-bottom: 10px;
+}
+
+// A gallery found by the fallback (Woostify, Woo's Product Gallery block) sits beside the viewer's float, which
+// shrank its overflow-hidden slider to nothing; the container keeps the float to itself.
+.bp3d-woo-fallback-viewer {
+  display: flow-root;
 }

@@ -1,5 +1,6 @@
 import './scss/themes/themes.scss';
 import './scss/themes/common.scss';
+import '../blocks/3d-viewer/style.scss';
 import FrontEnd, { FrontEndAttributes } from './Components/FrontEnd';
 import manageIncompatibleTheme from '../utils/manageIncompatibleTheme';
 import './elementor';

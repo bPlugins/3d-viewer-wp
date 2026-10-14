@@ -41,7 +41,7 @@ class Shortcode
             'id' => '',
         ], $atts);
 
-        $id = $atts['id'];
+        $id = absint($atts['id']);
 
         if (!$id) {
             return false;
@@ -54,7 +54,7 @@ class Shortcode
             $isGutenberg = get_post_meta($id, 'isGutenberg', true);
         }
 
-        if (!in_array($post_type, ['bp3d-model-viewer', 'product'], true)) {
+        if (!in_array($post_type, ['bp3d-model-viewer', 'product'], true) || !self::isViewable((int) $id)) {
             return false;
         }
 
@@ -94,6 +94,26 @@ class Shortcode
     }
 
     /**
+     * Visitors see published posts only. Drafts, scheduled and private posts show to users who may read them
+     * (their editors), and trashed ones to no one. A password-protected one shows only to its editors, as a viewer
+     * has no page to enter the password on.
+     */
+    public static function isViewable(int $id): bool
+    {
+        $status = get_post_status($id);
+
+        if (post_password_required($id) && !current_user_can('edit_post', $id)) {
+            return false;
+        }
+
+        if ('publish' === $status) {
+            return true;
+        }
+
+        return $status && 'trash' !== $status && current_user_can('read_post', $id);
+    }
+
+    /**
      * Render the shortcode.
      *
      * @param  array<string, string>|string $attrs  Shortcode attributes
@@ -105,12 +125,19 @@ class Shortcode
             'id' => (string) get_the_ID(),
         ], $attrs);
 
-        $post_type = get_post_type($attrs['id']);
+        $id = absint($attrs['id']);
 
-        if ($post_type !== 'product') {
+        if (get_post_type($id) !== 'product' || !function_exists('wc_get_product')) {
             return false;
         }
 
-        return Product::instance()->get_3d_model_html(true, 'shortcode');
+        // The model comes from the product named by id, not from the page the shortcode sits on.
+        global $product;
+        $current = $product;
+        $product = wc_get_product($id);
+        $html = Product::instance()->get_3d_model_html(true, 'shortcode');
+        $product = $current;
+
+        return $html;
     }
 }

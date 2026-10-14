@@ -132,7 +132,8 @@ final class Addons
      */
     public function refreshElementorCss(): void
     {
-        if (get_option('bp3d_elementor_css_ver') === '2.0.0' || !class_exists('\\Elementor\\Plugin')) {
+        if (wp_doing_ajax() || get_option('bp3d_elementor_css_ver') === '2.0.0' || !class_exists('\\Elementor\\Plugin')
+            || empty(\Elementor\Plugin::$instance->files_manager)) {
             return;
         }
 

@@ -112,7 +112,7 @@ class ModelViewer extends \Elementor\Widget_Base
             );
             $notice_type = 'danger';
         } else {
-            $format_notice = sprintf(
+            $format_notice = \BP3D\Helper\Utils::enabledFormatsNote() ?: sprintf(
                 /* translators: %s: URL to the settings page. */
                 __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
                 esc_url($settings_url)
@@ -141,6 +141,7 @@ class ModelViewer extends \Elementor\Widget_Base
         $this->add_control('modelUrl', [
             'label' => esc_html__('Select Model', '3d-viewer'),
             'type' => 'bp3d-select-file',
+            'library' => \BP3D\Helper\Utils::modelLibraryTypes(),
             'separator' => 'before',
             'placeholder' => esc_html__('Paste Model URL', '3d-viewer'),
         ]);

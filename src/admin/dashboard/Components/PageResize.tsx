@@ -3,23 +3,25 @@ import { __ } from '@wordpress/i18n';
 
 // Mirrors bfields' page handle (lib/bfields Resizable.tsx) so Help & Demos resizes like Settings.
 const PAGE_MIN = 960;
+const PAGE_DEFAULT = 1420;
 
+// Full width is stored as 'full'; anything else (incl. the old stored null) falls back to the default.
 function load(key: string): number | null {
     try {
         const saved = JSON.parse(window.localStorage.getItem(key) ?? 'null');
-        return typeof saved === 'number' ? saved : null;
+        return typeof saved === 'number' ? saved : saved === 'full' ? null : PAGE_DEFAULT;
     } catch {
-        return null;
+        return PAGE_DEFAULT;
     }
 }
 
-/** The dragged column width, or null for the default full width. */
+/** The column width, or null for full width. */
 export function usePageWidth(key: string) {
     const [width, setWidth] = useState<number | null>(() => load(key));
 
     useEffect(() => {
         try {
-            window.localStorage.setItem(key, JSON.stringify(width));
+            window.localStorage.setItem(key, JSON.stringify(width ?? 'full'));
         } catch {
             // Private windows and blocked storage: the width just won't stick.
         }
@@ -47,7 +49,7 @@ interface Props {
     onChange: (value: number | null) => void;
 }
 
-/** One edge handle of the centred column; reaching the well's edges goes back to full width. */
+/** One edge handle of the centred column; reaching the well's edges goes to full width, reset to the default. */
 export function PageHandle({ edge, value, well, column, onChange }: Props) {
     // A centred column grows by twice the pointer's travel; the start edge grows it leftwards.
     const factor = edge === 'start' ? -2 : 2;
@@ -69,7 +71,8 @@ export function PageHandle({ edge, value, well, column, onChange }: Props) {
         onChange(clamped >= max ? null : clamped);
     };
 
-    const current = () => value ?? column()?.getBoundingClientRect().width ?? bounds()[1];
+    // The rendered width: the default can be wider than a small screen's well.
+    const current = () => column()?.getBoundingClientRect().width ?? value ?? bounds()[1];
     const [min, max] = bounds();
 
     return <div
@@ -106,7 +109,7 @@ export function PageHandle({ edge, value, well, column, onChange }: Props) {
             drag.current = null;
             setDragging(false);
         }}
-        onDoubleClick={() => onChange(null)}
+        onDoubleClick={() => onChange(PAGE_DEFAULT)}
         onKeyDown={(event) => {
             const step = event.shiftKey ? 50 : 10;
             const delta = ({ ArrowLeft: -step, ArrowRight: step } as Record<string, number>)[event.key];
@@ -116,7 +119,7 @@ export function PageHandle({ edge, value, well, column, onChange }: Props) {
                 set(current() + delta * factor, lo, hi);
             } else if (event.key === 'Enter') {
                 event.preventDefault();
-                onChange(null);
+                onChange(PAGE_DEFAULT);
             }
         }}
     >

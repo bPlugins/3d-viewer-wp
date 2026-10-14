@@ -9,8 +9,9 @@
 
 }
 
+/* Matches .b3dviewer-wrapper:fullscreen and the class fallback; a set Background colour still covers it. */
 .bp_model_parent:fullscreen {
-  background-color: #cfcfcf;
+  background-color: #fff;
 }
 
 .fullscreen.bp_model_parent {

@@ -41,7 +41,7 @@ final class Loader
 	 *
 	 * Kept in sync with $bfields_this_version in bootstrap.php.
 	 */
-	const VERSION = '1.1.0';
+	const VERSION = '1.1.1';
 
 	/**
 	 * The bfields JSON schema version. The PHP<->JS wire format is the API

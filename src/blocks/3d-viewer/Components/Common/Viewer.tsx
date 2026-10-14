@@ -6,7 +6,7 @@ import Basic3DViewer from "./Basic3DViewer";
 
 import ShopLoopItemComponents from "./ShopLoopItemComponents";
 
-import { Camera, Close, Download, Fullscreen, Minus, Plus } from "./icons";
+import { Camera, Close, Download, ExitFullscreen, Fullscreen, Minus, Plus } from "./icons";
 import downloadImageFromDataUrl from "../../../../utils/downloadImageFromDataUrl";
 import download3DFile from "../../../../utils/download3DFile";
 import openFullscreen from "../../../../utils/openFullscreen";
@@ -16,7 +16,6 @@ import ModelViewer from "./ModelViewer";
 import ARQRCode from "./ARQRCode";
 import ControlButton from "./ControlButton";
 
-import './../../style.scss'
 // interface
 interface ViewerInterface {
   attributes: any;
@@ -125,6 +124,8 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
               <ControlButton className="fullscreen-open" label={t("Enter fullscreen", "3d-viewer")} onClick={() => {
                 openFullscreen(containerRef?.current?.querySelector(".bp_model_parent"));
               }}><Fullscreen size={20} /></ControlButton>
+              {/* In fullscreen the button's own spot turns into Exit; Close stays top-right as well. */}
+              <ControlButton className="fullscreen-exit" label={t("Exit fullscreen", "3d-viewer")} onClick={closeFullscreen}><ExitFullscreen size={20} /></ControlButton>
             </>
           )}
         </div>

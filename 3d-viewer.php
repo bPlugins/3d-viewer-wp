@@ -71,7 +71,6 @@ if (function_exists('bp3d_fs')) {
 
     defined('BP3D_DIR') or define('BP3D_DIR', plugin_dir_url(__FILE__));
     defined('BP3D_PATH') or define('BP3D_PATH', plugin_dir_path(__FILE__));
-    defined('BP3D_TEMPLATE_PATH') or define('BP3D_TEMPLATE_PATH', plugin_dir_path(__FILE__) . 'inc/Template/');
     defined('BP3D__FILE__') or define('BP3D__FILE__', __FILE__);
     define('BP3D_IMPORT_VER', '1.0.0');
 
@@ -188,8 +187,8 @@ if (function_exists('bp3d_fs')) {
                 'catalog_file' => __DIR__ . '/public/extensions.php', // Explicit PHP path
                 'menu_badge' => true,
                 'menu_badge_persist' => true,
+                'enable_modules' => false,
                 'enable_freemius_checkout' => true
-
             ));
         }
     });

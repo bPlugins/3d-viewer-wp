@@ -747,6 +747,7 @@ final class Schema
 		$copy('label');
 		$copy('library');
 		$copy('button_title', 'buttonTitle');
+		$copy('url_input', 'urlInput');
 		$copy('add_title', 'addTitle');
 		$copy('accordion_title_prefix', 'titlePrefix');
 		$copy('accordion_title_number', 'titleNumber');

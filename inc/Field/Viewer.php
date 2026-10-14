@@ -24,22 +24,113 @@ class Viewer
   public function register(): void
   {
     add_action('init', [$this, 'init'], 0);
+    add_filter('csf_' . $this->prefix . '_save', [$this, 'preserveProData'], 10, 3);
     add_filter('csf_' . $this->prefix . '_save', [$this, 'syncPremiumSource'], 20, 3);
+    add_action('load-post.php', [$this, 'showAsRendered']);
+    add_filter('bfields_update_in_place_values', [$this, 'linkInPlaceValues'], 10, 3);
   }
 
-  /** Modern keeps undeclared keys; a premium row would otherwise resolve its old source. */
+  /** The edit screen shows an existing row as the front end renders it, so a plain re-save changes nothing. */
+  public function showAsRendered(): void
+  {
+    $screen = get_current_screen();
+    // Edit screen render only: saves read the stored row.
+    if (!$screen || 'bp3d-model-viewer' !== $screen->post_type || 'GET' !== ($_SERVER['REQUEST_METHOD'] ?? '')) {
+      return;
+    }
+    add_filter('get_post_metadata', [$this, 'renderedRow'], 10, 4);
+  }
+
+  public function renderedRow($value, $object_id, $meta_key, $single)
+  {
+    if ($this->prefix !== $meta_key || null !== $value) {
+      return $value;
+    }
+    remove_filter('get_post_metadata', [$this, 'renderedRow'], 10);
+    $row = get_post_meta((int) $object_id, $meta_key, true);
+    add_filter('get_post_metadata', [$this, 'renderedRow'], 10, 4);
+
+    if (!is_array($row) || empty($row)) {
+      return $value;
+    }
+    $shown = $row;
+    // A Pro link or Cycle row renders a model the media field doesn't hold; show that one instead.
+    $link = self::linkSource($row);
+    if ('' !== $link) {
+      $shown['bp_3d_src'] = self::mediaFromUrl($link);
+    }
+    // Saved before these fields existed: the front end treats them as off / the custom image, not the field default.
+    $shown += ['bp_3d_zoom_in_out_btn' => '', 'bp_3d_progressbar' => ''];
+    if (!array_key_exists('bp_3d_environment_image_preset', $row) && !empty($row['bp_3d_environment_image'])) {
+      $shown['bp_3d_environment_image_preset'] = 'custom';
+    }
+
+    return $shown === $row ? $value : [$shown];
+  }
+
+  /** Values Modern reloads after an in-place save. */
+  public function linkInPlaceValues($values, $post_id = 0, $unique = '')
+  {
+    if ($this->prefix !== $unique || !is_array($values)) {
+      return $values;
+    }
+    $link = self::linkSource((array) get_post_meta((int) $post_id, $this->prefix, true));
+    if ('' !== $link) {
+      $values['bp_3d_src'] = self::mediaFromUrl($link);
+    }
+    return $values;
+  }
+
+  /** The model the front end renders when the media field doesn't show it (a Pro link or Cycle row), else ''. */
+  private static function linkSource(array $row): string
+  {
+    $shown = trim(\BP3D\Helper\Utils::viewerModelSrc(\BP3D\Helper\Utils::return_function($row)));
+    $url = is_array($row['bp_3d_src'] ?? null) ? (string) ($row['bp_3d_src']['url'] ?? '') : '';
+    return $shown === $url ? '' : $shown;
+  }
+
+  private static function mediaFromUrl(string $url): array
+  {
+    return ['url' => $url, 'id' => '', 'width' => '', 'height' => '', 'thumbnail' => '', 'alt' => '', 'title' => '', 'description' => ''];
+  }
+
+  /** Classic saves only the fields free declares; start from the stored row so Pro-only keys survive. */
+  public function preserveProData($data, $post_id = 0, $instance = null)
+  {
+    $stored = get_post_meta((int) $post_id, $this->prefix, true);
+    if (!is_array($data) || !is_array($stored) || empty($stored)) {
+      return $data;
+    }
+
+    // Codestar hands over slashed $_POST data and update_post_meta() unslashes once; bfields passes it unslashed.
+    $slashed = !($instance instanceof \BFields\Compat\Instance);
+
+    return array_merge($slashed ? wp_slash($stored) : $stored, $data);
+  }
+
+  /** Pro keys are kept (Modern, preserveProData), so a premium row would otherwise resolve its old source. */
   public function syncPremiumSource($data, $post_id = 0, $instance = null)
   {
     // A partial payload without the source has not changed it.
-    if (!is_array($data) || !array_key_exists('bp_3d_src', $data) || !($instance instanceof \BFields\Compat\Instance)) {
+    if (!is_array($data) || !array_key_exists('bp_3d_src', $data)) {
       return $data;
     }
     $stored = get_post_meta((int) $post_id, $this->prefix, true);
-    if (!is_array($stored) || (!array_key_exists('bp_3d_src_type', $stored) && !array_key_exists('bp_3d_src_link', $stored))) {
+    if (!is_array($stored) || (!array_key_exists('bp_3d_src_type', $stored) && !array_key_exists('bp_3d_src_link', $stored) && !array_key_exists('bp_3d_model_type', $stored))) {
       return $data;
     }
     $new = is_array($data['bp_3d_src']) ? (string) ($data['bp_3d_src']['url'] ?? '') : '';
     $old = is_array($stored['bp_3d_src'] ?? null) ? (string) ($stored['bp_3d_src']['url'] ?? '') : '';
+    // The editor showed this model in the media field (renderedRow); posting it back changes nothing.
+    $link = self::linkSource($stored);
+    if ('' !== $link && trim(wp_kses_post($new)) === trim(wp_kses_post($link))) {
+      if (array_key_exists('bp_3d_src', $stored)) {
+        $data['bp_3d_src'] = $stored['bp_3d_src'];
+      } else {
+        unset($data['bp_3d_src']);
+      }
+      return $data;
+    }
     // The posted copy is kses'd; a row written outside the form (Import) may not be.
     if (trim(wp_kses_post($new)) === trim(wp_kses_post($old))) {
       return $data;
@@ -47,6 +138,10 @@ class Viewer
     $data['bp_3d_src_type'] = 'upload';
     if (array_key_exists('bp_3d_src_link', $stored)) {
       $data['bp_3d_src_link'] = $new;
+    }
+    // Free has one model: a new pick ends Cycle mode so it renders. The Cycle list stays for Pro.
+    if (\BP3D\Helper\Utils::firstCycleModel(\BP3D\Helper\Utils::return_function($stored))) {
+      $data['bp_3d_model_type'] = 'msimple';
     }
     return $data;
   }
@@ -123,7 +218,7 @@ class Viewer
       $fields[] = array(
         'type' => 'notice',
         'style' => 'info',
-        'content' => sprintf(
+        'content' => \BP3D\Helper\Utils::enabledFormatsNote() ?: sprintf(
           /* translators: %s: URL to the settings page. */
           __('All supported 3D formats (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) are enabled for upload by default. You can turn any of them off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
           admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
@@ -138,7 +233,7 @@ class Viewer
         'option_meta' => \BP3D\Base\AdminUi::viewerModes(),
         'layout' => 'mode-grid',
         'type' => 'button_set',
-        'title' => __('Viewer.', '3d-viewer'),
+        'title' => __('Viewer', '3d-viewer'),
         'subtitle' => __('Choose Viewer', '3d-viewer'),
         'desc' => __("Choose between Lite and Advanced viewer modes. Lite is optimized for GLB and GLTF files with strong performance and essential features. Advanced supports almost all 3D file types but offers a more streamlined feature set.", "3d-viewer"),
         'multiple' => false,
@@ -152,7 +247,10 @@ class Viewer
         'id' => 'bp_3d_src',
         'icon' => 'link',
         'type' => 'media',
+        'library' => \BP3D\Helper\Utils::modelLibraryTypes(),
         'button_title' => __('Upload Source', '3d-viewer'),
+        // Modern (bfields 1.1.1+): URL box + button like Pro; still stored as the media array.
+        'url_input' => true,
         'title' => __('3D Source', '3d-viewer'),
         'subtitle' => __('Choose 3D Model', '3d-viewer'),
         'desc' => __("Specifies the URL of the 3D model file to be displayed in the viewer.", "3d-viewer"),
@@ -188,6 +286,7 @@ class Viewer
         'icon' => 'image',
         'type' => 'media',
         'button_title' => __('Upload Poster', '3d-viewer'),
+        'url_input' => true,
         'title' => __('3D Poster Image', '3d-viewer'),
         'subtitle' => __('Display a poster until loaded', '3d-viewer'),
         'desc' => __('Upload or Select 3d Poster Image.  if you don\'t want to use just leave it empty', '3d-viewer'),
@@ -235,6 +334,8 @@ class Viewer
             'desc' => __('Sets a skybox image that appears as the background and provides environmental lighting for the model. Accepts .hdr as well as JPG and PNG.', '3d-viewer'),
             'dependency' => array('currentViewer', '==', 'modelViewer'),
           ),
+          // Premium's Modern order: shadow, then exposure.
+          ...(\BP3D\Helper\Registrar::modern($this->prefix) ? array_reverse($this->lighting_fields()) : array()),
         ),
       ),
     ));
@@ -248,11 +349,44 @@ class Viewer
     ));
   }
 
+  /** Exposure and shadow: Modern shows them in Lighting & Environment, Classic keeps them on the Settings tab. */
+  private function lighting_fields(): array
+  {
+    return array(
+      array(
+        'id' => '3d_exposure',
+        'icon' => 'sun',
+        'type' => 'slider',
+        'min' => 0.1,
+        'max' => 5,
+        'step' => 0.1,
+        'title' => __('Exposure', '3d-viewer'),
+        'subtitle' => __('Brightness for Model', '3d-viewer'),
+        'desc' => __("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer"),
+        'default' => '1',
+        'dependency' => array('currentViewer', '==', 'modelViewer', 'all')
+      ),
+      array(
+        'id' => '3d_shadow_intensity',
+        'icon' => 'cloud-drizzle',
+        'type' => 'slider',
+        'title' => __('Shadow Intensity', '3d-viewer'),
+        'subtitle' => __('Shadow Intensity for Model', '3d-viewer'),
+        'desc' => __("Controls how dark or light the model’s shadow appears. Higher values create darker, more visible shadows.", "3d-viewer"),
+        'min' => 0,
+        'max' => 1,
+        'step' => 0.1,
+        'default' => 1,
+        'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
+      ),
+    );
+  }
+
   public function settings()
   {
     \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'title' => __('Settings', '3d-viewer'),
-      'icon' => 'fas fa-sliders-h',
+      'icon' => 'fa fa-cog',
       'fields' => array(
         array(
           'id' => 'bp_camera_control',
@@ -274,7 +408,7 @@ class Viewer
           'subtitle' => __('Enable or Disable Zooming Behaviour', '3d-viewer'),
           'desc' => __("Enables zooming in and out of the 3D model using mouse scroll or touch gestures.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'text_width' => 60,
           'default' => true,
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
@@ -288,7 +422,7 @@ class Viewer
           'subtitle' => __('Show/Hide Full Screen Button', '3d-viewer'),
           'desc' => __("Show/Hide Full Screen Button in the 3D model viewer.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'default' => true,
         ),
         array(
@@ -299,7 +433,7 @@ class Viewer
           'subtitle' => __('Show/Hide Zoom In/Out Button', '3d-viewer'),
           'desc' => __("Show/Hide Zoom In/Out Button in the 3D model viewer.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'default' => true,
         ),
 
@@ -311,7 +445,7 @@ class Viewer
           'subtitle' => __('Show/Hide Camera Button', '3d-viewer'),
           'desc' => __("Show/Hide Camera Button in the 3D model viewer.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'default' => false,
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
         ),
@@ -324,7 +458,7 @@ class Viewer
           'subtitle' => __('Show/Hide 3D File Download Button', '3d-viewer'),
           'desc' => __("Show/Hide 3D File Download Button in the 3D model viewer.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'default' => false,
         ),
 
@@ -351,38 +485,12 @@ class Viewer
           'subtitle' => __('Show/Hide Progressbar', '3d-viewer'),
           'desc' => __("Displays a progress bar during model loading to indicate loading status.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
-          'text_off' => __('NO', '3d-viewer'),
+          'text_off' => __('No', '3d-viewer'),
           'text_width' => 60,
           'default' => true,
           'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
         ),
-        array(
-          'id' => '3d_exposure',
-          'icon' => 'sun',
-          'type' => 'slider',
-          'min' => 0.1,
-          'max' => 5,
-          'step' => 0.1,
-          'title' => __('Exposure', '3d-viewer'),
-          'subtitle' => __('Brightness for Model', '3d-viewer'),
-          'desc' => __("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer"),
-          'default' => '1',
-          'dependency' => array('currentViewer', '==', 'modelViewer', 'all')
-
-        ),
-        array(
-          'id' => '3d_shadow_intensity',
-          'icon' => 'cloud-drizzle',
-          'type' => 'slider',
-          'title' => __('shadow Intensity', '3d-viewer'),
-          'subtitle' => __('Shadow Intensity for Model', '3d-viewer'),
-          'desc' => __("Controls how dark or light the model’s shadow appears. Higher values create darker, more visible shadows.", "3d-viewer"),
-          'min' => 0,
-          'max' => 1,
-          'step' => 0.1,
-          'default' => 1,
-          'dependency' => ['currentViewer', '==', 'modelViewer', 'all']
-        ),
+        ...(\BP3D\Helper\Registrar::modern($this->prefix) ? array() : $this->lighting_fields()),
         array(
           'id' => 'bp_3d_enable_ar',
           'icon' => 'phone',

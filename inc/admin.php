@@ -203,7 +203,7 @@ if (!class_exists('BP3DAdmin')) {
         {
             $this->dashboard_hook = (string) add_submenu_page(
                 'edit.php?post_type=bp3d-model-viewer',
-                __('Demo and Help - 3D Viewer', '3d-viewer'),
+                __('Help & Demos - 3D Viewer', '3d-viewer'),
                 '<span style="color: #f18500;">' . __('Help & Demos', '3d-viewer') . '</span>',
                 'edit_posts',
                 '3d-viewer',

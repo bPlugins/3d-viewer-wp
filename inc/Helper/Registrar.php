@@ -33,7 +33,7 @@ final class Registrar
                 'page_align' => 'start',
                 'brand' => [
                     'primary' => '#1b5cf0',
-                    'save' => '#3b52f6',
+                    'save' => '#1b5cf0',
                     'logo' => BP3D_DIR . 'admin/images/logo.svg',
                 ],
             ]);
@@ -80,7 +80,7 @@ final class Registrar
                     'page_align' => 'start',
                     'show_reset_section' => false,
                     'page' => [
-                        'shortcode' => "[3d_viewer id='%d']",
+                        'shortcode' => '[3d_viewer id="%d"]',
                         'hint' => __('Copy and paste this shortcode into your posts, pages and widget', '3d-viewer'),
                         // Update saves without a reload (plan/AJAX-SAVE-PLAN.md); kill switch: bp3d_update_in_place.
                         'update_in_place' => true,

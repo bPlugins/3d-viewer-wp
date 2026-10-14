@@ -83,6 +83,8 @@ class BP3DSelectFile extends \Elementor\Base_Data_Control
     {
         return [
             'label_block' => true,
+            // Media-library `type` filter, e.g. Utils::modelLibraryTypes(); empty shows every file.
+            'library' => [],
         ];
     }
 

@@ -71,6 +71,7 @@ class Init
     public static function register_post_type()
     {
         self::instantiate('BP3D\\Base\\PostTypeModelViewer')->register();
+        self::instantiate('BP3D\\Base\\ViewerListModern')->register();
 
     }
 

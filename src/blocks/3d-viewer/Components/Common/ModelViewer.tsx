@@ -4,6 +4,7 @@ import { __ } from "@wordpress/i18n";
 // @ts-ignore
 import loadingImgSrc from './../../../../public/loading.webp';
 import manageAttributes from "../../../../public/manageAttributes";
+import matchProtocol from "../../../../utils/matchProtocol";
 
 // interface
 interface ModelViewerProps {
@@ -11,8 +12,6 @@ interface ModelViewerProps {
     modelSrc: string;
     viewerRef: any;
 }
-
-const toPageProtocol = (url?: string): string => url?.replace(/https?:/, window.location.protocol) || '';
 
 /**
  * Resolve an environment or skybox image URL, or an empty string when it does
@@ -60,9 +59,9 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
     const currentModel = model;
     const [loadFailed, setLoadFailed] = useState(false);
 
-    const modelPoster = currentModel?.poster?.replace(/https?:/, window.location.protocol)
-    const environmentImage = useResolvableImage(toPageProtocol(currentModel?.environmentImage || attributes.environmentImage));
-    const skyboxImage = useResolvableImage(toPageProtocol(currentModel?.skyboxImage || attributes.skyboxImage));
+    const modelPoster = matchProtocol(currentModel?.poster)
+    const environmentImage = useResolvableImage(matchProtocol(currentModel?.environmentImage || attributes.environmentImage));
+    const skyboxImage = useResolvableImage(matchProtocol(currentModel?.skyboxImage || attributes.skyboxImage));
 
 
     const toggleAttr = (selector: any, condition: boolean, attribute: string, value: string) => {
@@ -210,7 +209,7 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
 
     return (
         <>
-            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={attachViewer} data-js-focus-visible data-decoder={model?.decoder} poster={modelPoster} src={modelSrc?.replace(/https?:/, window.location.protocol)} alt="A 3D model" environment-image={environmentImage || undefined} skybox-image={skyboxImage || undefined} skybox-height={skyboxImage ? (currentModel?.skyboxHeight || '0m') : undefined} ar={currentModel.arEnabled || false} ar-placement={currentModel.arPlacement || 'floor'} >
+            <model-viewer loading={loading ? loading : "auto"} camera-controls ref={attachViewer} data-js-focus-visible data-decoder={model?.decoder} poster={modelPoster} src={matchProtocol(modelSrc)} alt="A 3D model" environment-image={environmentImage || undefined} skybox-image={skyboxImage || undefined} skybox-height={skyboxImage ? (currentModel?.skyboxHeight || '0m') : undefined} ar={currentModel.arEnabled || false} ar-placement={currentModel.arPlacement || 'floor'} >
 
                 <span slot="interaction-prompt" style={{ display: 'none' }}></span>
                 <span slot="ar-button"></span>

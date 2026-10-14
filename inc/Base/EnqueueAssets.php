@@ -67,6 +67,12 @@ class EnqueueAssets
             wp_enqueue_script('bp3d-admin-script');
         }
 
+        // Modern viewer list: the table in the 2.0.0 look.
+        if (PostTypeModelViewer::isModernList() && file_exists(BP3D_PATH . 'build/admin-list.js')) {
+            wp_enqueue_script('bp3d-admin-list', BP3D_DIR . 'build/admin-list.js', [], self::buildVersion('admin-list'), true);
+            wp_enqueue_style('bp3d-admin-list', BP3D_DIR . 'build/admin-list.css', [], self::styleVersion('build/admin-list.css'));
+        }
+
         // Live model preview inside the metabox (bp3d-model-viewer edit screen only).
         if ($post_type === 'bp3d-model-viewer' && in_array($hook_suffix, ['post.php', 'post-new.php'], true)) {
             if (!wp_script_is('bp3d-lib-model-viewer', 'registered')) {
@@ -92,8 +98,6 @@ class EnqueueAssets
             );
             wp_set_script_translations('bp3d-admin-preview', '3d-viewer', BP3D_PATH . 'languages');
             wp_localize_script('bp3d-admin-preview', 'bp3dPreview', [
-                'modelViewerSrc' => BP3D_DIR . 'public/js/model-viewer.latest.min.js',
-                'o3dviewerSrc' => BP3D_DIR . 'public/js/o3dv.min.js',
                 // 'modern': the meta box is drawn by bfields, so the preview reads window.bfields, not Codestar's inputs.
                 'ui' => AdminUi::mode('viewer'),
             ]);

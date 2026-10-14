@@ -6,20 +6,20 @@
 function download3DFile(url: string, filename?: string): void {
     if (!url) return;
 
+    // Only web URLs: the fallback below navigates to the URL, so javascript:/data: must never get there.
+    let parsedUrl: URL;
+    try {
+        parsedUrl = new URL(url, window.location.href);
+    } catch {
+        return;
+    }
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') return;
+
     let derivedFilename = filename;
     if (!derivedFilename) {
-        try {
-            const parsedUrl = new URL(url, window.location.href);
-            const pathname = parsedUrl.pathname;
-            const nameFromPath = pathname.substring(pathname.lastIndexOf('/') + 1);
-            if (nameFromPath && nameFromPath.includes('.')) {
-                derivedFilename = nameFromPath;
-            } else {
-                derivedFilename = 'model.glb';
-            }
-        } catch {
-            derivedFilename = 'model.glb';
-        }
+        const pathname = parsedUrl.pathname;
+        const nameFromPath = pathname.substring(pathname.lastIndexOf('/') + 1);
+        derivedFilename = nameFromPath && nameFromPath.includes('.') ? nameFromPath : 'model.glb';
     }
 
     // Try fetching as blob to ensure cross-origin/forced file download

@@ -229,6 +229,29 @@ export const Camera = ({ size = 35, className, onClick, ...props }: { size?: num
     </svg>
 );
 
+/** Fullscreen's four arrows turned inward. */
+export const ExitFullscreen = ({ size = 35, className, onClick, ...props }: { size?: number | string, className?: string, onClick?: () => void }) => (
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        fill="none"
+        stroke="#000000"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
+        onClick={onClick}
+        {...props}
+    >
+        <path d="M9 3.5V9H3.5M3 3l6 6" />
+        <path d="M15 3.5V9h5.5M21 3l-6 6" />
+        <path d="M9 20.5V15H3.5M3 21l6-6" />
+        <path d="M15 20.5V15h5.5M21 21l-6-6" />
+    </svg>
+);
+
 export const Fullscreen = ({ size = 35, className, onClick, ...props }: { size?: number | string, className?: string, onClick?: () => void }) => (
     <svg
         viewBox="0 0 512 512"
@@ -262,7 +285,7 @@ export const Minus = ({ size = 35, className, onClick, ...props }: { size?: numb
 
 export const Download = ({ size = 35, className, onClick, ...props }: { size?: number | string, className?: string, onClick?: () => void }) => (
     <svg
-        fill="currentColor"
+        fill="#000000"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
         width={size}

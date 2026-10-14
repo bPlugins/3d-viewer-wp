@@ -213,19 +213,6 @@ device values, unless the host gives Codestar a field type that posts them.
   The bundle is enqueued only for boxes the editor will draw: one taken off
   with `remove_meta_box()`, or by `filter_block_editor_meta_boxes` in the block
   editor, loads nothing.
-- **`'page' => ['update_in_place' => true]`** (opt-in, page frame only) makes
-  Update on a published post save without a reload. The same `#post` form is
-  sent to the same `post.php` with `fetch`, plus a `bfields_in_place` marker,
-  so core's nonce, `edit_post()`, every `save_post` hook and `Metabox::save()`
-  run as today. `Metabox::redirect_location()` (on `redirect_post_location`,
-  `PHP_INT_MAX`) then answers with JSON between `BFIELDS-UIP-BEGIN` and
-  `BFIELDS-UIP-END` instead of the 302. Anything unusual navigates or uses the
-  native submit, and a save is never retried on its own
-  (`ui/layout/updateInPlace.ts`). `update_in_place_boxes` lists extra POST
-  names that may travel in place. Filters: `bfields_update_in_place` (host
-  switch) and `bfields_update_in_place_values`. Heartbeat renews the box nonce
-  on opted-in screens. Not seen: a plugin that rewrites an existing hidden
-  input from a native `submit` or `click` listener (jQuery ones are).
 - **Register your screens in bfields' REST requests too.** The save route
   (`bfields/v1/options/<unique>`) and the option search
   (`bfields/v1/choices/<unique>`) find the field on the *registered* screen.
@@ -440,8 +427,6 @@ is layout only and holds no value:
     'desc'        => '',         // optional HTML, at the top of the body
     'collapsible' => true,       // default true; false draws a plain heading
     'collapsed'   => false,      // default false: the initial state
-    'layout'      => 'card',     // 'row': title + subtitle in a row's label column, the card beside them
-    'card_title'  => '',         // 'row' only: the card head's label; empty repeats the title
     'dependency'  => [...],      // optional: hides the whole card (ANDed onto each field)
     'fields'      => [ /* ordinary fields */ ],
 ],

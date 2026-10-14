@@ -1,0 +1,1007 @@
+// Viewer list table in the 2.0.0 look; Modern only (body.bp3d-list-modern). Values are bfields' tokens, as on Analytics.
+
+@font-face {
+    font-family: "bp3d List Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../ui/fonts/inter-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "bp3d List Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../ui/fonts/inter-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+$primary: #1b5cf0;
+$primary-hover: #1450d8;
+$soft: #eff6ff;
+$soft-hover: #e0ecfe;
+$title: #111827;
+$text: #24242b;
+$muted: #6b7280;
+$border: #e5e7eb;
+$divider: #f1f3f5;
+$canvas: #f8f9fa;
+$fill: #f3f4f6;
+$row-hover: #f8fafc;
+$font: "bp3d List Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+$chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+@mixin focus-ring($offset: 2px) {
+    &:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $primary;
+        outline-offset: $offset;
+    }
+}
+
+@mixin control {
+    box-sizing: border-box;
+    height: 40px;
+    min-height: 0;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: none;
+    color: $text;
+    font-family: $font;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+@mixin secondary-button {
+    @include control;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    font-weight: 600;
+    text-shadow: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+        border-color: #cbd5e1;
+        background: $canvas;
+        color: $text;
+    }
+
+    @include focus-ring(1px);
+}
+
+body.bp3d-list-modern {
+    background: $canvas;
+
+    .wrap {
+        font-family: $font;
+        color: $text;
+    }
+
+    // ---- header ----------------------------------------------------------
+    .wrap .wp-heading-inline {
+        margin: 12px 12px 0 0;
+        padding: 0;
+        color: $title;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        vertical-align: middle;
+    }
+
+    .wrap .page-title-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        top: 0;
+        box-sizing: border-box;
+        height: 40px;
+        margin: 12px 0 0;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 8px;
+        background: $primary;
+        box-shadow: none;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        text-shadow: none;
+        vertical-align: middle;
+        transition: background-color 0.15s ease;
+
+        &::before {
+            content: "+";
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        &:hover,
+        &:active {
+            border: 0;
+            background: $primary-hover;
+            color: #fff;
+        }
+
+        @include focus-ring;
+    }
+
+    .wrap .wp-header-end {
+        margin-top: 20px;
+    }
+
+    // ---- status views as a segmented control --------------------------------
+    .subsubsub {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        margin: 0 0 12px;
+        padding: 4px;
+        border-radius: 8px;
+        background: $fill;
+        font-size: 0; // hides the " |" separators between items
+
+        li {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 32px;
+            padding: 0 14px;
+            border-radius: 6px;
+            color: #69707e;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1;
+            text-decoration: none;
+            transition: background-color 0.15s ease, color 0.15s ease;
+
+            &:hover {
+                background: #fff;
+                color: $text;
+            }
+
+            &.current {
+                background: $primary;
+                color: #fff;
+                font-weight: 600;
+
+                .count {
+                    color: rgba(255, 255, 255, 0.8);
+                }
+            }
+
+            @include focus-ring(0);
+        }
+
+        .count {
+            color: $muted;
+            font-weight: 500;
+        }
+    }
+
+    // ---- search ------------------------------------------------------------
+    #posts-filter .search-box {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 12px;
+
+        input[type="search"] {
+            @include control;
+            width: 240px;
+            margin: 0;
+            padding: 0 14px;
+
+            &::placeholder {
+                color: #6e7788;
+            }
+
+            &:focus {
+                border-color: $border;
+                box-shadow: none;
+                outline: 2px solid $primary;
+                outline-offset: -1px;
+            }
+        }
+
+        .button {
+            @include secondary-button;
+            margin: 0;
+        }
+    }
+
+    // ---- toolbar: bulk actions, date filter, pagination ----------------------
+    #posts-filter .tablenav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        height: auto;
+        margin: 0 0 12px;
+        padding: 0;
+
+        &.bottom {
+            margin: 12px 0 0;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+            overflow: visible;
+        }
+
+        select {
+            @include control;
+            min-width: 160px;
+            max-width: none;
+            margin: 0;
+            padding: 0 38px 0 14px;
+            appearance: none;
+            background: #fff $chevron no-repeat right 14px center;
+            background-size: 16px;
+            cursor: pointer;
+
+            &:hover {
+                color: $text;
+            }
+
+            &:focus {
+                border-color: $border;
+                box-shadow: none;
+                outline: 2px solid $primary;
+                outline-offset: -1px;
+            }
+        }
+
+        .button.action,
+        #post-query-submit {
+            @include secondary-button;
+            margin: 0;
+        }
+
+        .tablenav-pages {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 0 0 auto;
+            color: $muted;
+            font-size: 13px;
+            float: none;
+        }
+
+        .bp3d-list-view ~ .tablenav-pages {
+            margin-left: 0;
+        }
+
+        .displaying-num {
+            margin: 0;
+        }
+
+        .pagination-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tablenav-pages-navspan,
+        .pagination-links a {
+            @include control;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            min-width: 36px;
+            height: 36px;
+            padding: 0;
+            color: $text;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .pagination-links a {
+            @include focus-ring(1px);
+
+            &:hover {
+                border-color: $primary;
+                background: $soft;
+                color: $primary;
+            }
+        }
+
+        .tablenav-pages-navspan.disabled {
+            border-color: $divider;
+            background: $canvas;
+            color: #c0c6d0;
+        }
+
+        .paging-input {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 4px;
+        }
+
+        .current-page {
+            @include control;
+            width: 48px;
+            height: 36px;
+            margin: 0;
+            padding: 0 6px;
+            text-align: center;
+
+            &:focus {
+                border-color: $border;
+                box-shadow: none;
+                outline: 2px solid $primary;
+                outline-offset: -1px;
+            }
+        }
+
+        .tablenav-paging-text {
+            color: $muted;
+        }
+
+        br.clear {
+            display: none;
+        }
+    }
+
+    // ---- the table, drawn as a card ---------------------------------------------
+    .wp-list-table {
+        border: 1px solid $border;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: none;
+
+        thead th,
+        thead td,
+        tfoot th,
+        tfoot td {
+            padding-block: 12px;
+            border: 0;
+            background: #fff;
+            color: $muted;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 18px;
+        }
+
+        thead th,
+        thead td {
+            border-bottom: 1px solid $border;
+        }
+
+        tfoot th,
+        tfoot td {
+            border-top: 1px solid $border;
+        }
+
+        thead th a,
+        tfoot th a {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            color: $muted;
+
+            &:hover {
+                color: $primary;
+            }
+
+            @include focus-ring(1px);
+        }
+
+        th.sorted a,
+        th.sortable a:hover {
+            color: $text;
+        }
+
+        .sorting-indicators {
+            display: inline-grid;
+        }
+
+        > tbody > tr,
+        &.striped > tbody > :nth-child(odd) {
+            background: #fff;
+        }
+
+        > tbody > tr:hover {
+            background: $row-hover;
+        }
+
+        tbody th,
+        tbody td {
+            padding-block: 14px;
+            border-bottom: 1px solid $divider;
+            color: $text;
+            font-size: 14px;
+            line-height: 20px;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child > * {
+            border-bottom: 0;
+        }
+
+        tbody .check-column {
+            padding-block: 14px;
+            vertical-align: middle;
+        }
+
+        thead .check-column,
+        tbody .check-column,
+        tfoot .check-column {
+            width: 34px;
+            padding-inline: 16px 0;
+        }
+
+        .column-bp3d_thumb {
+            width: 56px;
+        }
+
+        .column-bp3d_viewer,
+        .column-bp3d_status {
+            width: 130px;
+        }
+
+        .column-shortcode {
+            width: 250px;
+        }
+
+        .column-date {
+            width: 170px;
+        }
+
+        // Header label kept for screen readers only.
+        thead .column-bp3d_thumb,
+        tfoot .column-bp3d_thumb {
+            font-size: 0;
+        }
+
+        .row-title {
+            color: $text;
+            font-size: 14px;
+            font-weight: 600;
+
+            &:hover {
+                color: $primary;
+            }
+        }
+
+        .post-state {
+            color: $muted;
+            font-weight: 500;
+        }
+
+        // Always shown, as in the design; core hides them off-screen until hover.
+        .row-actions {
+            position: static;
+            left: 0;
+            padding-top: 2px;
+            color: #c0c6d0;
+            font-size: 13px;
+
+            a {
+                color: $primary;
+                font-weight: 500;
+            }
+
+            .trash a,
+            .delete a {
+                color: #d63638;
+            }
+        }
+
+        .column-date {
+            color: $muted;
+            font-size: 13px;
+            line-height: 19px;
+        }
+
+        .no-items td {
+            padding: 40px 16px;
+            color: $muted;
+            text-align: center;
+        }
+    }
+
+    // ---- checkboxes ---------------------------------------------------------------
+    .wp-list-table input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 4px;
+        box-shadow: none;
+
+        &:checked {
+            border-color: $primary;
+            background: $primary;
+
+            &::before {
+                filter: brightness(0) invert(1);
+            }
+        }
+
+        @include focus-ring(1px);
+    }
+
+    // ---- shortcode chip (matches the editor's title-row chip) ----------------------
+    .bp3d-list-shortcode {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: 36px;
+        padding: 0 4px 0 12px;
+        border: 1px solid $border;
+        border-radius: 8px;
+        background: $fill;
+        color: $text;
+        cursor: pointer;
+        font-family: $font;
+        white-space: nowrap;
+        transition: border-color 0.15s ease;
+
+        code {
+            overflow: hidden;
+            padding: 0;
+            background: none;
+            color: inherit;
+            font-family: $mono;
+            font-size: 12.5px;
+            text-overflow: ellipsis;
+        }
+
+        &:hover {
+            border-color: $primary;
+        }
+
+        @include focus-ring(1px);
+    }
+
+    .bp3d-list-shortcode__icon {
+        display: inline-grid;
+        flex: none;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border: 1px solid $border;
+        border-radius: 6px;
+        background: #fff;
+        color: #374151;
+
+        svg {
+            grid-area: 1 / 1;
+        }
+    }
+
+    .bp3d-list-shortcode__check {
+        visibility: hidden;
+        color: #16a34a;
+    }
+
+    .bp3d-list-shortcode.is-copied {
+        border-color: #16a34a;
+
+        .bp3d-list-shortcode__copy {
+            visibility: hidden;
+        }
+
+        .bp3d-list-shortcode__check {
+            visibility: visible;
+        }
+    }
+
+    // ---- preview tile ---------------------------------------------------------------
+    .bp3d-list-thumb {
+        position: relative;
+        display: inline-grid;
+        place-items: center;
+        box-sizing: border-box;
+        width: 48px;
+        height: 48px;
+        overflow: hidden;
+        border: 1px solid #eef0f3;
+        border-radius: 8px;
+        background: #eef3ff;
+        color: $primary;
+        vertical-align: middle;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    .bp3d-list-thumb--advanced {
+        background: #f5efff;
+        color: #7e22ce;
+    }
+
+    .bp3d-list-thumb__format {
+        display: none; // the Viewer column names the format in list view
+    }
+
+    // ---- badges -----------------------------------------------------------------------
+    .bp3d-list-badge,
+    .bp3d-list-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 2px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 18px;
+        white-space: nowrap;
+    }
+
+    .bp3d-list-badge--lite {
+        background: $soft;
+        color: #1d4ed8;
+    }
+
+    .bp3d-list-badge--advanced {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+    .bp3d-list-meta {
+        display: block;
+        margin-top: 4px;
+        color: $muted;
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .bp3d-list-status {
+        background: $fill;
+        color: #4b5563;
+
+        &::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        + .bp3d-list-status {
+            margin-top: 4px;
+        }
+    }
+
+    .bp3d-list-status--publish {
+        background: #e8faf4;
+        color: #207f60;
+    }
+
+    .bp3d-list-status--draft {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .bp3d-list-status--pending {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .bp3d-list-status--future {
+        background: #e0f2fe;
+        color: #075985;
+    }
+
+    .bp3d-list-status--trash {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .column-bp3d_status {
+        line-height: 0; // stacked badges sit flush
+
+        .bp3d-list-status {
+            line-height: 18px;
+        }
+    }
+
+    // ---- list / grid toggle -------------------------------------------------------------
+    .bp3d-list-view {
+        display: inline-flex;
+        gap: 2px;
+        box-sizing: border-box;
+        height: 40px;
+        margin-left: auto;
+        padding: 3px;
+        border: 1px solid $border;
+        border-radius: 8px;
+        background: #fff;
+    }
+
+    .bp3d-list-view__btn {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        color: #69707e;
+        text-decoration: none;
+        transition: background-color 0.15s ease, color 0.15s ease;
+
+        &:hover {
+            background: $canvas;
+            color: $text;
+        }
+
+        &.is-active {
+            background: #f5f8ff;
+            color: $primary;
+        }
+
+        @include focus-ring(0);
+    }
+}
+
+// wp-admin's narrow layout: stack the toolbar, let the search fill the row.
+@media screen and (max-width: 782px) {
+    body.bp3d-list-modern {
+        .wrap .wp-heading-inline {
+            font-size: 24px;
+        }
+
+        .subsubsub {
+            float: none;
+        }
+
+        #posts-filter .search-box {
+            position: static;
+            width: 100%;
+            height: auto;
+
+            input[type="search"] {
+                flex: 1;
+                width: auto;
+                height: 40px;
+            }
+        }
+
+        #posts-filter .tablenav .tablenav-pages {
+            width: 100%;
+            margin: 0;
+            justify-content: center;
+        }
+
+        .wp-list-table tbody td,
+        .wp-list-table tbody th {
+            border-bottom: 0;
+        }
+
+        .wp-list-table tbody tr {
+            border-bottom: 1px solid $divider;
+        }
+
+    }
+}
+
+// ---- grid view: the same table rows drawn as cards (#posts-filter outranks core's responsive table rules) ----
+body.bp3d-list-modern.bp3d-list-grid #posts-filter .wp-list-table {
+    display: block;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+
+    thead,
+    tbody {
+        display: block;
+    }
+
+    tfoot {
+        display: none;
+    }
+
+    // The header stays as a bar for select-all and sorting.
+    thead tr {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        padding: 0 8px;
+        border: 1px solid $border;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    thead th,
+    thead td {
+        display: none;
+        width: auto;
+        border: 0;
+    }
+
+    thead .check-column,
+    thead .column-title,
+    thead .column-date {
+        display: block;
+    }
+
+    thead .check-column {
+        padding: 12px 4px 12px 6px;
+    }
+
+    thead .column-title {
+        flex: 1;
+    }
+
+    tbody {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 16px;
+    }
+
+    tbody tr {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "thumb thumb" "title title" "viewer status" "code code" "date date";
+        align-content: start;
+        overflow: hidden;
+        border: 1px solid $border;
+        border-radius: 10px;
+        background: #fff;
+        transition: border-color 0.15s ease;
+
+        &:hover {
+            border-color: #c7d2fe;
+            background: #fff;
+        }
+    }
+
+    tbody tr.no-items {
+        display: block;
+        grid-column: 1 / -1;
+    }
+
+    tbody th,
+    tbody td {
+        display: block;
+        grid-column: 1 / -1;
+        box-sizing: border-box;
+        width: auto;
+        padding: 6px 14px;
+        border: 0;
+
+        &::before {
+            display: none;
+        }
+    }
+
+    tbody .check-column {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1;
+        width: auto;
+        margin: 0;
+        padding: 5px;
+        border-radius: 6px;
+        background: #fff;
+        line-height: 0;
+
+        input[type="checkbox"] {
+            margin: 0;
+        }
+    }
+
+    .column-bp3d_thumb {
+        grid-area: thumb;
+        padding: 0;
+    }
+
+    .bp3d-list-thumb {
+        width: 100%;
+        height: 150px;
+        border: 0;
+        border-bottom: 1px solid #eef0f3;
+        border-radius: 0;
+
+        > svg {
+            width: 48px;
+            height: 48px;
+            stroke-width: 1.2;
+        }
+    }
+
+    .bp3d-list-thumb__format {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background: #fff;
+        color: #374151;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 16px;
+        letter-spacing: 0.04em;
+    }
+
+    .column-title {
+        grid-area: title;
+        padding-top: 14px;
+
+        .toggle-row {
+            display: none;
+        }
+    }
+
+    .row-actions {
+        padding-top: 4px;
+    }
+
+    tbody .column-bp3d_viewer {
+        grid-area: viewer;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 8px;
+
+        .bp3d-list-meta {
+            display: inline;
+            margin: 0;
+        }
+    }
+
+    tbody .column-bp3d_status {
+        grid-area: status;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+
+        .bp3d-list-status + .bp3d-list-status {
+            margin: 0;
+        }
+    }
+
+    .column-shortcode {
+        grid-area: code;
+
+        .bp3d-list-shortcode {
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+
+    tbody .column-date {
+        grid-area: date;
+        padding-bottom: 14px;
+        font-size: 12px;
+        line-height: 17px;
+    }
+}

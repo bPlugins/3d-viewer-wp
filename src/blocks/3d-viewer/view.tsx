@@ -1,6 +1,7 @@
 //eslint-disable-next-line no-unused-vars
 import { version } from 'react-dom' // don't remove this line
 
+import './style.scss';
 import FrontEnd from './Components/Common/FrontEnd';
 
 //@ts-ignore

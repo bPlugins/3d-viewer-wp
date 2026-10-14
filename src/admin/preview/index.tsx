@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 import Viewer from '../../blocks/3d-viewer/Components/Common/Viewer';
+import '../../blocks/3d-viewer/style.scss';
 import { applyModelView } from '../../utils/setView';
+import openFullscreen from '../../utils/openFullscreen';
 
 // Use WordPress's bundled ReactDOM (React 18) rather than importing
 // `react-dom/client`, which would bundle the incompatible React 19 copy from
@@ -208,6 +210,106 @@ function useLiveAttributes() {
 
 const hasModelIn = (attrs: Record<string, any>): boolean => !!attrs?.model?.modelUrl;
 
+// model-viewer sniffs the bytes, so script endpoints (get.php?f=x.glb) and VRM (a GLB) load fine; no extension = no verdict.
+const LITE_OK = ['glb', 'gltf', 'vrm', 'php', 'asp', 'aspx', 'ashx', 'jsp', 'cgi'];
+const ADVANCED_OK = ['obj', '3ds', 'stl', 'ply', 'off', '3dm', 'fbx', 'dae', 'wrl', '3mf', 'amf', 'ifc', 'brep', 'step', 'stp', 'iges', 'igs', 'fcstd', 'bim'];
+
+const modelExtension = (url: string): string => {
+    let name = url.split('?')[0];
+    const slash = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
+    if (slash !== -1) name = name.slice(slash + 1);
+    const dot = name.lastIndexOf('.');
+    return dot === -1 ? '' : name.slice(dot + 1).toLowerCase();
+};
+
+/** Extensions of the models the Lite viewer can't show. */
+const liteUnsupported = (attrs: Record<string, any>): string[] => {
+    if ((attrs?.currentViewer || 'modelViewer') !== 'modelViewer') return [];
+    const url = attrs?.model?.modelUrl;
+    const ext = typeof url === 'string' ? modelExtension(url.split('#')[0]) : '';
+    return ext && !LITE_OK.includes(ext) ? [ext] : [];
+};
+
+const LiteNotice: React.FC<{ exts: string[] }> = ({ exts }) => {
+    if (!exts.length) return null;
+    /* translators: %s: file extensions, e.g. ".obj, .fbx". */
+    let text = sprintf(__('The Lite viewer opens only .glb and .gltf files, not %s.', '3d-viewer'), exts.map((ext) => `.${ext}`).join(', '));
+    if (exts.every((ext) => ADVANCED_OK.includes(ext))) text += ' ' + __('Switch the 3D Viewer to Advanced.', '3d-viewer');
+    return <p className="bp3d-lite-notice" role="status">{text}</p>;
+};
+
+type StageState = 'idle' | 'loading' | 'ready' | 'failed' | 'webgl';
+
+/**
+ * What the viewer under `root` is doing. model-viewer's `error` covers a load failure and a lost
+ * WebGL context (detail.type); Online3DViewer keeps its canvas hidden after a failed load.
+ */
+function useStageState(root: React.RefObject<HTMLElement | null>, enabled: boolean, hasModel: boolean, lite: boolean): StageState {
+    const [state, setState] = useState<StageState>(hasModel ? 'loading' : 'idle');
+
+    useEffect(() => {
+        const node = root.current;
+        if (!enabled || !node) return undefined;
+        if (!hasModel) {
+            setState('idle');
+            return undefined;
+        }
+
+        const errors = new WeakMap<Element, StageState>();
+        let bound: Element | null = null;
+
+        const read = () => {
+            const mv = node.querySelector('model-viewer') as (HTMLElement & { loaded?: boolean }) | null;
+            if (mv) {
+                setState(errors.get(mv) ?? (mv.loaded ? 'ready' : 'loading'));
+                return;
+            }
+            const canvas = node.querySelector<HTMLCanvasElement>('.online_3d_viewer canvas');
+            if (!canvas || node.querySelector('.bp3d-o3dv-loading')) setState('loading');
+            else setState(canvas.style.display === 'none' ? 'failed' : 'ready');
+        };
+        const onError = (e: Event) => {
+            errors.set(e.currentTarget as Element, (e as CustomEvent).detail?.type === 'webglcontextlost' ? 'webgl' : 'failed');
+            read();
+        };
+        const onLoad = (e: Event) => {
+            errors.delete(e.currentTarget as Element);
+            read();
+        };
+        const bind = () => {
+            const mv = node.querySelector('model-viewer');
+            if (mv === bound) return;
+            bound?.removeEventListener('load', onLoad);
+            bound?.removeEventListener('error', onError);
+            bound?.removeEventListener('progress', read);
+            bound = mv;
+            bound?.addEventListener('load', onLoad);
+            bound?.addEventListener('error', onError);
+            bound?.addEventListener('progress', read);
+        };
+
+        const observer = new MutationObserver((records) => {
+            records.forEach((record) => {
+                if (record.attributeName === 'src') errors.delete(record.target as Element);
+            });
+            bind();
+            read();
+        });
+        observer.observe(node, { childList: true, subtree: true, attributes: true, attributeFilter: lite ? ['src'] : ['style'] });
+        bind();
+        read();
+
+        return () => {
+            observer.disconnect();
+            bound?.removeEventListener('load', onLoad);
+            bound?.removeEventListener('error', onError);
+            bound?.removeEventListener('progress', read);
+        };
+    }, [enabled, hasModel, lite]);
+
+    return state;
+}
+
 /** The Viewer's setAttributes: a shallow merge into the local attributes. */
 const mergeAttrs = (setAttrs: React.Dispatch<React.SetStateAction<Record<string, any>>>) =>
     (next: Record<string, any>) => setAttrs((prev) => ({ ...prev, ...next }));
@@ -227,6 +329,7 @@ const EmptyState: React.FC<{ text: string }> = ({ text }) => (
 /** `bare`: inside the page editor's stage card, which draws its own header. */
 const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
     const [attrs, setAttrs] = useLiveAttributes();
+    const rootRef = useRef<HTMLDivElement>(null);
     const [collapsed, setCollapsed] = useState<boolean>(() => {
         try { return localStorage.getItem(COLLAPSE_KEY) === '1'; } catch { return false; }
     });
@@ -249,9 +352,24 @@ const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
     }, []);
 
     const hasModel = hasModelIn(attrs);
+    const stageState = useStageState(rootRef, bare, hasModel, (attrs.currentViewer || 'modelViewer') === 'modelViewer');
+
+    // The stage card's pill and status band (bfields EditorShell).
+    useEffect(() => {
+        if (!bare) return;
+        const messages: Record<StageState, string> = {
+            idle: '',
+            loading: __('Loading your 3D model…', '3d-viewer'),
+            ready: __('Your 3D model is ready to preview. Make sure all settings are configured correctly for the best experience.', '3d-viewer'),
+            failed: __('The 3D model could not be loaded. Check its file or URL on the Model tab.', '3d-viewer'),
+            webgl: __('The browser stopped drawing 3D (WebGL context lost). Reload the page to restore the preview.', '3d-viewer'),
+        };
+        const state = stageState === 'failed' || stageState === 'webgl' ? 'error' : stageState;
+        rootRef.current?.dispatchEvent(new CustomEvent('bfields:stage-status', { bubbles: true, detail: { state, message: messages[stageState] } }));
+    }, [bare, stageState]);
 
     return (
-        <div className={`bp3d-model-preview${collapsed && !bare ? ' bp3d-model-preview--collapsed' : ''}${bare ? ' bp3d-model-preview--bare' : ''}`}>
+        <div ref={rootRef} className={`bp3d-model-preview${collapsed && !bare ? ' bp3d-model-preview--collapsed' : ''}${bare ? ' bp3d-model-preview--bare' : ''}`}>
             {/* Header bar */}
             {bare ? null : <div className="bp3d-model-preview__header" onClick={toggleCollapse}>
                 <span className="bp3d-model-preview__icon">
@@ -283,6 +401,7 @@ const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
 
             {/* Collapsible body */}
             <div className="bp3d-model-preview__body">
+                <LiteNotice exts={liteUnsupported(attrs)} />
                 <div className="bp3d-model-preview__stage">
                     {hasModel ? (
                         <Viewer
@@ -301,6 +420,17 @@ const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
     );
 };
 
+const deviceIcon = (d: React.ReactNode) => () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
+);
+
+// Same frame widths as the bfields stage card's switcher.
+const MODAL_DEVICES = [
+    { id: 'desktop', label: __('Desktop', '3d-viewer'), width: '100%', Icon: deviceIcon(<><rect width="20" height="14" x="2" y="3" rx="2" /><path d="M8 21h8M12 17v4" /></>) },
+    { id: 'tablet', label: __('Tablet', '3d-viewer'), width: '62%', Icon: deviceIcon(<><rect width="16" height="20" x="4" y="2" rx="2" /><path d="M12 18h.01" /></>) },
+    { id: 'mobile', label: __('Mobile', '3d-viewer'), width: '36%', Icon: deviceIcon(<><rect width="14" height="20" x="5" y="2" rx="2" /><path d="M12 18h.01" /></>) },
+];
+
 /** The viewer at its real size and with its own buttons, as visitors get it. */
 const PreviewModal: React.FC<{ attributes: Record<string, any>; title: string; onClose: () => void }> = ({ attributes, title, onClose }) => {
     const [attrs, setAttrs] = useState<Record<string, any>>(attributes);
@@ -310,6 +440,24 @@ const PreviewModal: React.FC<{ attributes: Record<string, any>; title: string; o
     const close = useRef(onClose);
     close.current = onClose;
     const setAttributes = mergeAttrs(setAttrs);
+    const bfields = isModern() ? (window as any).bfields : undefined;
+    const responsive = typeof bfields?.setDevice === 'function';
+    const [device, setDevice] = useState<string>(() => bfields?.getDevice?.() || 'desktop');
+
+    // Shares the editor's device with the stage card's switcher.
+    useEffect(() => {
+        if (!responsive) return undefined;
+        const onDevice = () => setDevice(bfields.getDevice());
+        document.addEventListener('bfields:device-change', onDevice);
+        return () => document.removeEventListener('bfields:device-change', onDevice);
+    }, []);
+
+    // The Advanced viewer only re-measures on window resize.
+    useEffect(() => {
+        if ((attrs.currentViewer || 'modelViewer') === 'modelViewer') return undefined;
+        const frame = requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        return () => cancelAnimationFrame(frame);
+    }, [device]);
 
     useEffect(() => {
         const opener = document.activeElement as HTMLElement | null;
@@ -344,19 +492,32 @@ const PreviewModal: React.FC<{ attributes: Record<string, any>; title: string; o
                         )}
                         {title}
                     </span>
-                    <button type="button" className="bp3d-modal-close" ref={closeRef} aria-label={__('Close preview', '3d-viewer')} onClick={() => close.current()}>
-                        &times;
-                    </button>
+                    <span className="bp3d-modal-actions">
+                        {responsive ? (
+                            <span className="bp3d-modal-devices" role="group" aria-label={__('Preview device', '3d-viewer')}>
+                                {MODAL_DEVICES.map(({ id, label, Icon }) => (
+                                    <button key={id} type="button" className="bp3d-modal-device" aria-pressed={device === id} aria-label={label} onClick={() => bfields.setDevice(id)}>
+                                        <Icon /> <span className="bp3d-modal-device__label">{label}</span>
+                                    </button>
+                                ))}
+                            </span>
+                        ) : null}
+                        <button type="button" className="bp3d-modal-close" ref={closeRef} aria-label={__('Close preview', '3d-viewer')} onClick={() => close.current()}>
+                            &times;
+                        </button>
+                    </span>
                 </div>
                 <div className={`bp3d-modal-body${isModern() && hasModelIn(attrs) ? ' bp3d-modal-body--viewer' : ''}`}>
                     {hasModelIn(attrs) ? (
-                        <Viewer
-                            attributes={attrs}
-                            __={__}
-                            viewerRef={viewerRef}
-                            setAttributes={setAttributes}
-                            containerRef={containerRef}
-                        />
+                        <div className="bp3d-modal-frame" style={responsive ? { width: MODAL_DEVICES.find((item) => item.id === device)?.width ?? '100%' } : undefined}>
+                            <Viewer
+                                attributes={attrs}
+                                __={__}
+                                viewerRef={viewerRef}
+                                setAttributes={setAttributes}
+                                containerRef={containerRef}
+                            />
+                        </div>
                     ) : (
                         <EmptyState text={__('Upload a 3D model in the Model tab to see the preview.', '3d-viewer')} />
                     )}
@@ -398,22 +559,75 @@ const icon = (d: React.ReactNode) => (
 const EyeIcon = () => icon(<><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></>);
 const ScanEyeIcon = () => icon(<><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" /><circle cx="12" cy="12" r="1" /><path d="M18.9 12.3a1 1 0 0 0 0-.6 7.5 7.5 0 0 0-13.8 0 1 1 0 0 0 0 .6 7.5 7.5 0 0 0 13.8 0" /></>);
 const ResetIcon = () => icon(<><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" /><path d="M3 21v-5h5" /></>);
+const ZoomInIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M11 8v6M8 11h6" /></>);
+const ZoomOutIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M8 11h6" /></>);
+const FullIcon = () => icon(<><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></>);
 
 /**
- * The page editor's side card (Figma "Live Preview"): the real viewer with the
- * same buttons and size as the Preview tab, plus a reset control.
+ * The page editor's side card (Figma "Live Preview"): the real viewer, small,
+ * with the card's own view controls instead of the viewer's buttons.
  */
 const SidePreview: React.FC = () => {
     const [attrs, setAttrs] = useLiveAttributes();
     const viewerRef = useRef<any>(null);
     const containerRef = useRef<HTMLElement>(null);
     const stage = useRef<HTMLDivElement>(null);
+    const fullscreenBtn = useRef<HTMLButtonElement>(null);
     const setAttributes = mergeAttrs(setAttrs);
     const hasModel = hasModelIn(attrs);
     const lite = (attrs.currentViewer || 'modelViewer') === 'modelViewer';
+    const [fullscreen, setFullscreen] = useState(false);
     const [popup, setPopup] = useState(false);
 
-    const sideAttrs = useMemo(() => ({ ...attrs, uniqueId: 'bp3dSidePreview' }), [attrs]);
+    useEffect(() => {
+        const onChange = () => {
+            const active = document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element | null }).webkitFullscreenElement;
+            setFullscreen(!!active && !!stage.current?.contains(active));
+        };
+        document.addEventListener('fullscreenchange', onChange);
+        document.addEventListener('webkitfullscreenchange', onChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', onChange);
+            document.removeEventListener('webkitfullscreenchange', onChange);
+        };
+    }, []);
+
+    // The viewer's own opener is gone once the card shrinks back, so focus returns to the card's (after commit).
+    const wasFullscreen = useRef(false);
+    useEffect(() => {
+        if (wasFullscreen.current && !fullscreen) fullscreenBtn.current?.focus();
+        wasFullscreen.current = fullscreen;
+    }, [fullscreen]);
+
+    // A stage over 550px (a dragged-wide sidebar) has room for the viewer's own buttons.
+    const [wide, setWide] = useState(false);
+    useEffect(() => {
+        const node = stage.current;
+        if (!node || typeof ResizeObserver === 'undefined') return undefined;
+        const observer = new ResizeObserver(([entry]) => setWide(entry.contentRect.width > 550));
+        observer.observe(node);
+        return () => observer.disconnect();
+    }, []);
+
+    // The card has its own controls and a 337×193 stage: the viewer's buttons and set size stay out.
+    // Fullscreen and a wide stage get the viewer's controls back.
+    const sideAttrs = useMemo(() => (fullscreen || wide ? {
+        ...attrs,
+        uniqueId: 'bp3dSidePreview',
+        styles: { ...attrs.styles, width: '100%', height: '100%' },
+    } : {
+        ...attrs,
+        uniqueId: 'bp3dSidePreview',
+        fullscreen: false,
+        zoomInOutBtn: false,
+        cameraBtn: false,
+        resetViewBtn: false,
+        downloadBtn: false,
+        arEnabled: false,
+        model: { ...attrs.model, arEnabled: false },
+        O3DVSettings: { ...attrs.O3DVSettings, isFullscreen: false },
+        styles: { ...attrs.styles, width: '100%', height: '100%' },
+    }), [attrs, fullscreen, wide]);
 
     // The Advanced viewer only re-measures on window resize; dragging the sidebar resizes just the stage.
     useEffect(() => {
@@ -431,6 +645,13 @@ const SidePreview: React.FC = () => {
         };
     }, [lite, hasModel]);
 
+    const wheel = (deltaY: number) => {
+        stage.current?.querySelector('canvas')?.dispatchEvent(new WheelEvent('wheel', { deltaY, deltaMode: 0, bubbles: true }));
+    };
+    const zoom = (by: number) => {
+        if (lite) viewerRef.current?.zoom?.(by);
+        else wheel(by > 0 ? -100 : 100);
+    };
     // The Advanced viewer has no camera API reachable from here, so reset re-mounts it (the file is cached).
     const [mount, setMount] = useState(0);
     const reset = () => {
@@ -459,7 +680,9 @@ const SidePreview: React.FC = () => {
                 </button>
             </div>
 
-            <div className={`bfields-preview__stage bp3d-side-preview__stage ${hasModel ? 'bp3d-side-preview__stage--sized' : ''}`} ref={stage}>
+            <LiteNotice exts={liteUnsupported(attrs)} />
+
+            <div className="bfields-preview__stage bp3d-side-preview__stage" ref={stage}>
                 {hasModel ? (
                     <Viewer
                         key={mount}
@@ -477,13 +700,30 @@ const SidePreview: React.FC = () => {
                 )}
             </div>
 
-            <div className="bfields-preview__controls">
+            {wide ? null : <div className="bfields-preview__controls">
                 <div>
                     <button type="button" className="bfields-icon-btn" aria-label={__('Reset view', '3d-viewer')} title={__('Reset view', '3d-viewer')} disabled={!hasModel} onClick={reset}>
                         <ResetIcon />
                     </button>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom in', '3d-viewer')} title={__('Zoom in', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(2)}>
+                        <ZoomInIcon />
+                    </button>
+                    <button type="button" className="bfields-icon-btn" aria-label={__('Zoom out', '3d-viewer')} title={__('Zoom out', '3d-viewer')} disabled={!hasModel} onClick={() => zoom(-2)}>
+                        <ZoomOutIcon />
+                    </button>
                 </div>
-            </div>
+                <button
+                    ref={fullscreenBtn}
+                    type="button"
+                    className="bfields-icon-btn"
+                    aria-label={__('Fullscreen', '3d-viewer')}
+                    title={__('Fullscreen', '3d-viewer')}
+                    disabled={!hasModel}
+                    onClick={() => openFullscreen(stage.current?.querySelector<HTMLElement>('.bp_model_parent') ?? null)}
+                >
+                    <FullIcon />
+                </button>
+            </div>}
 
             {popup ? (
                 <PreviewModal attributes={{ ...attrs, uniqueId: 'bp3dModalPreview' }} title={__('Live Preview', '3d-viewer')} onClose={() => setPopup(false)} />

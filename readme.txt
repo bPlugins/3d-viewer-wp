@@ -182,7 +182,7 @@ You can find the source code, report bugs, and contribute to the development of 
 
 == External Services ==
 
-This plugin connects to the following external services. Connections are made only from the plugin's admin dashboard pages and are not triggered for your site's visitors on the front end.
+This plugin connects to the following external services. Apart from the decoder downloads listed under "Google Hosted Libraries" and "jsDelivr", connections are made only from the plugin's admin dashboard pages and are not triggered for your site's visitors on the front end.
 
 = bPlugins API =
 
@@ -202,6 +202,33 @@ This plugin connects to the following external services. Connections are made on
 * **Terms of Service:** [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
 * **Privacy Policy:** [https://wordpress.org/about/privacy/](https://wordpress.org/about/privacy/)
 
+= Freemius Checkout =
+
+* **Service:** Freemius Checkout – `https://checkout.freemius.com`
+* **What it does:** When an administrator clicks "Buy" or "Upgrade" in the plugin's dashboard, the Freemius checkout overlay is loaded so the purchase can be completed without leaving wp-admin.
+* **What data is sent:** The product and plan identifiers, and the current administrator's email address and display name, to pre-fill the checkout form.
+* **When:** Only when an administrator opens the checkout from the plugin's dashboard in wp-admin.
+* **Terms of Service:** [https://freemius.com/terms/](https://freemius.com/terms/)
+* **Privacy Policy:** [https://freemius.com/privacy/](https://freemius.com/privacy/)
+
+= Google Hosted Libraries (Draco and Basis decoders) =
+
+* **Service:** `https://www.gstatic.com`
+* **What it does:** The bundled `<model-viewer>` library downloads the Draco mesh decoder and the Basis Universal texture decoder from Google's CDN, but only when a model actually uses Draco compression or KTX2/Basis textures.
+* **What data is sent:** A plain file request; no personal data or site content is sent.
+* **When:** On the front end, when a visitor views a compressed model that needs one of these decoders.
+* **Terms of Service:** [https://developers.google.com/speed/libraries/terms](https://developers.google.com/speed/libraries/terms)
+* **Privacy Policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
+
+= jsDelivr (Advanced viewer format decoders) =
+
+* **Service:** `https://cdn.jsdelivr.net`
+* **What it does:** The bundled Online 3D Viewer library (the "Advanced" viewer) downloads the `occt-import-js`, `rhino3dm`, `web-ifc` and `draco3d` decoders from jsDelivr, but only when a model in a format that needs them (STEP, IGES, BREP, 3DM, IFC or Draco-compressed) is viewed.
+* **What data is sent:** A plain file request; no personal data or site content is sent.
+* **When:** On the front end, when a visitor views a model in one of those formats with the Advanced viewer.
+* **Terms of Service:** [https://www.jsdelivr.com/terms](https://www.jsdelivr.com/terms)
+* **Privacy Policy:** [https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net](https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net)
+
 == Third-Party Libraries ==
 
 This plugin bundles the following third-party JavaScript/PHP libraries.
@@ -217,9 +244,9 @@ This plugin bundles the following third-party JavaScript/PHP libraries.
 
 * **Folder:** `lib/bfields/`
 * **Author:** bPlugins
-* **GitHub:** [https://github.com/bPlugins/bfields](https://github.com/bPlugins/bfields) (this plugin ships release `v1.1.0`)
-* **Download:** [bfields 1.1.0 (zip)](https://github.com/bPlugins/bfields/releases/download/v1.1.0/bfields.zip) – the same `php/`, `build/` and `languages/` this plugin bundles in `lib/bfields/`.
-* **Source:** The compiled files in `lib/bfields/build/` are built from the TypeScript/CSS in `lib/bfields/ui/` (also in the repository above) with `npm ci && npm run build`. Build steps and a file-by-file source map are in the repository's README.
+* **GitHub:** [https://github.com/bPlugins/bfields](https://github.com/bPlugins/bfields) (this plugin ships release `v1.1.1`)
+* **Download:** [bfields 1.1.1 (zip)](https://github.com/bPlugins/bfields/releases/download/v1.1.1/bfields.zip) – the same `php/`, `build/` and `languages/` this plugin bundles in `lib/bfields/`.
+* **Source:** The compiled files in `lib/bfields/build/` are built from the TypeScript/CSS in the `ui/` folder of the repository above with `npm ci && npm run build`. Build steps and a file-by-file source map are in the repository's README.
 * **License:** GPLv2 or later – [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
 * **Purpose:** Draws the new admin interface for the settings page and the viewer and product meta boxes.
 
@@ -279,29 +306,21 @@ The bundle also includes the following sub-dependencies:
 
 == Changelog ==
 
-= 2.0.0 - 15 October, 2026 =
+= 2.0.0 - 18 October, 2026 =
 * New: New admin interface for Settings, viewers and WooCommerce products; switch back to the classic interface any time from Settings.
 * New: Redesigned Help & Demos dashboard.
-* Changed: The classic product meta box no longer shows Restore, which deleted the whole saved row.
-* Fixed: Saving a product no longer drops 3D model rows added with the Pro version.
-* Fixed: A product with malformed 3D Viewer data no longer causes a fatal error.
-* Fixed: Opening a page with the 3D Model Viewer block no longer marks it as changed.
-* Fixed: The block's Additional CSS class(es) now reach the frontend.
-* Fixed: The block's Lazy Load setting now works; blocks with it on (the default) now load lazily.
-* Fixed: Typing a URL into the block's empty-state Model URL field no longer cuts it off after one letter.
-* Fixed: The block's zoom buttons now work in the editor.
-* Fixed: Viewers no longer get "position_undefined" or "alignundefined" classes.
-* Fixed: The Elementor widget's width is no longer applied twice on the frontend.
-* Changed: The Elementor widgets are now "3D Model Viewer" and "3D Product Model", with a cube icon and more search keywords.
-* Changed: The Elementor widget shows the Zoom In/Out toggle in Advanced mode too.
-* Fixed: WooCommerce "Show 3D on first image" no longer shows the product photo or zoom icon over the model.
-* Fixed: WooCommerce's zoom icon no longer covers the viewer in the "Top" position.
-* Fixed: WooCommerce product viewers now follow the Lazy Load setting.
-* Fixed: Clarified the supported formats text in the WooCommerce product box.
-* Changed: Viewer controls are now keyboard-accessible buttons with labels; custom CSS that targets `svg.control-btn` should use `.control-btn`.
-* Fixed: The Live Preview card now shows the viewer's buttons and size, like the Preview tab.
-* Fixed: The Download button toggle now shows in the admin previews.
-* Fixed: Exposure and Shadow values can now be typed in.
+* New: Exit fullscreen button.
+* Changed: Model pickers show only 3D files.
+* Changed: Viewer controls are now buttons; custom CSS that targets `svg.control-btn` should use `.control-btn`.
+* Fixed: Saving in the free version no longer drops data added with the Pro version.
+* Fixed: Lazy Load now works for blocks and WooCommerce products.
+* Fixed: Theme Compatibility Mode works with more themes.
+* Fixed: The Advanced viewer no longer downloads the model twice.
+* Fixed: Multi-model viewers made with Pro show their first model, as Pro does without a licence.
+* Fixed: Re-saving an older viewer no longer turns on zoom buttons, the progress bar, or a different environment image.
+* Fixed: The download button icon no longer goes blank on some themes and in the Live Preview.
+* Fixed: The model picker notes list the formats actually enabled for upload.
+* Fixed: `[3d_viewer_product id="…"]` shows that product's model on any page.
 
 = 1.9.4 - 26 September, 2026  =
 * Changed: Redesigned the guided setup as a three-step onboarding.
@@ -623,3 +642,9 @@ The bundle also includes the following sub-dependencies:
 
 = 1.0.0 =
 * Initial Release
+
+
+== Upgrade Notice ==
+
+= 2.0.0 =
+New admin interface; the classic one stays available in Settings. Viewer controls are now buttons: custom CSS that targets `svg.control-btn` should use `.control-btn`.

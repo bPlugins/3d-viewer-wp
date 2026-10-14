@@ -27,6 +27,7 @@ class Blocks
     {
         add_action('init', [$this, 'init'], 1);
         add_action('init', [$this, 'registerBlockAssets'], 0);
+        add_filter('block_type_metadata', [$this, 'styleVersion']);
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
 
@@ -67,6 +68,20 @@ class Blocks
                 'gallery_trigger' => $this->get_default_selector($settings('gallery_trigger'), '.woocommerce-product-gallery__trigger'),
             ]
         ]);
+    }
+
+    /**
+     * WordPress versions a block's `file:` styles with block.json's "version", which never changed,
+     * so browsers kept the old view.css/index.css. Version them by build time instead.
+     */
+    public function styleVersion($metadata)
+    {
+        if (is_array($metadata) && 'b3dviewer/modelviewer' === ($metadata['name'] ?? '')) {
+            $mtime = max((int) @filemtime(BP3D_PATH . 'build/blocks/3d-viewer/view.css'), (int) @filemtime(BP3D_PATH . 'build/blocks/3d-viewer/index.css'));
+            $metadata['version'] = BP3D_VERSION . ($mtime ? '-' . $mtime : '');
+        }
+
+        return $metadata;
     }
 
     /**

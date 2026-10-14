@@ -40,7 +40,17 @@ class Settings
       $data = [];
     }
 
-    return $this->overlayDeclared($data, $instance);
+    $merged = $this->overlayDeclared($data, $instance);
+
+    // Pro offers more file types; free can't show their checkboxes, so keep those ticks as stored.
+    $stored = get_option($this->prefix, []);
+    $storedTypes = is_array($stored) ? ($stored['allowed_mime_types'] ?? null) : null;
+    if (is_array($storedTypes) && is_array($merged['allowed_mime_types'] ?? null)) {
+      $proOnly = array_diff($storedTypes, array_keys(\BP3D\Helper\Utils::SUPPORTED_MIME_TYPES));
+      $merged['allowed_mime_types'] = array_values(array_unique(array_merge($merged['allowed_mime_types'], $proOnly)));
+    }
+
+    return $merged;
   }
 
   /**
@@ -132,7 +142,7 @@ class Settings
           'id' => 'is_not_compatible',
           'icon' => 'warning',
           'type' => 'switcher',
-          'title' => __('3D Viewer is not Compatible with this Theme', '3d-viewer'),
+          'title' => __('Theme Compatibility Mode', '3d-viewer'),
           'desc' => __('Enable if 3D Viewer is not compatible with this theme', '3d-viewer'),
           'default' => false,
         ),
@@ -182,7 +192,7 @@ class Settings
   {
     \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'id' => 'woocommerce-selectors',
-      'title' => __('Woocommerce Selectors', '3d-viewer'),
+      'title' => __('WooCommerce Selectors', '3d-viewer'),
       'icon' => 'fas fa-crosshairs',
       'fields' => array(
         // 3D Model Options

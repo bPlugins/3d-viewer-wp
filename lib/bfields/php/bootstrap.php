@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-$bfields_this_version = '1.1.0';   // Local var — NEVER a constant.
+$bfields_this_version = '1.1.1';   // Local var — NEVER a constant.
 $bfields_this_file = __FILE__;
 
 // ---- FROZEN: identical bytes in every released version, forever ----

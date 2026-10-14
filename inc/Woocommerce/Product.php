@@ -60,7 +60,7 @@ class Product
 
         return [
             'align' => 'center',
-            'uniqueId' => 'model' . get_the_ID(),
+            'uniqueId' => 'model' . ($product_id ?: get_the_ID()),
             'O3DVSettings' => [
                 'isFullscreen' => true,
                 'mouseControl' => true,

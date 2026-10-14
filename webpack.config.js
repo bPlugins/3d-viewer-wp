@@ -16,6 +16,7 @@ const entry = {
     onboarding: "./src/admin/onboarding/index.tsx",
     admin: "./src/admin/index.ts",
     "admin-preview": "./src/admin/preview/index.tsx",
+    "admin-list": "./src/admin/list/index.ts",
 };
 
 module.exports = {

@@ -108,7 +108,7 @@ class ProductMeta
             $fields[] = [
                 'type'    => 'notice',
                 'style'   => 'info',
-                'content' => sprintf(
+                'content' => \BP3D\Helper\Utils::enabledFormatsNote() ?: sprintf(
                     /* translators: %s: URL to the settings page. */
                     __('Uploading 3D files (GLB, GLTF, OBJ, STL, FBX, HDR, etc.) is allowed by default. You can turn any format off in the <a href="%s" target="_blank">3D Viewer Settings</a>.', '3d-viewer'),
                     admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings')
@@ -130,6 +130,7 @@ class ProductMeta
             [
                 'id' => 'bp3d_model_src',
                 'type' => 'upload',
+                'library' => \BP3D\Helper\Utils::modelLibraryTypes(),
                 'title' => esc_html__('3D Source', '3d-viewer'),
                 'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
                 'desc' => esc_html__('Upload or paste a model URL. GLB and GLTF are supported; other formats need Premium.', '3d-viewer'),

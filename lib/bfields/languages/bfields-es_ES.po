@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: bfields 1.1.0\n"
+"Project-Id-Version: bfields 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bfields\n"
-"POT-Creation-Date: 2026-10-05T09:10:34+00:00\n"
+"POT-Creation-Date: 2026-10-08T09:11:34+00:00\n"
 "PO-Revision-Date: 2026-10-03 09:45+0600\n"
 "Last-Translator: bPlugins\n"
 "Language-Team: Spanish (Spain)\n"
@@ -35,27 +35,27 @@ msgstr "Campo desconocido."
 msgid "You do not have permission to do that."
 msgstr "No tienes permiso para hacer eso."
 
-#: php/includes/Metabox.php:340
+#: php/includes/Metabox.php:349
 msgid "Copy and paste this shortcode into your posts, pages and widget"
 msgstr "Copia y pega este shortcode en tus entradas, páginas y widgets"
 
-#: php/includes/Metabox.php:349
+#: php/includes/Metabox.php:358
 msgid "Move to Trash"
 msgstr "Mover a la papelera"
 
-#: php/includes/Metabox.php:349
+#: php/includes/Metabox.php:358
 msgid "Delete permanently"
 msgstr "Borrar permanentemente"
 
-#: php/includes/Metabox.php:378 build/index.js:20
+#: php/includes/Metabox.php:387 build/index.js:20
 msgid "Post updated."
 msgstr "Entrada actualizada."
 
-#: php/includes/Metabox.php:420 build/index.js:20
+#: php/includes/Metabox.php:441 build/index.js:20
 msgid "These settings were not saved: your account is not allowed to change them."
 msgstr "Estos ajustes no se han guardado: tu cuenta no tiene permiso para cambiarlos."
 
-#: php/includes/Metabox.php:431
+#: php/includes/Metabox.php:452
 msgid "These settings were not saved because the page was open too long. Make your changes again and click Update."
 msgstr "Estos ajustes no se guardaron porque la página estuvo abierta demasiado tiempo. Vuelve a hacer tus cambios y haz clic en Actualizar."
 
@@ -461,6 +461,14 @@ msgid "Could not confirm the save. Check your connection and click Update again.
 msgstr "No se pudo confirmar el guardado. Comprueba tu conexión y haz clic de nuevo en Actualizar."
 
 #: build/index.js:20
+msgid "Saved. Update again to save your newer changes."
+msgstr "Guardado. Vuelve a actualizar para guardar tus cambios más recientes."
+
+#: build/index.js:20
+msgid "The post was saved, but its status was changed on the server. Reload the page before saving again: changes made during the save were not saved."
+msgstr "La entrada se ha guardado, pero su estado ha cambiado en el servidor. Recarga la página antes de volver a guardar: los cambios que hiciste durante el guardado no se han guardado."
+
+#: build/index.js:20
 msgid "You were logged out. Log in, then click Update again."
 msgstr "Se cerró tu sesión. Inicia sesión y haz clic de nuevo en Actualizar."
 
@@ -479,10 +487,6 @@ msgstr "La entrada se guardó, pero otros ajustes de esta página no. Haz clic d
 #: build/index.js:20
 msgid "Some settings were not saved:"
 msgstr "Algunos ajustes no se guardaron:"
-
-#: build/index.js:20
-msgid "Saved. Update again to save your newer changes."
-msgstr "Guardado. Vuelve a actualizar para guardar tus cambios más recientes."
 
 #: build/index.js:20
 msgid "The post was saved, but these settings were not. Click Update again to save them."
@@ -547,6 +551,10 @@ msgstr "Guardado"
 #: build/index.js:20
 msgid "Partly saved — show message"
 msgstr "Guardado en parte — ver el mensaje"
+
+#: build/index.js:20
+msgid "Not confirmed — show message"
+msgstr "No confirmado — ver el mensaje"
 
 #: build/index.js:20
 msgid "Not saved — show message"

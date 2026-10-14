@@ -135,6 +135,11 @@
   display: block;
 }
 
+/* bfields' gray placeholder stays for the empty state only; a viewer shows its own Background, or none. */
+.bfields-app .bp3d-side-preview__stage:not(:has(> .bp3d-side-preview__empty)) {
+  background: none;
+}
+
 /* Pinned to the stage: a percentage height let the Advanced viewer's canvas
    grow the box past the stage, which clipped the thumbnail strip. */
 .bfields-app .bp3d-side-preview__stage > :not(.bp3d-side-preview__empty) {
@@ -142,6 +147,11 @@
   inset: 0;
   width: auto;
   height: auto;
+}
+
+/* bfields' stage sets white text for its own placeholder, which control labels would inherit in fullscreen. */
+.bfields-app .bp3d-side-preview__stage > .modelViewerBlock {
+  color: var(--bfields-row-title);
 }
 
 .bfields-app .bp3d-side-preview__empty {
@@ -163,25 +173,24 @@
   height: 40px;
 }
 
-/* With a model the stage takes the viewer's own width and height, as the Preview tab does. */
-.bfields-app .bp3d-side-preview__stage.bp3d-side-preview__stage--sized {
-  aspect-ratio: auto;
-  background: none;
-}
-
-.bfields-app .bp3d-side-preview__stage.bp3d-side-preview__stage--sized > * {
-  position: static;
-}
-
-.bfields-app .bp3d-side-preview__stage--sized .b3dviewer-wrapper {
-  max-width: 100%;
-  max-height: 60vh;
-}
-
 .bfields-app .bp3d-model-preview--bare {
   border: 0;
+  border-radius: 0;
   background: none;
   box-shadow: none;
+}
+
+/* The Preview tab: the viewer sits straight in bfields' 408px stage at its saved size, centred; a taller one grows the stage. */
+.bfields-app .bp3d-model-preview--bare .bp3d-model-preview__body {
+  max-height: none;
+}
+
+.bfields-app .bp3d-model-preview--bare .bp3d-model-preview__stage {
+  min-height: 408px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
 }
 
 /* The interface switch, copied out of the hidden #submitdiv by src/admin/preview/. */
@@ -202,4 +211,34 @@
 .bfields-app .bfields-side__slot .bp3d-admin-ui-row--side a {
   color: var(--bfields-primary);
   font-weight: 500;
+}
+
+/* WP footer on the Settings page and the viewer editor: lined up with the column (48px gutter), over a rule. */
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter {
+  padding: 24px 48px;
+  background: linear-gradient(#e5e7eb, #e5e7eb) 48px 0 / calc(100% - 96px) 1px no-repeat;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter p {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left,
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-thankyou {
+  font-style: normal;
+}
+
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left :is(a, strong) {
+  font-weight: 600;
+  color: #111827;
+}
+
+body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

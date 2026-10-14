@@ -29,7 +29,7 @@ test.describe('Extensions manager', () => {
             .toBeGreaterThan(0);
 
         // The catalog (public/extensions.php) ships the WC extension card
-        await expect(page.getByText('WC 3D Model Viewer').first()).toBeVisible({
+        await expect(page.getByText('3D Product Configurator for WooCommerce').first()).toBeVisible({
             timeout: 20_000,
         });
     });

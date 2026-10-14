@@ -9,7 +9,6 @@ import {
     GlassesIcon,
     CameraIcon,
     SparklesIcon,
-    CheckIcon,
     ArrowRightIcon,
     ChevronLeftIcon,
 } from '../components/icons';
@@ -122,13 +121,6 @@ const StepCustomize: React.FC<StepCustomizeProps> = ({ onBack, onNext, onExit })
                             <div>
                                 <div className="bp3d-ob-feature__head">
                                     <h4 className="bp3d-ob-feature__title">{title}</h4>
-                                    {tier === 'included' && (
-                                        // Decorative: the badge below already reads "Included", and
-                                        // aria-label on a roleless span is dropped by screen readers.
-                                        <span className="bp3d-ob-check" aria-hidden="true">
-                                            <CheckIcon />
-                                        </span>
-                                    )}
                                 </div>
                                 <p className="bp3d-ob-feature__body">{text}</p>
                                 <span className={`bp3d-ob-badge bp3d-ob-badge--${tier}`}>

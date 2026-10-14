@@ -1,6 +1,7 @@
 import { createInterpolateElement, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { useNavigate } from 'react-router-dom';
 import { HeroArt, SearchField, Tag, openInNewTab, useModalFocus } from './shared';
 import { ArrowRight, Box, CircleCheck, CircleX, Cuboid, ExternalLink, Lightbulb, Power, Puzzle, RefreshCw, ShoppingCart, X, Zap } from './icons';
 import type { ExtensionItem, ExtensionsData } from '../../utils/data';
@@ -93,6 +94,7 @@ const message = (e: any, fallback: string) => e?.message || fallback;
 
 const Extensions = ({ extensions, pages }: any) => {
     const data = extensions as ExtensionsData;
+    const navigate = useNavigate();
     const [items, setItemsState] = useState<ExtensionItem[]>(latestItems || data.items || []);
     const setItems = (next: ExtensionItem[] | ((list: ExtensionItem[]) => ExtensionItem[])) => setItemsState((list) => {
         const value = typeof next === 'function' ? next(list) : next;
@@ -218,6 +220,11 @@ const Extensions = ({ extensions, pages }: any) => {
 
     // Freemius' overlay, as on the extension manager's own page.
     const buy = async (ext: ExtensionItem) => {
+        // Comes with 3D Viewer Pro: sell the host plan, not the add-on.
+        if (ext.premium_host_only) {
+            navigate('/pricing');
+            return;
+        }
         const params = checkoutOf(ext);
         let awaited = false;
         if (data.checkoutEnabled && params && data.canInstall && !(window as any).FS?.Checkout) {

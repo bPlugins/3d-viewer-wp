@@ -514,17 +514,6 @@ body.wp-admin:has(.bp3d-ob-page) #wpwrap {
   color: var(--bp3d-ob-text-body);
 }
 
-.bp3d-ob-check {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  background: var(--bp3d-ob-checkbox-fill);
-  color: #fff;
-  flex: none;
-}
-
 .bp3d-ob-badge {
   display: inline-flex;
   align-items: center;
