@@ -2,7 +2,7 @@
 
 
 /*
- * Plugin Name: 3D Viewer – Display Interactive 3D Models
+ * Plugin Name: 3D Viewer – Turn Product Pages into Interactive 3D Experiences
  * Plugin URI:  https://bplugins.com/
  * Description: Easily display interactive 3D models on the web. Supported File type .glb, .gltf,obj 3ds stl ply off 3dm fbx dae wrl 3mf amf ifc brep step iges fcstd bim
  * Version: 2.0.0

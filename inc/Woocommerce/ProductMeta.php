@@ -62,12 +62,17 @@ class ProductMeta
         $meta = Utils::getPostMeta($post_id, '_bp3d_product_');
         $models = $meta('bp3d_models', [], false);
 
-        $model_src = '';
+        // Pro saves media fields as ['url' => ..., 'id' => ...].
+        $url = static function ($value): string {
+            $value = is_array($value) ? ($value['url'] ?? '') : $value;
+            return is_scalar($value) ? (string) $value : '';
+        };
+
         if (isset($models[0]['model_src'])) {
-            $model_src = $models[0]['model_src'];
+            $model_src = $url($models[0]['model_src']);
         } else {
             $meta_raw = get_post_meta($post_id, '_bp3d_product_', true);
-            $model_src = isset($meta_raw['bp3d_model_src']) ? (is_array($meta_raw['bp3d_model_src']) ? ($meta_raw['bp3d_model_src']['url'] ?? '') : $meta_raw['bp3d_model_src']) : '';
+            $model_src = $url($meta_raw['bp3d_model_src'] ?? '');
         }
 
         $allowed_mimes = Utils::getAllowedMimeTypes();
@@ -135,7 +140,7 @@ class ProductMeta
                 'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
                 'desc' => esc_html__('Upload or paste a model URL. GLB and GLTF are supported; other formats need Premium.', '3d-viewer'),
                 'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
-                'default' => $models[0]['model_src'] ?? '',
+                'default' => $url($models[0]['model_src'] ?? ''),
             ],
             [
                 'id' => 'bp3d_poster_src',
@@ -144,7 +149,7 @@ class ProductMeta
                 'subtitle' => __('Upload Poster Or Input Valid poster/image url', '3d-viewer'),
                 'placeholder' => 'You Can Paste here Poster/image url',
                 'desc' => __('This image will display until the model is either loaded or fails to load.', '3d-viewer'),
-                'default' => $models[0]['poster_src'] ?? '',
+                'default' => $url($models[0]['poster_src'] ?? ''),
             ],
         ]);
 

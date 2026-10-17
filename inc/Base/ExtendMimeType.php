@@ -175,8 +175,101 @@ class ExtendMimeType
         }
 
         $head = is_readable($file) ? (string) file_get_contents($file, false, null, 0, 1024) : '';
-        // Tags no 3D format uses; XML models (DAE, AMF) have none of them.
-        return (bool) preg_match('/<\s*(!doctype\s+html|html|body|script|iframe|svg|object|embed|img|div|style|a\s+href)\b/i', $head);
+        $utf16 = (bool) preg_match('/^(\xFF\xFE|\xFE\xFF|<\x00|\x00<)/', $head);
+        if ($utf16) {
+            $head = str_replace("\0", '', $head);
+        }
+
+        if (preg_match(self::MARKUP_TAGS, $head)) {
+            return true;
+        }
+
+        // Served as XML, a model (DAE) is parsed to the end, so it is checked to the end; binary models only face sniffing, which reads the head.
+        $text = ltrim((string) preg_replace('/^(\xEF\xBB\xBF|\xFF\xFE|\xFE\xFF)/', '', $head));
+        return '' !== $text && '<' === $text[0] && self::xmlHasMarkup($file, $utf16);
+    }
+
+    /** Tags no 3D format uses, with or without a namespace prefix (<h:script>); XML models (DAE) have none of them. */
+    private const MARKUP_TAGS = '/<\s*(!doctype\s+html|(?:[\w.-]+:)?(html|body|script|iframe|svg|object|embed|img|div|style|a\s+href))\b/i';
+
+    /** Namespaces whose elements a browser renders or runs inside an XML document. */
+    private const ACTIVE_XML_NAMESPACES = [
+        'http://www.w3.org/1999/xhtml',
+        'http://www.w3.org/2000/svg',
+        'http://www.w3.org/1998/Math/MathML',
+        'http://www.w3.org/1999/XSL/Transform',
+    ];
+
+    private static function xmlHasMarkup(string $file, bool $utf16): bool
+    {
+        if (!class_exists('XMLReader')) {
+            return self::rawXmlHasMarkup($file, $utf16);
+        }
+
+        $previous = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        $reader = new \XMLReader();
+        $opened = @$reader->open($file, null, LIBXML_NONET);
+        $found = false;
+        if ($opened) {
+            while (!$found && @$reader->read()) {
+                $found = self::isActiveXmlNode($reader);
+            }
+            $reader->close();
+        }
+        // Where libxml gave up (a huge text node, bad bytes), a browser's parser may read on.
+        $failed = !$opened || libxml_get_errors();
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        return $found || ($failed && self::rawXmlHasMarkup($file, $utf16));
+    }
+
+    private static function isActiveXmlNode(\XMLReader $reader): bool
+    {
+        switch ($reader->nodeType) {
+            case \XMLReader::DOC_TYPE:
+                // Its entities could spell out anything checked here.
+                return true;
+            case \XMLReader::PI:
+                return 0 === strcasecmp($reader->name, 'xml-stylesheet');
+            case \XMLReader::ELEMENT:
+                if (in_array($reader->namespaceURI, self::ACTIVE_XML_NAMESPACES, true) || preg_match('/^(html|body|script|iframe|svg|object|embed)$/i', $reader->localName)) {
+                    return true;
+                }
+                $active = false;
+                while (!$active && $reader->moveToNextAttribute()) {
+                    $declares = 'http://www.w3.org/2000/xmlns/' === $reader->namespaceURI && in_array($reader->value, self::ACTIVE_XML_NAMESPACES, true);
+                    $active = $declares || (bool) preg_match('/^on[a-z]+$/i', $reader->localName);
+                }
+                $reader->moveToElement();
+                return $active;
+        }
+        return false;
+    }
+
+    /** Pattern scan of the whole file, for when XMLReader is missing or stopped early. */
+    private static function rawXmlHasMarkup(string $file, bool $utf16): bool
+    {
+        $handle = @fopen($file, 'rb');
+        if (!$handle) {
+            return false;
+        }
+
+        $active = '/<!ENTITY|<\?xml-stylesheet|<[\w:.-]+(?:\s[^<>]*?)?\s(?:[\w.-]+:)?on[a-z]+\s*=|http:\/\/www\.w3\.org\/(1999\/xhtml|2000\/svg|1998\/Math\/MathML|1999\/XSL\/Transform)/i';
+        $found = false;
+        $carry = '';
+        while (!$found && !feof($handle)) {
+            $chunk = (string) fread($handle, 1048576);
+            $buffer = $carry . ($utf16 ? str_replace("\0", '', $chunk) : $chunk);
+            // A PCRE failure (backtrack limit) counts as a match, so a crafted file cannot slip through.
+            $found = 0 !== preg_match(self::MARKUP_TAGS, $buffer) || 0 !== preg_match($active, $buffer);
+            // Overlap so a match split across two reads is still seen.
+            $carry = substr($buffer, -4096);
+        }
+        fclose($handle);
+
+        return $found;
     }
 }
 
