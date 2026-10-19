@@ -244,7 +244,7 @@ class ClassicForm
     {
         $current = is_string($state['position']) ? $state['position'] : '';
         ?>
-        <div class="dokan-form-group content-half-part">
+        <div class="dokan-form-group">
             <label class="form-label" for="bp3d_dokan_position"><?php esc_html_e('Viewer position', '3d-viewer'); ?></label>
             <?php if (!empty($state['position_locked'])) : ?>
                 <p class="bp3d-dokan-help"><?php esc_html_e('Set by the marketplace admin', '3d-viewer'); ?></p>

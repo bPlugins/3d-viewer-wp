@@ -17,6 +17,7 @@ const entry = {
     admin: "./src/admin/index.ts",
     "admin-preview": "./src/admin/preview/index.tsx",
     "admin-list": "./src/admin/list/index.ts",
+    "dokan-vendor": "./src/integrations/dokan/index.ts", // Optional Dokan module
 };
 
 module.exports = {
