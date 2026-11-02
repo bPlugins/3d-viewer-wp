@@ -562,6 +562,65 @@ const ResetIcon = () => icon(<><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" /><path d
 const ZoomInIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M11 8v6M8 11h6" /></>);
 const ZoomOutIcon = () => icon(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3M8 11h6" /></>);
 const FullIcon = () => icon(<><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></>);
+const CopyIcon = () => icon(<><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" /></>);
+const CheckIcon = () => icon(<path d="M20 6 9 17l-5-5" />);
+
+/** navigator.clipboard needs a secure context; plain http:// installs fall back to execCommand. */
+async function copyText(text: string): Promise<boolean> {
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch {
+            // The legacy path below.
+        }
+    }
+    const active = document.activeElement as HTMLElement | null;
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let copied = false;
+    try {
+        copied = document.execCommand('copy');
+    } catch {
+        copied = false;
+    }
+    area.remove();
+    active?.focus();
+    return copied;
+}
+
+/** The viewer's shortcode, in the Live Preview card's head. */
+const ShortcodeChip: React.FC = () => {
+    const { shortcode = '', hint = '' } = (window as any).bp3dPreview || {};
+    const [copied, setCopied] = useState(false);
+    if (!shortcode) return null;
+
+    const copy = () => {
+        void copyText(shortcode).then((done) => {
+            if (!done) return;
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+        });
+    };
+
+    return (
+        <button
+            type="button"
+            className="bfields-shortcode__chip bp3d-side-preview__shortcode"
+            onClick={copy}
+            aria-label={`${__('Copy shortcode', '3d-viewer')}: ${shortcode}`}
+            title={copied ? __('Copied', '3d-viewer') : hint}
+        >
+            <code>{shortcode}</code>
+            <span className="bfields-shortcode__icon">{copied ? <CheckIcon /> : <CopyIcon />}</span>
+        </button>
+    );
+};
 
 /**
  * The page editor's side card (Figma "Live Preview"): the real viewer, small,
@@ -666,8 +725,9 @@ const SidePreview: React.FC = () => {
         <div className="bfields-preview bp3d-side-preview">
             <div className="bfields-preview__head">
                 <h3 className="bfields-preview__title">
-                    <EyeIcon /> {__('Live Preview', '3d-viewer')}
+                    <EyeIcon /> <span className="bp3d-side-preview__label">{__('Live Preview', '3d-viewer')}</span>
                 </h3>
+                <ShortcodeChip />
                 <button
                     type="button"
                     className="bfields-icon-btn"

@@ -122,6 +122,11 @@ final class RestMetaGuard
                 return $response;
             }
 
+            // A marketplace guard only: without the module every site keeps the 2.0.0 responses.
+            if (!Marketplace::moduleEnabled()) {
+                return $response;
+            }
+
             $data = $response->get_data();
             if (!is_array($data) || empty($data['meta_data']) || !is_array($data['meta_data'])) {
                 return $response;

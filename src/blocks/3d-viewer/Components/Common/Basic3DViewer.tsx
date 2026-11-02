@@ -65,13 +65,12 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
     }
 
     return () => {
+      const old = viewerRef.current;
       if (viewerRef.current !== null && parentDiv.current !== null) {
         delete viewerRef.current.model;
         viewerRef.current.viewer?.renderer?.resetState();
+        // Cleared, not deleted: OV's window resize listener and a load still in flight call it later.
         viewerRef.current.viewer?.Clear();
-        if (viewerRef.current.viewer) {
-          delete viewerRef.current.viewer;
-        }
         const gl = viewerRef.current.canvas?.getContext("webgl2");
         gl?.getExtension("WEBGL_lose_context")?.loseContext();
         const tempClone = viewerRef.current.canvas?.cloneNode(true);
@@ -86,11 +85,16 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
         viewerRef.current = null;
         setViewerLoaded(false);
       }
-      // OV leaves its status text ("Failed to import model…") after Destroy(). Hidden, not removed:
-      // a load still in flight removes its own progress node when it finishes, and throws if it's gone.
+      // OV leaves its status text ("Failed to import model…") here. A load still in flight removes its progress node from
+      // parentElement when it finishes: move the leftovers to a detached holder, point the old instance at it, and drop its parameters.
+      const sink = document.createElement("div");
       Array.from(container?.children || []).forEach((el) => {
-        if (!Object.keys(el).some((key) => key.startsWith("__reactFiber$"))) (el as HTMLElement).style.display = "none";
+        if (!Object.keys(el).some((key) => key.startsWith("__reactFiber$"))) sink.appendChild(el);
       });
+      if (old) {
+        old.parentElement = sink;
+        old.parameters = {};
+      }
     };
     // Not viewerLoaded: the effect sets it, so it re-ran and fetched the model a second time.
   }, [modelSrc, currentModel]);
@@ -145,7 +149,7 @@ const Basic3DViewer = (props: Basic3DViewerProps) => {
         aria-label="Canvas showing the model in the 3D Viewer"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className={`${(mouseControl && (!isBackend || hovered)) ? "" : "DMC"} ${viewerRef.current?.modelLoader?.inProgress} relative flex  flex-col items-center justify-center p-2 h-72 w-72 border-2 border-black rounded-sm online_3d_viewer`}
+        className={`${(mouseControl && (!isBackend || hovered)) ? "" : "DMC"} ${viewerRef.current?.modelLoader?.inProgress} online_3d_viewer`}
       >
 
       </div>

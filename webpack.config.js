@@ -17,6 +17,9 @@ const entry = {
     admin: "./src/admin/index.ts",
     "admin-preview": "./src/admin/preview/index.tsx",
     "admin-list": "./src/admin/list/index.ts",
+    "fluentcart-admin": "./src/integrations/fluentcart/admin.tsx", // remove both fluentcart entries with src/integrations/fluentcart to drop the module
+    "fluentcart-storefront": "./src/integrations/fluentcart/storefront.ts",
+    "dokan-vendor": "./src/integrations/dokan/index.ts", // Optional Dokan module
 };
 
 module.exports = {

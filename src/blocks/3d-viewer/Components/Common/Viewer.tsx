@@ -134,7 +134,7 @@ const Viewer = ({ attributes, __, setAttributes, viewerRef, containerRef }: View
           {currentViewer === 'modelViewer' && <>
             {cameraBtn && <ControlButton className="cameraBtn" label={t("Take screenshot", "3d-viewer")} onClick={() => downloadImageFromDataUrl(viewerRef.current.toDataURL(), 'model.png')}><Camera /></ControlButton>}
             {currentModel?.arEnabled && (
-              <ARQRCode {...{ viewerRef, arLink, placement }} />
+              <ARQRCode {...{ viewerRef, arLink, placement, uniqueId }} />
             )}
           </>}
           {downloadBtn && modelSrc && <ControlButton className="downloadBtn" label={t("Download 3D model", "3d-viewer")} onClick={() => download3DFile(modelSrc)}><Download /></ControlButton>}

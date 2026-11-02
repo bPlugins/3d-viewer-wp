@@ -5,6 +5,7 @@ import { __ } from "@wordpress/i18n";
 import loadingImgSrc from './../../../../public/loading.webp';
 import manageAttributes from "../../../../public/manageAttributes";
 import matchProtocol from "../../../../utils/matchProtocol";
+import safeMediaUrl from "../../../../utils/safeMediaUrl";
 
 // interface
 interface ModelViewerProps {
@@ -132,8 +133,11 @@ const ModelViewer = ({ attributes, modelSrc, viewerRef }: ModelViewerProps) => {
                     viewerRef.current.setAttribute("ar", "");
                     viewerRef.current.setAttribute("ar-placement", arPlacement);
                     viewerRef.current.setAttribute("ar-modes", arMode + " " + "webxr scene-viewer quick-look".replace(arMode, '')?.replace("  ", " "));
-                    if (modelISOSrc) {
-                        viewerRef.current.setAttribute("ios-src", modelISOSrc);
+                    const iosSrc = safeMediaUrl(modelISOSrc);
+                    if (iosSrc) {
+                        viewerRef.current.setAttribute("ios-src", matchProtocol(iosSrc));
+                    } else {
+                        viewerRef.current.removeAttribute("ios-src");
                     }
                     viewerRef.current?.removeAttribute("ar-status");
                 } else {

@@ -119,6 +119,7 @@
     width: 100%;
     height: 100%;
     background-size: cover;
+    background-position: center;
     background-color: transparent;
     border: none;
     outline: none;
@@ -391,50 +392,55 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 
   .ar-qrcode {
     display: flex;
+  }
+
+  // Centred over the model (as in Pro), not a flyout beside the AR button. Portaled to
+  // .bp_model_parent (ARQRCode.tsx), so it covers the whole viewer.
+  .bp3d-qr-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
 
     .qr-content {
-      position: absolute;
-      width: 145px;
+      position: relative;
+      width: 180px;
+      max-width: calc(100% - 32px);
       background: #fff;
-      padding-top: 10px;
-      left: 45px;
-      bottom: 0px;
-      border-radius: 5px;
-      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       box-sizing: border-box;
-      z-index: 999;
+      padding: 20px 16px 16px;
       text-align: center;
       font-size: 12px;
-      overflow: hidden;
-      transition: all 0.3s ease-in-out;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
 
       p {
-        margin: 0 10px;
+        margin: 8px 0;
         line-height: normal;
+      }
+
+      img {
+        display: block;
+        margin: 0 auto;
       }
     }
 
-    .close {
-      display: none !important;
-    }
- 
-    &.active {
-      .qr-content {
-        display: flex;
-        width: 100px;
-      }
- 
-      .ar-qr-opener {
-        display: none !important;
-      }
- 
-      .close {
-        display: block !important;
-      }
+    .qr-content-close {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      min-width: 0;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: inherit;
+
+      svg { width: 100%; height: 100%; }
     }
   }
 

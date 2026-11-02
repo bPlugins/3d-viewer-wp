@@ -49,6 +49,7 @@ $bp3d_option_keys = [
     'bp3d_imported',              // Import migration flag
     'bp3d_mime_defaults_widened', // One-time upload whitelist widening flag
     'bp3d_elementor_css_ver',     // One-time Elementor CSS regeneration flag
+    'bp3d_dokan_settings',        // Dokan marketplace module settings
     'model_viewer_import_ver',    // Import version tracker
 ];
 

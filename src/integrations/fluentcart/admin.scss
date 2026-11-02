@@ -1,0 +1,321 @@
+.bp3d-fct-admin {
+  &__body {
+    // .fct-card has no padding; its header pads 20px, so the body matches.
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+
+    > .components-notice {
+      margin: 0 0 16px;
+    }
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 960px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__preview {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  &__picker {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: start;
+
+    .components-button {
+      margin-top: 23px;
+    }
+
+    .has-warning .components-base-control__help {
+      color: #b32d2e;
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 140px;
+    gap: 12px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 6px;
+  }
+}
+
+.bp3d-fct-preview {
+  h3 {
+    margin: 0 0 12px;
+    font-size: 14px;
+  }
+
+  model-viewer {
+    display: block;
+    border-radius: 4px;
+  }
+
+  &__note {
+    margin: 0;
+    color: #646970;
+  }
+}
+
+// FluentCart's dark mode: its head script puts fluent_theme_dark on <html>, its theme toggle moves it to <body>.
+// FluentCart's own dark palette, so the WordPress components match its fields and stay readable.
+.fluent_theme_dark {
+  .bp3d-fct-admin__body,
+  .bp3d-fct-admin__preview,
+  .bp3d-fct-skel__tabs,
+  .bp3d-fct-skel__panel,
+  .bp3d-fct-skel__preview {
+    border-color: #2c3c4e;
+  }
+
+  .bp3d-fct-preview__note,
+  .bp3d-fct-admin__unsaved {
+    color: #c1c7d1;
+  }
+
+  .bp3d-fct-skel__bone {
+    background-image: linear-gradient(90deg, #1c2732 25%, #253241 37%, #1c2732 63%);
+  }
+
+  .bp3d-fct-admin {
+    .components-base-control__label,
+    .components-input-control__label,
+    .components-toggle-control label {
+      color: #f5f6f7;
+    }
+
+    .components-base-control__help,
+    .components-toggle-control__help {
+      color: #c1c7d1;
+    }
+
+    .bp3d-fct-admin__picker .has-warning .components-base-control__help {
+      color: #f86368;
+    }
+
+    .components-text-control__input,
+    .components-input-control__container,
+    .components-select-control__input {
+      background-color: #1c2732;
+      color: #f5f6f7;
+    }
+
+    .components-text-control__input:not(:focus),
+    .components-input-control__container:not(:focus-within) .components-input-control__backdrop {
+      border-color: #2c3c4e;
+    }
+
+    .components-text-control__input::placeholder {
+      color: #8a94a6;
+    }
+
+    .components-select-control__input option {
+      background-color: #1c2732;
+      color: #f5f6f7;
+    }
+
+    .components-input-control__suffix {
+      color: #c1c7d1;
+    }
+
+    // FluentCart's own dark buttons, in place of the blue-on-dark outline.
+    .components-button.is-secondary {
+      background: #1c2732;
+      color: #f5f6f7;
+      border-color: #2c3c4e;
+      box-shadow: inset 0 0 0 1px #2c3c4e;
+
+      &:hover:not(:disabled) {
+        background: #253241;
+        color: #fff;
+      }
+
+      &:focus-visible {
+        box-shadow: inset 0 0 0 1px #2c3c4e, 0 0 0 2px var(--wp-admin-theme-color, #3858e9);
+      }
+    }
+
+    .components-form-toggle:not(.is-checked) {
+      .components-form-toggle__track {
+        background-color: #1c2732;
+        border-color: #8a94a6;
+      }
+
+      .components-form-toggle__thumb {
+        background-color: #c1c7d1;
+      }
+    }
+
+    .components-notice {
+      background-color: #1c2732;
+      color: #f5f6f7;
+
+      &.is-success {
+        background-color: #16301f;
+      }
+
+      &.is-error {
+        background-color: #3a1d1f;
+      }
+
+      .components-button {
+        color: #c1c7d1;
+      }
+    }
+  }
+}
+
+.bp3d-fct-admin__unsaved {
+  color: #646970;
+  font-size: 13px;
+}
+
+// Loading skeletons (skeleton.tsx), shaped like the editor; FluentCart's own skeleton colours.
+@keyframes bp3d-fct-skel {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.bp3d-fct-skel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__bone {
+    display: block;
+    max-width: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #f0f2f5 25%, #e6e8eb 37%, #f0f2f5 63%);
+    background-size: 400% 100%;
+    animation: bp3d-fct-skel 1.4s ease infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  &__bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 24px;
+    padding: 0 12px 10px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+
+    @media (min-width: 960px) {
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 42%);
+    }
+  }
+
+  &__main,
+  &__panel,
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  &__field {
+    gap: 8px;
+  }
+
+  &__chips,
+  &__input,
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__input > :first-child,
+  &__row > * {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__row {
+    gap: 12px;
+  }
+
+  // The form's Background / Height row (.bp3d-fct-admin__row).
+  &__row--form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 140px;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    > .bp3d-fct-skel__field {
+      flex: 1;
+    }
+  }
+
+  &__panel {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    &--plain {
+      padding: 0;
+      border: 0;
+      gap: 18px;
+    }
+  }
+
+  &__preview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-self: start;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  &__preview-bone,
+  &__wide {
+    width: 100%;
+  }
+
+  // The editor's file rows and URL fields stop at 560px.
+  &__wide {
+    max-width: 560px;
+  }
+}

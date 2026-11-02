@@ -510,6 +510,7 @@ class Viewer
           'subtitle' => __('Upload Model Or Input Valid Model url', '3d-viewer'),
           'desc' => __("Specifies the iOS-specific model file (.usdz) used for viewing the 3D model in AR on Apple devices.", "3d-viewer"),
           'placeholder' => 'You Can Paste here Model url',
+          'sanitize' => [\BP3D\Helper\Utils::class, 'safeMediaUrl'],
           'dependency' => ['bp_3d_enable_ar|currentViewer', '==|==', '1|modelViewer', 'all']
         ),
         array(

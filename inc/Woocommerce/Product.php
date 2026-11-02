@@ -58,7 +58,26 @@ class Product
         $model_src = self::effectiveModelUrl($modelData);
         $poster = $modelData['bp3d_poster_src'] ?? $modelData['bp3d_models']['0']['poster_src'] ?? '';
 
-        return [
+        $model = [
+            'modelUrl' => $model_src,
+            'poster' => $poster,
+        ];
+
+        // AR lives on row 0 (Pro, Dokan vendors), so pair it only with row 0's own model; added only when on, so other products keep identical markup.
+        $row0 = $modelData['bp3d_models'][0] ?? null;
+        $ar_enabled = is_array($row0)
+            && in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)
+            && trim($model_src) !== ''
+            && trim($model_src) === trim(self::urlOf($row0['model_src'] ?? ''));
+
+        if ($ar_enabled) {
+            $model['arEnabled'] = true;
+            $model['modelISOSrc'] = Utils::safeMediaUrl(self::urlOf($row0['model_iso_src'] ?? ''));
+            $model['arPlacement'] = in_array($row0['ar_placement'] ?? '', ['floor', 'wall'], true) ? $row0['ar_placement'] : 'floor';
+            $model['arMode'] = in_array($row0['ar_mode'] ?? '', ['webxr', 'scene-viewer', 'quick-look'], true) ? $row0['ar_mode'] : 'webxr';
+        }
+
+        $attributes = [
             'align' => 'center',
             'uniqueId' => 'model' . ($product_id ?: get_the_ID()),
             'O3DVSettings' => [
@@ -66,10 +85,7 @@ class Product
                 'mouseControl' => true,
                 'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             ],
-            'model' => [
-                'modelUrl' => $model_src,
-                'poster' => $poster,
-            ],
+            'model' => $model,
             'zoom' => $meta('bp_3d_zooming', $get_option('bp_3d_zooming', '1'), true),
             'lazyLoad' => $get_option('bp_3d_loading', 'lazy') === 'lazy',
             'loading' => $get_option('bp_3d_loading', 'lazy') === 'lazy' ? 'lazy' : 'eager',
@@ -86,6 +102,12 @@ class Product
             'woo' => true,
             'placement' => 'shortcode',
         ];
+
+        if ($ar_enabled) {
+            $attributes['arLink'] = get_permalink($product_id);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -128,6 +150,12 @@ class Product
         
         $meta = Utils::getPostMeta($product->get_id(), '_bp3d_product_');
         $modelData = $meta('all');
+
+        // No model, no viewer: a product saved on a position without a model must not load an empty viewer and its scripts.
+        if (!is_array($modelData) || trim(self::effectiveModelUrl($modelData)) === '') {
+            return '';
+        }
+
         $finalData = self::getProductAttributes($modelData);
 
         $class = Utils::getThemeClass();

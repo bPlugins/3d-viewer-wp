@@ -22,6 +22,9 @@ class ProductMeta
 {
     protected string $prefix = '_bp3d_product_';
 
+    /** Form-only keys mirrored into row 0 of bp3d_models and never stored top-level. */
+    private const TRANSPORT_KEYS = ['bp3d_enable_ar' => 'enable_ar', 'bp3d_model_iso_src' => 'model_iso_src'];
+
     /**
      * Register the metabox.
      */
@@ -46,6 +49,8 @@ class ProductMeta
         ]);
 
         Registrar::createSection($this->prefix, [
+            // Modern: one card per field, like the viewer Add New page; Codestar ignores it.
+            'layout' => 'cards',
             'fields' => $this->getFields(),
         ]);
     }
@@ -59,6 +64,13 @@ class ProductMeta
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading post ID to render the metabox, no form data is processed.
         $post_id = isset($_GET['post']) ? absint(wp_unslash($_GET['post'])) : get_the_ID();
+        // The save request carries post_ID only; the AR fields must be declared there too or they are dropped.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Only selects which fields to declare; the form framework verifies its nonce before saving.
+        if (!$post_id && isset($_POST['post_ID'])) {
+            $post_id = absint(wp_unslash($_POST['post_ID'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        }
+        $raw_meta = get_post_meta($post_id, '_bp3d_product_', true);
+        $raw_meta = is_array($raw_meta) ? $raw_meta : [];
         $meta = Utils::getPostMeta($post_id, '_bp3d_product_');
         $models = $meta('bp3d_models', [], false);
 
@@ -71,8 +83,7 @@ class ProductMeta
         if (isset($models[0]['model_src'])) {
             $model_src = $url($models[0]['model_src']);
         } else {
-            $meta_raw = get_post_meta($post_id, '_bp3d_product_', true);
-            $model_src = $url($meta_raw['bp3d_model_src'] ?? '');
+            $model_src = $url($raw_meta['bp3d_model_src'] ?? '');
         }
 
         $allowed_mimes = Utils::getAllowedMimeTypes();
@@ -125,6 +136,7 @@ class ProductMeta
             // Support link header
             [
                 'id' => 'meta_heading',
+                'icon' => 'info',
                 'type' => 'content',
                 'title' => esc_html__('Support', '3d-viewer'),
                 'content' => esc_html__('Please leave a message if you encounter any issues on the product page.', '3d-viewer') . ' '
@@ -134,6 +146,7 @@ class ProductMeta
 
             [
                 'id' => 'bp3d_model_src',
+                'icon' => 'link',
                 'type' => 'upload',
                 'library' => \BP3D\Helper\Utils::modelLibraryTypes(),
                 'title' => esc_html__('3D Source', '3d-viewer'),
@@ -144,6 +157,7 @@ class ProductMeta
             ],
             [
                 'id' => 'bp3d_poster_src',
+                'icon' => 'image',
                 'type' => 'upload',
                 'title' => __('3D Poster', '3d-viewer'),
                 'subtitle' => __('Upload Poster Or Input Valid poster/image url', '3d-viewer'),
@@ -153,27 +167,62 @@ class ProductMeta
             ],
         ]);
 
+        // Only products with a model row (Pro or Dokan vendor data) get the AR fields; the viewer reads AR from row 0.
+        $row0 = isset($models[0]) && is_array($models[0]) ? $models[0] : null;
+        if ($row0 !== null) {
+            $fields[] = [
+                'id' => 'bp3d_enable_ar',
+                'icon' => 'phone',
+                'type' => 'switcher',
+                'title' => esc_html__('Enable AR', '3d-viewer'),
+                'desc' => esc_html__('Let visitors view the model in their own space on supported devices.', '3d-viewer'),
+                'default' => in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true),
+            ];
+            $fields[] = [
+                'id' => 'bp3d_model_iso_src',
+                'icon' => 'link',
+                'type' => 'upload',
+                'title' => esc_html__('USDZ model (iOS AR)', '3d-viewer'),
+                'desc' => esc_html__('Optional .usdz file used for AR on iPhone and iPad.', '3d-viewer'),
+                'default' => $url($row0['model_iso_src'] ?? ''),
+                'sanitize' => [Utils::class, 'safeMediaUrl'],
+                'dependency' => ['bp3d_enable_ar', '==', '1'],
+            ];
+        }
+
+        $position_options = [
+            'none' => esc_html__('None', '3d-viewer'),
+            'top' => esc_html__('Top of the product image', '3d-viewer'),
+            'bottom' => esc_html__('Bottom of the product image', '3d-viewer'),
+            'replace' => esc_html__('Replace Product Image with 3D', '3d-viewer'),
+            'merge_with_first_image' => esc_html__('Show 3D on First Image of Woocommerce Gallery', '3d-viewer'),
+        ];
+
+        // List a Premium-only stored value (tab, custom_selector) so the select doesn't fall back to "None"; saving keeps it.
+        $stored_position = $meta('viewer_position', '');
+        if (is_string($stored_position) && $stored_position !== '' && !isset($position_options[$stored_position])) {
+            /* translators: %s: stored viewer position key. */
+            $position_options[$stored_position] = sprintf(esc_html__('%s (Premium)', '3d-viewer'), ucwords(str_replace('_', ' ', $stored_position)));
+        }
+
         $fields = array_merge($fields, [
             // Viewer position
             [
                 'id' => 'viewer_position',
-                'type' => 'radio',
+                'icon' => 'layers',
+                'type' => 'select',
                 'title' => esc_html__('3D Viewer Position', '3d-viewer'),
                 'desc' => __('Select the position of the viewer', '3d-viewer'),
-                'options' => [
-                    'none' => esc_html__('None', '3d-viewer'),
-                    'top' => esc_html__('Top of the product image', '3d-viewer'),
-                    'bottom' => esc_html__('Bottom of the product image', '3d-viewer'),
-                    'replace' => esc_html__('Replace Product Image with 3D', '3d-viewer'),
-                    'merge_with_first_image' => esc_html__('Show 3D on First Image of Woocommerce Gallery', '3d-viewer'),
-                ],
-                'default' => 'none',
+                'options' => $position_options,
+                // Products that already have 3D meta keep the old None fallback; only a product without any starts on the first gallery image.
+                'default' => $raw_meta ? 'none' : 'merge_with_first_image',
             ],
 
 
             // Background color
             [
                 'id' => 'bp_model_bg',
+                'icon' => 'palette',
                 'type' => 'color',
                 'title' => __('Background', '3d-viewer'),
                 'desc' => __('Set Background color', '3d-viewer'),
@@ -210,7 +259,7 @@ class ProductMeta
         $stored = get_post_meta((int) $post_id, $this->prefix, true);
 
         if (!is_array($stored) || !$stored) {
-            return $data;
+            return array_diff_key($data, self::TRANSPORT_KEYS);
         }
 
         $merged = $slashed ? wp_slash($stored) : $stored;
@@ -239,14 +288,46 @@ class ProductMeta
             }
         }
 
-        // An explicit free choice always applies; an untouched radio posts '' and keeps a value it cannot show (Pro 'tab', custom_selector).
+        // An explicit free choice always applies; a Premium-only value (tab, custom_selector) or '' keeps what is stored.
         $free_positions = ['none', 'top', 'bottom', 'replace', 'merge_with_first_image'];
         $posted_position = $data['viewer_position'] ?? '';
         if (is_string($posted_position) && in_array($posted_position, $free_positions, true)) {
             $merged['viewer_position'] = $posted_position;
         }
 
-        return $merged;
+        // AR fields write to row 0 only when the form showed them and the value changed.
+        if ($row0 !== null && $this->transportPosted()) {
+            if (array_key_exists('bp3d_enable_ar', $data)) {
+                $ar_on = in_array($unslash($data['bp3d_enable_ar']), ['1', 1, true], true);
+                if ($ar_on !== in_array($row0['enable_ar'] ?? '', ['1', 1, true, 'true', 'yes'], true)) {
+                    $merged['bp3d_models'][0]['enable_ar'] = $ar_on ? '1' : '';
+                }
+            }
+
+            if (array_key_exists('bp3d_model_iso_src', $data)
+                && !$this->sameValue($unslash($data['bp3d_model_iso_src']), $row0['model_iso_src'] ?? '')) {
+                $merged['bp3d_models'][0]['model_iso_src'] = Utils::safeMediaUrl($unslash($data['bp3d_model_iso_src']));
+            }
+        }
+
+        return array_diff_key($merged, self::TRANSPORT_KEYS);
+    }
+
+    /**
+     * Whether the AR fields were on the submitted form, not just declared at save time.
+     */
+    private function transportPosted(): bool
+    {
+        // phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput -- Runs inside the save filter after the form framework verified its nonce; only key presence is read.
+        // Classic posts the fields as an array; Modern (bfields) posts them as JSON in bfields_values.
+        $request = isset($_POST[$this->prefix]) && is_array($_POST[$this->prefix]) ? $_POST[$this->prefix] : [];
+        if (!$request && isset($_POST['bfields_values'][$this->prefix]) && is_string($_POST['bfields_values'][$this->prefix])) {
+            $decoded = json_decode(wp_unslash($_POST['bfields_values'][$this->prefix]), true);
+            $request = is_array($decoded) ? $decoded : [];
+        }
+        // phpcs:enable
+
+        return array_key_exists('bp3d_enable_ar', $request) || array_key_exists('bp3d_model_iso_src', $request);
     }
 
     /**

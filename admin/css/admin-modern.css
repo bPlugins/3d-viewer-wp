@@ -131,6 +131,101 @@
 }
 
 /* Viewer page editor (bfields `'frame' => 'page'`): the side card and the Preview tab's stage, src/admin/preview/. */
+.bfields-app .bp3d-side-preview .bfields-preview__head {
+  gap: 8px;
+  container-type: inline-size;
+}
+
+/* Takes only the room the chip leaves; one line tall, so a label that no longer fits wraps out of sight, leaving the icon. */
+.bfields-app .bp3d-side-preview .bfields-preview__title {
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  min-width: 20px;
+  height: 22px;
+  overflow: hidden;
+  line-height: 22px;
+}
+
+.bfields-app .bp3d-side-preview__label {
+  white-space: nowrap;
+}
+
+.bfields-app .bp3d-side-preview .bp3d-side-preview__shortcode {
+  flex: 0 1 auto;
+  gap: 8px;
+  min-width: 0;
+  height: 32px;
+  margin-left: auto;
+  padding: 0 3px 0 10px;
+  border: 1px solid var(--bfields-primary);
+  border-radius: 8px;
+  background: var(--bfields-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.bfields-app .bp3d-side-preview .bp3d-side-preview__shortcode:hover {
+  border-color: var(--bfields-primary-hover);
+  background: var(--bfields-primary-hover);
+}
+
+.bfields-app .bp3d-side-preview .bp3d-side-preview__shortcode:focus-visible {
+  outline: 2px solid var(--bfields-primary);
+  outline-offset: 1px;
+}
+
+.bfields-app .bp3d-side-preview__shortcode code {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+  font-family: var(--bfields-font-mono);
+  font-size: 12.5px;
+  color: inherit;
+  text-overflow: ellipsis;
+}
+
+.bfields-app .bp3d-side-preview__shortcode .bfields-shortcode__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--bfields-border);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.bfields-app .bp3d-side-preview__shortcode .bfields-shortcode__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* The sidebar's narrowest widths: the eye goes too and the chip tightens, so the shortcode stays readable. */
+@container (max-width: 300px) {
+  .bfields-app .bp3d-side-preview .bfields-preview__title {
+    display: none;
+  }
+
+  .bfields-app .bp3d-side-preview .bp3d-side-preview__shortcode {
+    gap: 6px;
+    padding: 0 3px 0 8px;
+  }
+
+  .bfields-app .bp3d-side-preview__shortcode code {
+    font-size: 12px;
+  }
+
+  .bfields-app .bp3d-side-preview__shortcode .bfields-shortcode__icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
 .bfields-app .bp3d-side-preview__stage {
   display: block;
 }
@@ -241,4 +336,16 @@ body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left :is(a, str
 body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left a {
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+/* WooCommerce clips product postboxes (overflow: hidden), which cut off the colour popover. */
+.post-type-product #_bp3d_product_.postbox {
+  overflow: visible;
+}
+
+/* The Support note is a paragraph: give it the card's full width under the head instead of one unwrapped line. */
+.bfields-app #_bp3d_product_ .bfields-card--inline[data-field="meta_heading"] .bfields-card__control,
+#_bp3d_product_ .bfields-app .bfields-card--inline[data-field="meta_heading"] .bfields-card__control {
+  flex: 1 0 100%;
+  min-width: 0;
 }

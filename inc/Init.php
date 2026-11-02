@@ -42,6 +42,10 @@ class Init
             Base\Import::class,
             Shortcode\Shortcode::class,
             Base\ExtendMimeType::class,
+            // Dokan vendor guards; every hook early-returns unless the marketplace module is on.
+            Base\Marketplace::class,
+            Base\RestMetaGuard::class,
+            Base\VendorUploadGuard::class,
             Base\Onboarding::class,
             Base\OnboardingNotice::class,
             Field\Viewer::class,
@@ -49,7 +53,9 @@ class Init
             Woocommerce\SingleProduct::class,
             Addons\Blocks::class,
             Addons\Addons::class,
-            Addons\Controls\Controls::class
+            Addons\Controls\Controls::class,
+            Integrations\FluentCart\FluentCart::class, // Optional FluentCart module; remove this line and inc/Integrations/FluentCart to drop it.
+            Integrations\Dokan\Dokan::class, // Optional Dokan module; remove this line and inc/Integrations/Dokan to drop it.
         ];
     }
 

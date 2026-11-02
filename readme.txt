@@ -2,7 +2,7 @@
 Contributors: bplugins, abuhayat, shehabulislam, freemius, farazi1
 Tags: 3d model viewer, 360 product view, augmented reality, woocommerce, glb
 Tested up to: 7.1
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 Requires PHP: 7.4
 Requires at least: 6.5
 Donate link: https://www.buymeacoffee.com/abuhayat
@@ -35,6 +35,8 @@ Selling online? Show your WooCommerce products in 3D and let customers interact 
 - **Augmented Reality (AR) – now free:** Let mobile visitors view models in their real environment via WebXR, Scene Viewer, and Quick Look – including QR code access from desktop. Set the AR placement (floor or wall) and add an optional iOS `.usdz` source.
 - **All Popular 3D Formats:** Upload and display .GLB, .GLTF, .OBJ, .STL, and more.
 - **WooCommerce Integration:** Show interactive 3D product views right on your product pages.
+- **FluentCart Integration:** Show a 3D model on FluentCart product pages – in the gallery as a thumbnail, above or below it, or instead of it.
+- **Dokan Marketplace Support:** Let vendors add 3D models to their own products, within the limits you set.
 - **Touch, Pan, Zoom & Rotate:** Full mouse and touchscreen gesture support out of the box.
 - **Environment & Skybox Images – now free:** Add an environment image for realistic lighting and reflections, or set an HDR skybox as the model's background.
 - **Elementor Compatible:** Drop 3D models into Elementor layouts with ease.
@@ -143,6 +145,12 @@ Like the plugin? Missing a feature? **[Send your feedback](https://bplugins.com/
 
 = Does 3D Viewer work with WooCommerce? =
 Yes. You can attach a 3D model to any product and it will display on the product page. The Pro version adds a 3D gallery with multiple models per product and per-variation models.
+
+= Does 3D Viewer work with FluentCart? =
+Yes. Open a FluentCart product, go to its **3D Model** tab, and pick a model. It shows on the product page as a gallery thumbnail, above or below the gallery, or instead of it. You can turn the integration off under **3D Viewer → Settings → FluentCart**.
+
+= Can Dokan vendors add 3D models? =
+Yes, once you allow it under **3D Viewer → Marketplace (Dokan)**. Vendors can then add a GLB model, a poster and an optional USDZ file for iOS AR to their own products. It is off by default.
 
 = Does it support Augmented Reality (AR)? =
 Yes, and it is free – AR is included in the free version, no upgrade required. Models can be viewed in AR on supported mobile devices via WebXR, Scene Viewer (Android), and Quick Look (iOS). Desktop visitors can scan a QR code to open the model in AR on their phone. Turn it on with the **Enable AR** toggle in the Gutenberg block, the Elementor widget, or the shortcode generator, then pick the AR placement and mode.
@@ -305,6 +313,17 @@ The bundle also includes the following sub-dependencies:
 * External Services: The library may connect to bPlugins, WordPress.org, and Freemius services to list available add-ons, resolve download URLs, and manage licenses. Connections are made only from the plugin's admin dashboard.
 
 == Changelog ==
+
+= 2.1.0 - 2 November, 2026 =
+* New: FluentCart integration: show 3D models on FluentCart product pages.
+* New: Dokan integration: vendors can add 3D models to their own products (off by default).
+* New: WooCommerce products show AR and the iOS USDZ model set in Pro or by a Dokan vendor; the product box can switch AR and change the USDZ file.
+* Improvement: Products without 3D settings start on Show 3D on First Image instead of None; products with 3D settings keep theirs.
+* Changed: The AR QR code opens centred over the model instead of beside the AR button.
+* Fixed: A product without a model no longer loads an empty viewer and its scripts.
+* Fixed: The Lite viewer poster is now centred instead of anchored to the top-left.
+* Fixed: Advanced Viewer: switching models threw console errors, and pages with Tailwind CSS shrank it to a small box.
+* Security: The iOS (USDZ) model URL now accepts web addresses only, so an unsafe link can no longer reach the AR button.
 
 = 2.0.0 - 18 October, 2026 =
 * New: New admin interface for Settings, viewers and WooCommerce products; switch back to the classic interface any time from Settings.

@@ -1,0 +1,92 @@
+// FluentCart product gallery with a 3D slot (Storefront.php). Nothing here touches a page without one.
+
+.bp3d-fct-slot {
+  width: 100%;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  > .modelViewerBlock {
+    width: 100%;
+  }
+}
+
+.fct-product-gallery-thumb.is-bp3d-active {
+  > img[data-fluent-cart-single-product-page-product-thumbnail],
+  > [data-fct-product-gallery-video] {
+    display: none !important;
+  }
+
+  // FluentCart's main box is a square (aspect-ratio 1/1, max 600px): the slot fills it, so the
+  // saved Height only applies above, below or instead of the gallery.
+  > .bp3d-fct-slot {
+    flex: 1 1 auto;
+    align-self: stretch;
+    min-height: 0;
+    height: 100%;
+
+    .modelViewerBlock,
+    .b3dviewer-wrapper,
+    .online_3d_viewer {
+      height: 100% !important;
+    }
+  }
+}
+
+// Themes style button:hover / :focus (often white text on a colour) and FluentCart forces a transparent
+// background on focus, which left the icon white on white; the tile keeps its own colours in every state.
+.bp3d-fct-thumb,
+.bp3d-fct-thumb:hover,
+.bp3d-fct-thumb:focus,
+.bp3d-fct-thumb:focus-visible,
+.bp3d-fct-thumb:active {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+
+  svg {
+    width: 55%;
+    height: 55%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// A strip FluentCart did not print (a lone product image): the thumb sits under the main image.
+.bp3d-fct-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+
+  .bp3d-fct-thumb {
+    width: 64px;
+    height: 64px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+}
+
+.bp3d-fct-gallery {
+  // Takes the gallery's cell in FluentCart's named grid (thumbnail | summary), whatever else the row holds.
+  grid-area: thumbnail;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  > .modelViewerBlock {
+    width: 100%;
+  }
+}
+
+.bp3d-fct-replaced {
+  display: none !important;
+}

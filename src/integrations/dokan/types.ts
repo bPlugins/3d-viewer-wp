@@ -74,6 +74,29 @@ export interface MediaFrame {
     on(event: string, callback: () => void): MediaFrame;
     open(): MediaFrame | void;
     state(): { get(key: 'selection'): MediaSelection | undefined };
+    /* UploaderWindow > wp.Uploader > plupload instance; present once the frame has rendered. */
+    uploader?: { uploader?: { uploader?: PluploadInstance } };
+    el?: HTMLElement;
+}
+
+export interface PluploadFile {
+    name?: string;
+    size?: number;
+}
+
+export interface PluploadInstance {
+    getOption(name: 'filters'): Record<string, unknown>;
+    setOption(name: 'filters', value: Record<string, unknown>): void;
+    trigger(event: 'Error', error: { code: number; message: string; file: PluploadFile }): void;
+    bind(event: 'Error', callback: (up: PluploadInstance, error: { code: number; file?: PluploadFile }) => void, scope: null, priority: number): void;
+}
+
+export interface Plupload {
+    FILE_SIZE_ERROR: number;
+    FILE_EXTENSION_ERROR: number;
+    BP3D_VENDOR_FILE_SIZE_ERROR?: number;
+    BP3D_VENDOR_FILE_TYPE_ERROR?: number;
+    addFileFilter(name: string, filter: (this: PluploadInstance, value: any, file: PluploadFile, done: (ok: boolean) => void) => void): void;
 }
 
 export interface MediaFrameOptions {
@@ -89,6 +112,7 @@ export type HookCallback = (...args: any[]) => any;
 export interface Bp3dGlobals {
     wp?: {
         media?: (options: MediaFrameOptions) => MediaFrame;
+        Uploader?: { errorMap?: Record<string, string | ((file: PluploadFile) => string)> };
         hooks?: {
             addFilter: (hook: string, ns: string, cb: HookCallback, priority?: number) => void;
             addAction: (hook: string, ns: string, cb: HookCallback, priority?: number) => void;
@@ -102,6 +126,7 @@ export interface Bp3dGlobals {
         };
     };
     bp3dDokan?: Record<string, unknown>;
+    plupload?: Plupload;
 }
 
 export const bp3dGlobals = (): Bp3dGlobals => window as unknown as Bp3dGlobals;

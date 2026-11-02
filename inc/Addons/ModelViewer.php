@@ -483,7 +483,7 @@ class ModelViewer extends \Elementor\Widget_Base
                 'arEnabled' => ($settings['enableAr'] ?? '') === 'yes',
                 'arPlacement' => $settings['arPlacement'] ?? 'floor',
                 'arMode' => $settings['arMode'] ?? 'webxr',
-                'modelISOSrc' => $settings['modelIsoSrc'] ?? '',
+                'modelISOSrc' => \BP3D\Helper\Utils::safeMediaUrl($settings['modelIsoSrc'] ?? ''),
             ],
             'currentViewer' => $settings['currentViewer'] ?? 'modelViewer',
             'loading' => ($settings['lazy_load'] ?? '') === 'yes' ? 'lazy' : 'eager',

@@ -100,6 +100,8 @@ class EnqueueAssets
             wp_localize_script('bp3d-admin-preview', 'bp3dPreview', [
                 // 'modern': the meta box is drawn by bfields, so the preview reads window.bfields, not Codestar's inputs.
                 'ui' => AdminUi::mode('viewer'),
+                'shortcode' => '[3d_viewer id="' . (int) get_the_ID() . '"]',
+                'hint' => __('Copy and paste this shortcode into your posts, pages and widget', '3d-viewer'),
             ]);
         }
 

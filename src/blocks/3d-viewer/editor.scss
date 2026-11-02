@@ -183,6 +183,14 @@
   margin-left: 5px;
 }
 
+// Theme admin CSS that widens inputs (min-width, padding) must not push the range number box past the panel edge.
+.bPlPanelBody .components-range-control__number .components-input-control__input {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 
 .bp3d-panel-icon {
   display: flex;

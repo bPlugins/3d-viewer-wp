@@ -356,6 +356,23 @@ class Utils
         return is_string($url) && preg_match('#^(https?:)?//|^/#i', trim($url)) === 1;
     }
 
+    /** A http(s) or site-relative media URL, else ''. model-viewer opens `ios-src` as a link on iOS, so other schemes must never reach it. */
+    public static function safeMediaUrl($url): string
+    {
+        $url = is_string($url) ? trim($url) : '';
+        if ($url === '') {
+            return '';
+        }
+
+        // Scheme as a browser would parse it (control characters and whitespace dropped). No scheme is a relative path: keep it as typed.
+        $probe = preg_replace('/[\x00-\x20\x7f]+/', '', $url);
+        if (!preg_match('#^[a-z][a-z0-9+.\-]*:#i', $probe)) {
+            return $url;
+        }
+
+        return preg_match('#^https?:#i', $probe) ? esc_url_raw($url, ['http', 'https']) : '';
+    }
+
     /** The viewer's poster URL; a Cycle viewer uses its first model's, else the viewer's own. */
     public static function viewerPoster(\Closure $meta): string
     {
@@ -390,7 +407,7 @@ class Utils
                 'arEnabled' => $meta('bp_3d_enable_ar', '0', true),
                 'arMode' => $meta('ar_mode', 'webxr scene-viewer quick-look'),
                 'arPlacement' => $meta('ar_placement', 'floor'),
-                'modelISOSrc' => $meta('model_iso_src'),
+                'modelISOSrc' => self::safeMediaUrl($meta('model_iso_src')),
             ],
             'align' => $meta('bp_3d_align', 'center'),
             'uniqueId' => 'model' . $id,

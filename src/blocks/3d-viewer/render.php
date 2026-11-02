@@ -12,6 +12,10 @@ if ($attributes['currentViewer'] == 'modelViewer') {
 
 $bp3d_attributes = apply_filters('bp3d_gutenberg_model_attribute', $attributes);
 
+if (isset($bp3d_attributes['model']['modelISOSrc'])) {
+    $bp3d_attributes['model']['modelISOSrc'] = \BP3D\Helper\Utils::safeMediaUrl($bp3d_attributes['model']['modelISOSrc']);
+}
+
 if (!isset($bp3d_attributes['loading'])) {
     $bp3d_attributes['loading'] = !empty($bp3d_attributes['lazyLoad']) ? 'lazy' : 'eager';
 }
