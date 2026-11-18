@@ -19,6 +19,7 @@ build
 !/lib/bfields/build/
 !/lib/bfields/languages/
 tsconfig.json
+!/tsconfig.json
 todo.txt
 temp.txt
 skills-lock.json

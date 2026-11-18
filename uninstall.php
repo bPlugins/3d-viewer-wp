@@ -34,8 +34,8 @@ $bp3d_posts = get_posts([
     'fields' => 'ids',
 ]);
 
-foreach ($bp3d_posts as $post_id) {
-    wp_delete_post($post_id, true);
+foreach ($bp3d_posts as $bp3d_post_id) {
+    wp_delete_post($bp3d_post_id, true);
 }
 
 // ── 2. Delete plugin options ─────────────────────────────────────────

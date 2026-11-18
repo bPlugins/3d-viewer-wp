@@ -5,10 +5,13 @@ import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import { PanelBody, PanelRow } from '@wordpress/components';
 import BUnitControl from '../../../../../../components/BUnitControl/BUnitControl';
-import { ColorControl } from '../../../../../../../../bpl-tools/Components/ColorControl/ColorControl';
+import { ColorControl as BplColorControl } from '../../../../../../../../bpl-tools/Components/ColorControl/ColorControl';
 import Device from '../../../../../../../../bpl-tools/Components/Device/Device';
 import StyleIcon from '../../../../../../icons/StyleIcon';
 import Title from '../../../../../../components/Title';
+
+// bpl-tools ships this as untyped JS forwardRef, so TS would see no props.
+const ColorControl = BplColorControl as React.ComponentType<any>;
 
 interface ResponsiveValue {
     desktop?: string;

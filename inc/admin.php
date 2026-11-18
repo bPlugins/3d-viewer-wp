@@ -234,7 +234,7 @@ if (!class_exists('BP3DAdmin')) {
             // "strip_tags(): passing null" deprecation.
             if ($setup_hook) {
                 add_action("load-{$setup_hook}", function () {
-                    $GLOBALS['title'] = __('Guided Setup - 3D Viewer', '3d-viewer');
+                    $GLOBALS['title'] = __('Guided Setup - 3D Viewer', '3d-viewer'); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- see comment above.
                 });
             }
         }

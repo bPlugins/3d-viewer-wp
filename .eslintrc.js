@@ -24,6 +24,9 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["react"],
+  settings: {
+    react: { version: "detect" },
+  },
   rules: {
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
 
@@ -38,4 +41,19 @@ module.exports = {
     "object-shorthand": "warn",
     "class-methods-use-this": "off",
   },
+  overrides: [
+    {
+      // src/ is TypeScript; tsc covers undefined names and types.
+      files: ["*.ts", "*.tsx"],
+      parser: "@typescript-eslint/parser",
+      plugins: ["@typescript-eslint"],
+      rules: {
+        "no-undef": "off",
+        "no-unused-vars": "off",
+        "no-redeclare": "off",
+        "@typescript-eslint/no-unused-vars": ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
+        "react/jsx-filename-extension": "off",
+      },
+    },
+  ],
 };

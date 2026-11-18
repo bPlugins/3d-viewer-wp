@@ -25,22 +25,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Promo' ) ) {
         /* ------------------------------------------------------------------ */
 
         /**
-         * Check if the current admin screen belongs to 3D Viewer or the WP Dashboard.
+         * Check if the current admin screen belongs to 3D Viewer.
          *
          * Matches:
-         * 1. WP main dashboard (index.php / screen id 'dashboard')
-         * 2. CPT list, Add New / Edit screens
-         * 3. Submenu pages registered under edit.php?post_type=bp3d-model-viewer
+         * 1. CPT list, Add New / Edit screens
+         * 2. Submenu pages registered under edit.php?post_type=bp3d-model-viewer
          */
         private function is_plugin_screen(): bool {
             $screen = get_current_screen();
 
             if ( $screen ) {
-                // WordPress main dashboard (http://dev.local/wp-admin/index.php).
-                if ( 'dashboard' === $screen->id || 'dashboard' === $screen->base ) {
-                    return true;
-                }
-
                 // CPT list & editor screens (post_type is set directly).
                 if ( ! empty( $screen->post_type ) && 'bp3d-model-viewer' === $screen->post_type ) {
                     return true;

@@ -1,0 +1,15 @@
+#!/bin/sh
+# Block direct pushes to protected branches; push a feature branch and open a PR instead.
+protected="main develop"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+	branch="${remote_ref#refs/heads/}"
+	for p in $protected; do
+		if [ "$branch" = "$p" ]; then
+			echo "pre-push: direct push to '$p' is blocked. Push a feature branch and open a PR." >&2
+			exit 1
+		fi
+	done
+done
+
+exit 0

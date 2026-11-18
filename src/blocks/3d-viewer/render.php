@@ -2,7 +2,7 @@
 if (!defined('ABSPATH'))
     exit;
 
-$id = wp_unique_id('bp3d-viewer-');
+$bp3d_id = wp_unique_id('bp3d-viewer-');
 
 if ($attributes['currentViewer'] == 'modelViewer') {
     wp_enqueue_script_module('bp3d-lib-model-viewer');
@@ -24,7 +24,7 @@ $bp3d_class = trim('wp-block-b3dviewer-modelviewer ' . ($attributes['className']
 
 ?>
 
-<div id="<?php echo esc_attr($id) ?>" data-attributes="<?php echo esc_attr(wp_json_encode($bp3d_attributes)) ?>"
+<div id="<?php echo esc_attr($bp3d_id) ?>" data-attributes="<?php echo esc_attr(wp_json_encode($bp3d_attributes)) ?>"
     class="<?php echo esc_attr($bp3d_class) ?>">
     <div class="bp3d_backup_view" style="display: none;height:350px;">
         <model-viewer camera-controls src="<?php echo esc_url($bp3d_attributes['model']['modelUrl'] ?? '') ?>"

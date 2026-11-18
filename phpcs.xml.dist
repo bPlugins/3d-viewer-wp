@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<ruleset name="3D Viewer">
+	<description>Security, WordPress API and PHP compatibility checks. Formatting sniffs are left out: the codebase uses its own style.</description>
+
+	<file>3d-viewer.php</file>
+	<file>uninstall.php</file>
+	<file>inc</file>
+	<file>public</file>
+	<file>3d-viewer-block</file>
+	<file>src</file>
+
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<!-- Build output is gitignored; the legacy block is built in another workspace. -->
+	<exclude-pattern>*/build/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- CI overrides this with the readme's "Requires PHP". -->
+	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_wp_version" value="6.5"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.Security"/>
+	<rule ref="WordPress.DB"/>
+	<rule ref="WordPress.WP"/>
+	<rule ref="WordPress.PHP">
+		<exclude name="WordPress.PHP.YodaConditions"/>
+	</rule>
+	<rule ref="WordPress.Utils.I18nTextDomainFixer"/>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals"/>
+	<rule ref="Generic.PHP.Syntax"/>
+	<rule ref="Generic.PHP.DisallowShortOpenTag"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="3d-viewer"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- WooCommerce and Dokan capabilities. -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="manage_woocommerce"/>
+				<element value="dokandar"/>
+				<element value="vendor_staff"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="bp3d"/>
+				<element value="BP3D"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

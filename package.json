@@ -1,7 +1,9 @@
 {
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "start": "wp-scripts start --webpack-copy-php",
     "check-types": "tsc -p tsconfig.json --noEmit",
+    "lint:js": "eslint src --ext .js,.jsx,.ts,.tsx",
     "i18n-pot": "wp i18n make-pot . languages/3d-viewer.pot --exclude=\"src,zip,public,lib/bfields\"",
     "i18n-json": "wp i18n make-json languages/ --no-purge",
     "i18n-mo": "wp i18n make-mo languages/",

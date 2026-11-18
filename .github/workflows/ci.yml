@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-versions:
+    name: PHP versions from readme
+    runs-on: ubuntu-latest
+    outputs:
+      min: ${{ steps.read.outputs.min }}
+      matrix: ${{ steps.read.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Every version from readme.txt "Requires PHP" up to the newest one listed here.
+      - id: read
+        run: |
+          min=$(grep -iE '^Requires PHP:' readme.txt | head -1 | sed -E 's/.*:[[:space:]]*([0-9]+\.[0-9]+).*/\1/')
+          if [ -z "$min" ]; then echo "::error file=readme.txt::'Requires PHP' not found"; exit 1; fi
+          all="7.4 8.0 8.1 8.2 8.3 8.4 8.5"
+          matrix=$(for v in $all; do printf '%s\n%s\n' "$min" "$v" | sort -V -C && echo "$v"; done | jq -Rnc '[inputs]')
+          echo "min=$min" >> "$GITHUB_OUTPUT"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "Requires PHP $min -> $matrix"
+
+  php-lint:
+    name: PHP lint (${{ matrix.php }})
+    needs: php-versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJSON(needs.php-versions.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: none
+
+      - name: php -l on every tracked PHP file
+        run: |
+          git ls-files -z '*.php' | xargs -0 -n1 -P4 php -l -d display_errors=1 -d error_reporting=-1 > lint.log 2>&1 || true
+          if grep -vE '^(No syntax errors detected|$)' lint.log; then exit 1; fi
+          echo "$(git ls-files '*.php' | wc -l) files OK"
+
+  phpcs:
+    name: PHPCS (PHP ${{ needs.php-versions.outputs.min }}+)
+    needs: php-versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: cs2pr
+
+      # Installed outside the plugin so vendor/ (which ships in the zip) stays untouched.
+      - name: Install PHPCS and standards
+        run: |
+          composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer global require --no-interaction --no-progress \
+            squizlabs/php_codesniffer:^3.13 \
+            wp-coding-standards/wpcs:^3.4 \
+            phpcompatibility/phpcompatibility-wp:^2.1
+          composer global config bin-dir --absolute 2>/dev/null >> "$GITHUB_PATH"
+
+      - name: Run PHPCS
+        run: |
+          phpcs -q --no-colors \
+            --runtime-set testVersion "${{ needs.php-versions.outputs.min }}-" \
+            --runtime-set ignore_warnings_on_exit 1 \
+            --report-full --report-checkstyle=phpcs.xml
+
+      - name: Annotate PR
+        if: always()
+        run: test -f phpcs.xml && cs2pr --graceful-warnings phpcs.xml || true
+
+  js:
+    name: JS lint, types, build (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22', '24']
+    defaults:
+      run:
+        working-directory: 3d-viewer
+    steps:
+      # src/ imports ../bpl-tools, so both repos sit side by side like in wp-content/plugins.
+      - uses: actions/checkout@v4
+        with:
+          path: 3d-viewer
+
+      - uses: actions/checkout@v4
+        with:
+          repository: bPlugins/bpl-tools
+          ref: main
+          path: bpl-tools
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: 3d-viewer/package.json
+
+      - name: Install
+        run: npm install --legacy-peer-deps --no-audit --no-fund
+
+      - name: ESLint
+        run: npm run lint:js
+
+      - name: TypeScript
+        run: npm run check-types
+
+      - name: Build
+        run: npx wp-scripts build --webpack-copy-php
