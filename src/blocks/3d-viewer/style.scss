@@ -351,23 +351,25 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
     max-height: 35px !important;
     max-width: 35px !important;
     cursor: pointer !important;
-    background: #fff !important;
-    padding: 4px !important;
-    border-radius: 5px !important;
-    border: 1px solid #e8e8e8 !important;
+    // Round chips, without backdrop-filter (it re-blurs the canvas every frame on phones).
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 6px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
     box-sizing: border-box !important;
     z-index: 999 !important;
   }
 
   // Controls are real buttons now: neutralise theme button styles so they look as before.
   button.control-btn {
+    position: relative;
     appearance: none;
     margin: 0;
     font-size: 0;
     line-height: 0;
-    color: inherit !important;
+    color: #111827 !important;
     text-transform: none;
-    box-shadow: none !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 16px rgba(15, 23, 42, 0.1) !important;
     text-shadow: none;
     letter-spacing: normal;
     transform: none;
@@ -383,8 +385,12 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
       outline: none;
     }
 
+    &:hover {
+      background: rgba(255, 255, 255, 0.95) !important;
+    }
+
     &:focus-visible {
-      outline: 2px solid #2271b1 !important;
+      outline: 2px solid var(--bp3d-accent, #2563eb) !important;
       outline-offset: 2px;
     }
   }
@@ -404,40 +410,77 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.45);
+    // The card and code shrink to the viewer's height (short shop-card viewers); ignored where cq units are not supported.
+    container-type: size;
 
     .qr-content {
       position: relative;
-      width: 180px;
+      width: 240px;
       max-width: calc(100% - 32px);
+      max-height: calc(100cqh - 24px);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       background: #fff;
-      border-radius: 8px;
+      border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       box-sizing: border-box;
-      padding: 20px 16px 16px;
-      text-align: center;
-      font-size: 12px;
+      padding: 22px 20px 18px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 13px;
+      color: #1e1e1e;
+
+      strong {
+        display: block;
+        padding-right: 28px;
+        font-size: 15px;
+        line-height: 1.3;
+      }
 
       p {
-        margin: 8px 0;
-        line-height: normal;
+        margin: 6px 0 12px;
+        color: #4b5563;
+        line-height: 1.45;
       }
 
       img {
         display: block;
+        width: 100%;
+        height: auto;
+        max-height: max(80px, calc(100cqh - 150px));
         margin: 0 auto;
+        object-fit: contain;
+      }
+
+      &::-webkit-scrollbar {
+        display: none;
       }
     }
 
+    .qr-content__code {
+      display: block;
+      padding: 12px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    // !important to beat the round .control-btn chip it is built from.
     .qr-content-close {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 24px;
-      height: 24px;
-      min-width: 0;
-      padding: 4px;
-      border: 0;
-      background: none;
+      top: 12px;
+      right: 12px;
+      width: 28px !important;
+      height: 28px !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      max-width: none !important;
+      max-height: none !important;
+      padding: 5px !important;
+      border: 1px solid rgba(15, 23, 42, 0.12) !important;
+      border-radius: 8px !important;
+      background: #fff !important;
       color: inherit;
 
       svg { width: 100%; height: 100%; }
@@ -497,4 +540,63 @@ div#st-primary-content .product.type-product .woocommerce-product-gallery.images
 // shrank its overflow-hidden slider to nothing; the container keeps the float to itself.
 .bp3d-woo-fallback-viewer {
   display: flow-root;
+}
+
+// Touch targets: every control keeps its drawn size but gets an invisible hit area of at least 44px.
+.modelViewerBlock :is(.control-btn, .qr-content-close)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+}
+
+// Hover and press feedback: 120 ms scale only, so the control colours stay as set.
+.modelViewerBlock .control-btn {
+  transition: transform 120ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.modelViewerBlock .control-btn:hover {
+  transform: scale(1.06);
+}
+
+.modelViewerBlock .control-btn:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modelViewerBlock .control-btn {
+    transition: none;
+  }
+
+  .modelViewerBlock .control-btn:is(:hover, :active) {
+    transform: none;
+  }
+}
+
+// Right-to-left sites: model-viewer lays out its canvas with no `left`, so under RTL the model slides off the
+// stage. The stage stays LTR; what is slotted into it reads RTL again.
+[dir="rtl"] model-viewer {
+  direction: ltr;
+}
+
+[dir="rtl"] model-viewer > * {
+  direction: rtl;
+}
+
+[dir="rtl"] .modelViewerBlock .bp3d-qr-overlay .qr-content {
+  text-align: start;
+}
+
+[dir="rtl"] .modelViewerBlock .bp3d-qr-overlay .qr-content strong {
+  padding-right: 0;
+  padding-left: 28px;
+}
+
+[dir="rtl"] .modelViewerBlock .bp3d-qr-overlay .qr-content-close {
+  right: auto;
+  left: 12px;
 }

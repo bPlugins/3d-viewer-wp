@@ -30,6 +30,7 @@ final class Settings
         \BP3D\Helper\Registrar::createSection(self::PREFIX, [
             'id' => 'fluentcart-settings',
             'title' => __('FluentCart', '3d-viewer'),
+            'icon' => 'fas fa-shopping-cart',
             'fields' => [
                 [
                     'id' => FluentCart::SWITCH,

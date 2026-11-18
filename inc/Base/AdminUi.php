@@ -185,7 +185,7 @@ final class AdminUi
 
     private static function here(): string
     {
-        return isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '';
+        return isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
     }
 
     /** `option_meta` for the Lite / Advanced mode grid; Codestar ignores the key. */
@@ -227,7 +227,7 @@ final class AdminUi
 
         // Without redirect_to or a Referer the admin would land on a blank admin-post.php.
         $fallback = admin_url('edit.php?post_type=bp3d-model-viewer&page=3dviewer-settings');
-        $target = isset($_GET['redirect_to']) && is_string($_GET['redirect_to']) ? wp_unslash($_GET['redirect_to']) : (string) wp_get_referer();
+        $target = isset($_GET['redirect_to']) && is_string($_GET['redirect_to']) ? esc_url_raw(wp_unslash($_GET['redirect_to'])) : (string) wp_get_referer();
         $target = '' === trim($target) ? $fallback : wp_validate_redirect($target, $fallback);
 
         wp_safe_redirect(add_query_arg('bp3d_admin_ui_switched', $to, $target));
@@ -254,8 +254,10 @@ final class AdminUi
         $canSwitch = '' === $locked && ($modern || self::bfieldsReady());
         $options = [
             self::MODERN => [__('New', '3d-viewer'), __('Switch to the new interface', '3d-viewer')],
-            self::CLASSIC => [__('Classic', '3d-viewer'), __('Switch to the classic interface', '3d-viewer')],
+            self::CLASSIC => [__('Classic (legacy)', '3d-viewer'), __('Switch to the classic interface', '3d-viewer')],
         ];
+        // Classic is the fallback; keep this list in step with what is New-only.
+        $legacy = $canSwitch ? __('Classic is the older form, kept as a fallback. It lacks the newer tools: the preview beside the form, the redesigned viewer list and saving without a reload. New features come to New only.', '3d-viewer') : '';
         $current = $modern ? self::MODERN : self::CLASSIC;
         $segments = '';
 
@@ -273,8 +275,10 @@ final class AdminUi
             'type' => 'content',
             'icon' => 'monitor',
             'title' => __('Admin interface', '3d-viewer'),
-            'subtitle' => $subtitle,
-            'content' => '<div class="bp3d-admin-ui-switch" role="group" aria-label="' . esc_attr__('Admin interface', '3d-viewer') . '">' . $segments . '</div>',
+            'subtitle' => $modern && '' !== $legacy ? $subtitle . ' ' . $legacy : $subtitle,
+            // Codestar prints no desc for a content field and its subtitle column is narrow, so Classic puts the note under the switch.
+            'content' => '<div class="bp3d-admin-ui-switch" role="group" aria-label="' . esc_attr__('Admin interface', '3d-viewer') . '">' . $segments . '</div>'
+                . (!$modern && '' !== $legacy ? '<p class="description bp3d-admin-ui-legacy">' . esc_html($legacy) . '</p>' : ''),
         ];
     }
 
@@ -302,11 +306,17 @@ final class AdminUi
             )
             : '';
 
+        // Classic draws no preview beside the form, so say where it is.
+        $note = !$modern && 'viewer' === $surface
+            ? '<br><span class="description bp3d-admin-ui-legacy">' . esc_html__('No preview beside the form in Classic: use Live Preview or the Preview tab.', '3d-viewer') . '</span>'
+            : '';
+
         printf(
-            '<div class="misc-pub-section bp3d-admin-ui-row">%s <strong>%s</strong>%s</div>',
+            '<div class="misc-pub-section bp3d-admin-ui-row">%s <strong>%s</strong>%s%s</div>',
             esc_html__('3D Viewer interface:', '3d-viewer'),
-            $modern ? esc_html__('New', '3d-viewer') : esc_html__('Classic', '3d-viewer'),
-            $link // Escaped above.
+            $modern ? esc_html__('New', '3d-viewer') : esc_html__('Classic (legacy)', '3d-viewer'),
+            wp_kses_post($link),
+            wp_kses_post($note)
         );
     }
 

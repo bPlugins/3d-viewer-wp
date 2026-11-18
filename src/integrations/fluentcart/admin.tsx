@@ -333,6 +333,8 @@ const App = ({ config, productId }: { config: Config; productId: number }) => {
                 <div className="fct-card-header">
                     <div className="flex-1">
                         <h2 className="fct-card-header-title">{__('3D Model', '3d-viewer')}</h2>
+                        {/* UI/UX 2.2 fc-save-hint: the tab has no button of its own; FluentCart's bar appears after the first edit. */}
+                        <p className="bp3d-fct-admin__save-hint">{__('Changes save with the Update bar that appears after an edit (or Ctrl+S / ⌘S).', '3d-viewer')}</p>
                     </div>
                 </div>
                 <div className="bp3d-fct-admin__body">

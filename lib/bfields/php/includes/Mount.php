@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.WP.I18n.TextDomainMismatch -- bundled library with its own text domain.
 /**
  * bfields — the mount node every screen prints.
  *
@@ -67,7 +68,7 @@ final class Mount
 		// hook the bundle looks for. The root element carries both.
 		printf(
 			'<div class="bfields-root bfields-app"%1$s%2$s>',
-			$attrs, // Escaped above.
+			$attrs, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where built above.
 			'' === $style ? '' : ' style="' . esc_attr($style) . '"'
 		);
 
@@ -86,7 +87,7 @@ final class Mount
 
 		echo '<div class="bfields-fallback__loading" role="status">';
 		echo '<span class="screen-reader-text">' . esc_html('metabox' === $kind ? __('Loading these settings…', 'bfields') : __('Loading the settings…', 'bfields')) . '</span>';
-		echo self::skeleton($kind, $schema, $data); // Static markup.
+		echo self::skeleton($kind, $schema, $data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static markup; $kind is escaped inside.
 		echo '</div>';
 
 		echo '<div class="bfields-fallback__stuck"><div class="notice notice-warning inline"><p>';
@@ -213,7 +214,7 @@ final class Mount
 		$safety = max(60, $delay);
 
 		echo '<style id="bfields-fallback-style">'
-			. '.bfields-fallback__loading{display:block;margin:12px 0;overflow:hidden;animation:bfields-fallback-loading 1ms ' . $safety . 's both}'
+			. '.bfields-fallback__loading{display:block;margin:12px 0;overflow:hidden;animation:bfields-fallback-loading 1ms ' . (int) $safety . 's both}'
 			. '.bfields-skel{display:flex;flex-direction:column;gap:20px}'
 			. '.bfields-skel__b{display:block;border-radius:8px;background:linear-gradient(90deg,#eceef1 25%,#f6f7f9 37%,#eceef1 63%) 0 0/400% 100%;animation:bfields-skel 1.4s ease infinite}'
 			. '.bfields-skel--options{padding:8px 48px 40px}'
@@ -255,7 +256,7 @@ final class Mount
 			. '@media (max-width:782px){.bfields-skel--options{padding:8px 16px 24px}.bfields-skel--page .bfields-skel__editor{padding:0}.bfields-skel__editor,.bfields-skel__panel--left{flex-direction:column}.bfields-skel__side,.bfields-skel__panel--left>.bfields-skel__tabs{width:100%;max-width:none}}'
 			. '@media (prefers-reduced-motion:reduce){.bfields-skel__b{animation:none}}'
 			. '@keyframes bfields-skel{from{background-position:100% 0}to{background-position:0 0}}'
-			. '.bfields-fallback__stuck{overflow:hidden;animation:bfields-fallback-stuck 1ms ' . $safety . 's both}'
+			. '.bfields-fallback__stuck{overflow:hidden;animation:bfields-fallback-stuck 1ms ' . (int) $safety . 's both}'
 			. '.bfields-fallback.is-stuck .bfields-fallback__loading{display:none}'
 			. '.bfields-fallback.is-stuck .bfields-fallback__stuck{animation:none}'
 			. '@keyframes bfields-fallback-loading{from{max-height:300em;visibility:visible}to{max-height:0;margin:0;visibility:hidden}}'

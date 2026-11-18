@@ -65,7 +65,6 @@ const Hero = ({ isPremium, name, count }: { isPremium: boolean; name: string; co
 
 const DemoCard = ({ demo, isPremium, onPreview }: { demo: DemoItem; isPremium: boolean; onPreview: () => void }) => {
     const [bg, color] = TONES[demo.tone];
-    const openLabel = sprintf(/* translators: %s: demo title. */ __('Open %s in a new tab', '3d-viewer'), demo.title);
 
     return <article className='bp3d-dash-demo'>
         <div>
@@ -80,18 +79,17 @@ const DemoCard = ({ demo, isPremium, onPreview }: { demo: DemoItem; isPremium: b
             </div>
         </div>
         <footer className='bp3d-dash-demo__foot'>
+            {/* UI/UX 2.2 dash-demos-help: one action per card; the preview has "Open in new tab". */}
             <button type='button' className='bp3d-dash-demo__preview' onClick={onPreview}>
                 {__('Preview', '3d-viewer')} <ArrowRight size={11.11} weight={1.85} />
             </button>
-            <a href={demo.url} {...openInNewTab} className='bp3d-dash-demo__go' aria-label={openLabel}>
-                <ArrowRight size={11.11} weight={1.85} />
-            </a>
         </footer>
     </article>;
 };
 
+// A full-width band under the grid (dash-demos-help): inside it, it read as one more demo.
 const NeedHelp = ({ pages }: any) => (
-    <aside className='bp3d-dash-help'>
+    <aside className='bp3d-dash-help bp3d-dash-help--band'>
         <div className='bp3d-dash-help__main'>
             <div className='bp3d-dash-help__intro'>
                 <span className='bp3d-dash-help__icon'><CircleHelp size={22.22} weight={1.85} /></span>
@@ -243,8 +241,9 @@ const Demos = (props: any) => {
         <div className='bp3d-dash-demos'>
             {shown.map((d, i) => <DemoCard key={d.url} demo={d} isPremium={isPremium} onPreview={() => setOpen(i)} />)}
             {!shown.length && <p className='bp3d-dash-text bp3d-dash-demos__empty'>{__('No demos match your search.', '3d-viewer')}</p>}
-            <NeedHelp {...props} />
         </div>
+
+        <NeedHelp {...props} />
 
         {open !== null && <DemoModal demos={shown} index={open} setIndex={setOpen} />}
     </div>;

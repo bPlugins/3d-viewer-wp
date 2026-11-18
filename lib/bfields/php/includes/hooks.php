@@ -76,12 +76,12 @@ if (!function_exists('bfields_bridge_csf_hooks')) {
 		};
 
 		add_filter("bfields_{$unique}_save", static function ($data, ...$context) use ($unique, $csf_args) {
-			return apply_filters_ref_array("csf_{$unique}_save", $csf_args($data, $context));
+			return apply_filters_ref_array("csf_{$unique}_save", $csf_args($data, $context)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Codestar compat hook.
 		}, 10, 3);
 
 		foreach (array('save_before', 'saved', 'save_after') as $event) {
 			add_action("bfields_{$unique}_{$event}", static function ($data, ...$context) use ($unique, $event, $csf_args) {
-				do_action_ref_array("csf_{$unique}_{$event}", $csf_args($data, $context));
+				do_action_ref_array("csf_{$unique}_{$event}", $csf_args($data, $context)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Codestar compat hook.
 			}, 10, 3);
 		}
 	}

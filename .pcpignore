@@ -1,0 +1,39 @@
+# Plugin Check (2.2.0+) exclusions for local scans: tick "Use .pcpignore" or pass --use-pcpignore.
+# Paths are relative to the plugin root; a trailing / means a folder. Not shipped (npm run zip lists its own files).
+
+# Third-party code (vendor/ IS shipped; checked upstream)
+vendor/
+node_modules/
+
+# Development folders
+.agents/
+.claude/
+.commandcode/
+.git/
+.vscode/
+artifacts/
+docs/
+plan/
+promo/
+src/
+test-results/
+tests/
+zip/
+
+# Development files
+.DS_Store
+.eslintrc.js
+.gitignore
+.pcpignore
+*.md
+blueprint.json
+composer.lock
+fs-config.json
+gulpfile.js
+package.json
+package-lock.json
+skills-lock.json
+temp.txt
+todo.txt
+tsconfig.json
+webpack.config.js

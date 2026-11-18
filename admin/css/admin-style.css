@@ -1,7 +1,11 @@
 /* Codestar (Classic interface) only; shared admin rules live in admin-common.css. */
 
+/* One line in the 225px nav: "WooCommerce Selectors" used to wrap at 15px. */
 .csf-theme-light .csf-nav-normal>ul li a {
-  font-size: 15px;
+  overflow: hidden;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .csf-metabox .ui-icon,
@@ -13,3 +17,76 @@
 .csf-metabox > .bp3d-model-preview {
   margin: 0 0 16px;
 }
+
+/* Viewer list shortcode chip: the Modern copy button in WordPress's look.
+   The old input clipped the closing bracket. Copy handler: build/admin-list.js. */
+.wp-list-table .bp3d-list-shortcode {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  margin: 0;
+  padding: 0 4px 0 12px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  background: #f6f7f7;
+  color: #1d2327;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.wp-list-table .bp3d-list-shortcode code {
+  overflow: hidden;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+}
+
+.wp-list-table .bp3d-list-shortcode:hover {
+  border-color: #2271b1;
+}
+
+.wp-list-table .bp3d-list-shortcode:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 1px;
+}
+
+.wp-list-table .bp3d-list-shortcode__icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #c3c4c7;
+  border-radius: 3px;
+  background: #fff;
+  color: #2271b1;
+}
+
+.wp-list-table .bp3d-list-shortcode__icon svg {
+  grid-area: 1 / 1;
+}
+
+.wp-list-table .bp3d-list-shortcode__check {
+  visibility: hidden;
+  color: #00a32a;
+}
+
+.wp-list-table .bp3d-list-shortcode.is-copied {
+  border-color: #00a32a;
+}
+
+.wp-list-table .bp3d-list-shortcode.is-copied .bp3d-list-shortcode__copy {
+  visibility: hidden;
+}
+
+.wp-list-table .bp3d-list-shortcode.is-copied .bp3d-list-shortcode__check {
+  visibility: visible;
+}
+

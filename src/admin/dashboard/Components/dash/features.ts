@@ -57,6 +57,35 @@ export const planFeatures = (plan?: Plan): Feature[] => (plan?.features || []).m
     return { key, title: copy ? copy[0] : featureText(title), desc: copy ? copy[1] : '' };
 });
 
+/*
+ * Free vs Pro rows, mirroring the comparison table on bplugins.com/products/3d-viewer/pricing/.
+ * Exposure/shadow (free) and presets (Pro) follow the code where that page differs.
+ */
+export const COMPARE_ROWS: (Feature & { free: boolean })[] = [
+    { key: 'configurator', free: false, title: __('3D Product Configurator for WooCommerce', '3d-viewer'), desc: '' },
+    { key: 'cloud-storage', free: false, title: __('Cloud storage extension', '3d-viewer'), desc: '' },
+    { key: 'hotspots', free: false, title: __('Hotspots and annotations', '3d-viewer'), desc: __('Point out product details.', '3d-viewer') },
+    { key: 'gallery', free: false, title: __('Several 3D models in one viewer gallery', '3d-viewer'), desc: '' },
+    { key: 'variations', free: false, title: __('A different 3D model for each WooCommerce variation', '3d-viewer'), desc: '' },
+    { key: 'autorotate', free: false, title: __('Auto-rotate and autoplay', '3d-viewer'), desc: '' },
+    { key: 'camera', free: false, title: __('A custom camera angle for the first view', '3d-viewer'), desc: '' },
+    { key: 'elementor-full', free: false, title: __('Full viewer settings in the Elementor widget', '3d-viewer'), desc: '' },
+    { key: 'tone-mapping', free: false, title: __('Tone mapping and textures', '3d-viewer'), desc: '' },
+    { key: 'presets', free: false, title: __('Saved viewer presets', '3d-viewer'), desc: '' },
+    { key: 'ar', free: true, title: __('Augmented reality', '3d-viewer'), desc: __('Visitors on supported phones place the model in their own room, and desktop visitors scan a QR code to open it on their phone.', '3d-viewer') },
+    { key: 'woocommerce', free: true, title: __('3D models on WooCommerce product pages', '3d-viewer'), desc: '' },
+    { key: 'fluentcart', free: true, title: __('3D models on FluentCart product pages', '3d-viewer'), desc: '' },
+    { key: 'dokan', free: true, title: __('Dokan marketplaces', '3d-viewer'), desc: __('Vendors add 3D models to their own products.', '3d-viewer') },
+    { key: 'formats', free: true, title: __('GLB, GLTF, OBJ, STL, FBX and more', '3d-viewer'), desc: '' },
+    { key: 'builders', free: true, title: __('Gutenberg block, shortcode and Elementor widget', '3d-viewer'), desc: '' },
+    { key: 'controls', free: true, title: __('Rotate, pan and zoom by mouse or touch', '3d-viewer'), desc: '' },
+    { key: 'lighting', free: true, title: __('Lighting, shadow intensity and exposure controls', '3d-viewer'), desc: '' },
+    { key: 'lazy', free: true, title: __('Lazy loading', '3d-viewer'), desc: __('Models load only when they scroll into view.', '3d-viewer') },
+    { key: 'external-url', free: true, title: __('Load models from an external URL', '3d-viewer'), desc: '' },
+    { key: 'poster', free: true, title: __('A poster image while the model loads', '3d-viewer'), desc: '' },
+    { key: 'progress', free: true, title: __('Loading progress as a percentage', '3d-viewer'), desc: __('In the Gutenberg block and Elementor widget.', '3d-viewer') },
+];
+
 /* Plan blurbs with the design's tense fix (P4); anything else shows Freemius' own. */
 export const planBlurb = (plan: Plan): string => ({
     pro: __('Includes some awesome premium features.', '3d-viewer'),

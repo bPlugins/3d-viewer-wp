@@ -8,7 +8,8 @@ interface StepperProps {
 }
 
 const Stepper: React.FC<StepperProps> = ({ current = 1, onExit }) => {
-    const steps = [__('Model', '3d-viewer'), __('Customize', '3d-viewer'), __('Publish', '3d-viewer')];
+    // UI/UX 2.2 wiz-step-labels: named for what each step is; no step adds, customises or publishes a model.
+    const steps = [__('Welcome', '3d-viewer'), __("What's included", '3d-viewer'), __('How you\'ll add models', '3d-viewer')];
 
     return (
         <nav className="bp3d-ob-stepper" aria-label={__('Setup progress', '3d-viewer')}>

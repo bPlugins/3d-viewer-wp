@@ -30,9 +30,9 @@ const Options = ({ attributes, setAttributes }: OptionsProps) => {
 
             <BInfoControl Component={ToggleControl} className="mt5" label={__("Show Loading Percentage", "3d-viewer")} checked={loadingPercentage} onChange={() => setAttributes({ loadingPercentage: !loadingPercentage })} info={helpText.loadingPercentage} />
 
-            <BInfoControl Component={ToggleControl} className="mt5" label={__("Show Progressbar", "3d-viewer")} checked={progressBar} onChange={() => setAttributes({ progressBar: !progressBar })} info={helpText.progressBar} />
+            <BInfoControl Component={ToggleControl} className="mt5" label={__("Show progress bar", "3d-viewer")} checked={progressBar} onChange={() => setAttributes({ progressBar: !progressBar })} info={helpText.progressBar} />
 
-            <BInfoControl Component={ToggleControl} className="mt10" label={__("Camera/Capture Button", "3d-viewer")} checked={cameraBtn} onChange={() => setAttributes({ cameraBtn: !cameraBtn })} info={helpText.cameraBtn} />
+            <BInfoControl Component={ToggleControl} className="mt10" label={__("Capture image", "3d-viewer")} checked={cameraBtn} onChange={() => setAttributes({ cameraBtn: !cameraBtn })} info={helpText.cameraBtn} />
             <BInfoControl Component={ToggleControl} className="mt10" label={__("3D File Download Button", "3d-viewer")} checked={downloadBtn} onChange={() => setAttributes({ downloadBtn: !downloadBtn })} info={helpText.downloadBtn} />
             <BInfoControl Component={ToggleControl} className="mt10" label={__("Zoom In/Out Button", "3d-viewer")} checked={zoomInOutBtn} onChange={() => setAttributes({ zoomInOutBtn: !zoomInOutBtn })} info={helpText.zoomInOutBtn} />
 

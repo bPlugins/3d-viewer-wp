@@ -399,7 +399,7 @@ final class RestMetaGuard
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- see readRows().
             $wpdb->insert(
                 $wpdb->postmeta,
-                ['meta_id' => $meta_id, 'post_id' => $post_id, 'meta_key' => $row['key'], 'meta_value' => $row['value']],
+                ['meta_id' => $meta_id, 'post_id' => $post_id, 'meta_key' => $row['key'], 'meta_value' => $row['value']], // phpcs:ignore WordPress.DB.SlowDBQuery -- insert, not a lookup.
                 ['%d', '%d', '%s', '%s']
             );
             $changed = true;

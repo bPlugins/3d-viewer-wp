@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 export interface SelectOption {
     label: string;
     value: string;
@@ -21,13 +22,13 @@ export const defaultEnvironmentImages: SelectOption[] = [
 export const modelViewers = (placement: string): ViewerOption[] => {
     if (placement === 'visual-editor') {
         return [
-            { label: 'Support only .glb, .glTF', value: 'modelViewer', icon: 'Lite' },
+            { label: __('GLB and glTF, every feature', '3d-viewer'), value: 'modelViewer', icon: 'Lite' },
         ];
     } else {
         return [
-            { label: 'Support only .glb, .glTF', value: 'modelViewer', icon: 'Lite' },
+            { label: __('GLB and glTF, every feature', '3d-viewer'), value: 'modelViewer', icon: 'Lite' },
             {
-                label: 'Support .obj, .3ds, .stl, .ply, .gltf, .off, .3dm, .fbx, .dae, .wrl, .3mf, .amf, .ifc, .step, .iges, .fcstd, and .bim  file types',
+                label: __('OBJ, STL, FBX, STEP and 14 more, fewer features', '3d-viewer'),
                 value: 'O3DViewer',
                 icon: 'Advanced',
             },

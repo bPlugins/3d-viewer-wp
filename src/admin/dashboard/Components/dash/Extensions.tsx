@@ -430,6 +430,16 @@ const Extensions = ({ extensions, pages }: any) => {
     </>;
 };
 
+// UI/UX 2.2 dash-ext-cards: our extensions' own marks, used when the catalogue sends no icon. Others keep their default icon.
+const EXT_MARKS: Record<string, JSX.Element> = {
+    'wc-3d-model-viewer-pro': <><path d="M3.5 7.5 9 4.5l5.5 3v6L9 16.5l-5.5-3z" /><path d="M3.5 7.5 9 10.5l5.5-3" /><path d="M9 10.5v6" /><path d="M17 7h4" /><circle cx="18.5" cy="7" r="1.6" fill="currentColor" stroke="none" /><path d="M17 12h4" /><circle cx="20" cy="12" r="1.6" fill="currentColor" stroke="none" /><path d="M17 17h4" /><circle cx="18" cy="17" r="1.6" fill="currentColor" stroke="none" /></>,
+    'cloud-storage-for-bplugins': <><path d="M7.3 18.4a4.8 4.8 0 0 1-.6-9.55 6.3 6.3 0 0 1 12.1-1.62 4.8 4.8 0 0 1-1.1 9.47" /><path d="M12 20.4v-8.8M12 11.6l-3 3M12 11.6l3 3" /></>,
+};
+
+const ExtMark = ({ id, size, weight }: { id: string; size: number; weight: number }) => (
+    <svg width={size} height={size} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={(weight * 24) / size} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>{EXT_MARKS[id]}</svg>
+);
+
 const ReloadDialog = ({ text, onLater }: { text: string; onLater: () => void }) => {
     const panel = useRef<HTMLDivElement>(null);
     const reloadButton = useRef<HTMLButtonElement>(null);
@@ -479,7 +489,10 @@ const ExtensionCard = ({ ext, data, busy, licenseKey, onKey, onToggle, onInstall
     let cta = null;
     if (!ext.installed) {
         if (ext.plugin_active) {
-            cta = <span className='bp3d-dash-btn bp3d-ext__done'><CircleCheck size={14} weight={1.75} /> {__('Active', '3d-viewer')}</span>;
+            // Active as a standalone plugin: the cover badge already says so, and Plugins is where it is turned off.
+            cta = data.canInstall && <a className='bp3d-dash-btn bp3d-dash-btn--ghost bp3d-ext__plugins' href='plugins.php'>
+                {__('Manage in Plugins', '3d-viewer')} <ArrowRight size={14} weight={1.75} />
+            </a>;
         } else if (ext.plugin_present) {
             cta = <button type='button' className='bp3d-dash-btn bp3d-dash-btn--primary bp3d-dash-extcard__cta' disabled={isBusy || blocked || missing.length > 0} onClick={onInstall}>
                 {busy === 'activate' ? <><span className='bp3d-x-spinner' /> {__('Activating…', '3d-viewer')}</> : __('Activate', '3d-viewer')}
@@ -499,13 +512,15 @@ const ExtensionCard = ({ ext, data, busy, licenseKey, onKey, onToggle, onInstall
 
     return <article className='bp3d-dash-extcard'>
         <div className='bp3d-dash-extcard__shot'>
-            {icon ? <img src={icon} alt='' /> : <span className='bp3d-ext__glyph'><Puzzle size={44} weight={1.25} /></span>}
+            {icon ? <img src={icon} alt='' /> : EXT_MARKS[ext.id]
+                ? <span className='bp3d-ext__glyph bp3d-ext__glyph--mark'><ExtMark id={ext.id} size={56} weight={1.25} /></span>
+                : <span className='bp3d-ext__glyph'><Puzzle size={44} weight={1.25} /></span>}
             <Tag className={`bp3d-ext__badge bp3d-ext__badge--${tone}`}>{label}</Tag>
         </div>
 
         <div className='bp3d-dash-extcard__body'>
             <div className='bp3d-dash-extcard__head'>
-                <span className='bp3d-dash-extcard__icon'><Box size={20} weight={1.75} /></span>
+                <span className='bp3d-dash-extcard__icon'>{EXT_MARKS[ext.id] ? <ExtMark id={ext.id} size={20} weight={1.75} /> : <Box size={20} weight={1.75} />}</span>
                 <div>
                     <h3 className='bp3d-dash-title'>{ext.name}</h3>
                     <div className='bp3d-dash-extcard__by'>

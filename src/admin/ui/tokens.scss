@@ -48,11 +48,11 @@
   --bp3d-ob-checkbox-fill: #3b82f6;
 
   --bp3d-ob-tile-green-bg: #eafbd8;
-  --bp3d-ob-tile-green-fg: #5db400;
+  --bp3d-ob-tile-green-fg: #3f8a00; /* UI/UX 2.2 wiz-tile-icons: 3.98:1 on its tile (#5db400 was 2.41:1) */
   --bp3d-ob-tile-blue-bg: #eff6ff;
   --bp3d-ob-tile-blue-fg: #2563eb;
   --bp3d-ob-tile-purple-bg: #efdffa;
-  --bp3d-ob-tile-purple-fg: #b953ff;
+  --bp3d-ob-tile-purple-fg: #9333ea; /* 4.26:1 (#b953ff was 2.89:1) */
 
   --bp3d-ob-gutenberg-fg: #2563eb;
   --bp3d-ob-elementor-fg: #ec4899;

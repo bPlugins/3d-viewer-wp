@@ -87,7 +87,7 @@ if (!function_exists('bfields_is_rest_request')) {
 	 */
 	function bfields_is_rest_request($unique = '')
 	{
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only routing check.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read-only routing check.
 		if (isset($_GET['rest_route'])) {
 			$route = is_string($_GET['rest_route']) ? (string) wp_unslash($_GET['rest_route']) : '';
 		} elseif (isset($_SERVER['REQUEST_URI'])) {

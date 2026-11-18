@@ -1,4 +1,4 @@
-import { jsonParse } from 'bp-utils';
+import jsonParse from '../utils/jsonParse';
 import FrontEnd, { FrontEndAttributes } from './Components/FrontEnd';
 
 const { createRoot } = (window as any).ReactDOM;

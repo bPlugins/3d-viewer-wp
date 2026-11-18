@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.WP.I18n.TextDomainMismatch -- bundled library with its own text domain.
 /**
  * bfields — options page: menu, mount node, REST save.
  *

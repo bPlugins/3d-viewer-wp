@@ -349,3 +349,15 @@ body:is(.bfields-screen, .bfields-page-editor) #wpfooter #footer-left a {
   flex: 1 0 100%;
   min-width: 0;
 }
+
+/* Viewer edit screen, Preview tab only: bfields holds the editor at 860px so tabs keep one height, which left
+   empty space under the preview card. Other tabs and other bfields screens keep it. */
+.bfields-app[data-unique="_bp3dimages_"] .bfields-editor:has(> .bfields-side--stage) {
+  min-height: 0;
+}
+
+/* 3D Viewer Settings: the card ends with its tab's fields instead of filling the window. */
+.bfields-app[data-unique="_bp3d_settings_"] .bfields-admin,
+.bfields-app[data-unique="_bp3d_settings_"] .bfields-settings-body {
+  min-height: 0;
+}

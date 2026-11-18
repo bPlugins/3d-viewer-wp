@@ -251,6 +251,7 @@ class ExtendMimeType
     /** Pattern scan of the whole file, for when XMLReader is missing or stopped early. */
     private static function rawXmlHasMarkup(string $file, bool $utf16): bool
     {
+        // phpcs:disable WordPress.WP.AlternativeFunctions -- streamed 1 MB reads; WP_Filesystem can only load the whole file.
         $handle = @fopen($file, 'rb');
         if (!$handle) {
             return false;
@@ -268,6 +269,7 @@ class ExtendMimeType
             $carry = substr($buffer, -4096);
         }
         fclose($handle);
+        // phpcs:enable WordPress.WP.AlternativeFunctions
 
         return $found;
     }

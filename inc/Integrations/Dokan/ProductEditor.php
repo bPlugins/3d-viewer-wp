@@ -91,7 +91,7 @@ class ProductEditor
             'type' => 'field',
             'variant' => 'bp3d_model',
             'section_id' => self::SECTION_ID,
-            'label' => __('Model files', '3d-viewer'),
+            'label' => __('3D viewer', '3d-viewer'), // The field holds the whole editor, not only files.
             'visibility' => true,
             'visibilities' => ['variation' => false],
             'is_custom' => true,

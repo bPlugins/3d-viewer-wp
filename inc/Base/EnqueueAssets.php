@@ -73,6 +73,12 @@ class EnqueueAssets
             wp_enqueue_style('bp3d-admin-list', BP3D_DIR . 'build/admin-list.css', [], self::styleVersion('build/admin-list.css'));
         }
 
+        // Classic viewer list: only the shortcode chip's copy handler (its look is in admin-style.css).
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if ($screen && 'edit' === $screen->base && 'bp3d-model-viewer' === $screen->post_type && !PostTypeModelViewer::isModernList() && file_exists(BP3D_PATH . 'build/admin-list.js')) {
+            wp_enqueue_script('bp3d-admin-list', BP3D_DIR . 'build/admin-list.js', [], self::buildVersion('admin-list'), true);
+        }
+
         // Live model preview inside the metabox (bp3d-model-viewer edit screen only).
         if ($post_type === 'bp3d-model-viewer' && in_array($hook_suffix, ['post.php', 'post-new.php'], true)) {
             if (!wp_script_is('bp3d-lib-model-viewer', 'registered')) {

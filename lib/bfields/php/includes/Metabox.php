@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.WP.I18n.TextDomainMismatch -- bundled library with its own text domain.
 /**
  * bfields — meta boxes: registration, mount node, save.
  *
@@ -270,7 +271,7 @@ final class Metabox
 
 		if (function_exists('use_block_editor_for_post') && use_block_editor_for_post($post)) {
 			/** This filter is documented in wp-admin/includes/post.php */
-			$boxes = apply_filters('filter_block_editor_meta_boxes', $boxes);
+			$boxes = apply_filters('filter_block_editor_meta_boxes', $boxes); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core hook.
 		}
 
 		if (empty($boxes[$screen->id]) || !is_array($boxes[$screen->id])) {
@@ -482,7 +483,7 @@ final class Metabox
 			return;
 		}
 
-		// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified per box below.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- verified per box below; unslashed and sanitized per field.
 		$posted = isset($_POST['bfields_values']) && is_array($_POST['bfields_values']) ? $_POST['bfields_values'] : array();
 		// phpcs:enable
 
@@ -735,8 +736,8 @@ final class Metabox
 	{
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- see in_place_response().
 		foreach (array('aa', 'mm', 'jj', 'hh', 'mn') as $unit) {
-			$hidden = isset($_POST['hidden_' . $unit]) ? wp_unslash($_POST['hidden_' . $unit]) : '';
-			$value  = isset($_POST[$unit]) ? wp_unslash($_POST[$unit]) : null;
+			$hidden = isset($_POST['hidden_' . $unit]) ? sanitize_text_field(wp_unslash($_POST['hidden_' . $unit])) : '';
+			$value  = isset($_POST[$unit]) ? sanitize_text_field(wp_unslash($_POST[$unit])) : null;
 
 			if (!empty($hidden) && $hidden !== $value) {
 				return true;

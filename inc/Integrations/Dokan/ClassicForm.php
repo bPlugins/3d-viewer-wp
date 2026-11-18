@@ -147,10 +147,10 @@ class ClassicForm
         if (is_wp_error($result)) {
             global $woocommerce_errors;
             if (!is_array($woocommerce_errors)) {
-                $woocommerce_errors = [];
+                $woocommerce_errors = []; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Dokan reads this global.
             }
             // Dokan's error template appends its own period.
-            $woocommerce_errors[] = rtrim($result->get_error_message(), '.');
+            $woocommerce_errors[] = rtrim($result->get_error_message(), '.'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
         }
     }
 

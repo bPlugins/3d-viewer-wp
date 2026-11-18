@@ -2,15 +2,14 @@
 
 
 /*
- * Plugin Name: 3D Viewer – Turn Product Pages into Interactive 3D Experiences
+ * Plugin Name: 3D Viewer - 3D Model Viewer & 3D Product Viewer with AR for WooCommerce
  * Plugin URI:  https://bplugins.com/
  * Description: Easily display interactive 3D models on the web. Supported File type .glb, .gltf,obj 3ds stl ply off 3dm fbx dae wrl 3mf amf ifc brep step iges fcstd bim
- * Version: 2.1.0
+ * Version: 2.1.1
  * Author: bPlugins
  * Author URI: https://bplugins.com
  * Requires PHP: 7.4
  * Requires at least: 6.5
- * Tested up to: 7.1
  * License: GPLv2 or later
  * Text Domain: 3d-viewer
  * Domain Path:  /languages
@@ -66,7 +65,7 @@ if (function_exists('bp3d_fs')) {
     if (defined('WP_DEBUG') && WP_DEBUG === true) {
         define('BP3D_VERSION', time());
     } else {
-        define('BP3D_VERSION', '2.1.0');
+        define('BP3D_VERSION', '2.1.1');
     }
 
     defined('BP3D_DIR') or define('BP3D_DIR', plugin_dir_url(__FILE__));
@@ -151,10 +150,12 @@ if (function_exists('bp3d_fs')) {
             public function load_plugin_textdomain()
             {
                 // Try the NEW slug first (for future translations from WordPress.org)
+                // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- bundled /languages files.
                 $loaded = load_plugin_textdomain('3d-viewer', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
                 // If that fails, fall back to the OLD domain (for existing user translations)
                 if (!$loaded) {
+                    // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- legacy model-viewer domain.
                     load_plugin_textdomain('model-viewer', false, dirname(plugin_basename(__FILE__)) . '/languages');
                 }
             }
@@ -169,9 +170,9 @@ if (function_exists('bp3d_fs')) {
         BP3D::get_instance();
     }
 
-    $bpem_bootstrap = BP3D_PATH . 'vendor/bp-extension-manager/bootstrap.php';
-    if (file_exists($bpem_bootstrap)) {
-        require_once $bpem_bootstrap;
+    $bp3d_bpem_bootstrap = BP3D_PATH . 'vendor/bp-extension-manager/bootstrap.php';
+    if (file_exists($bp3d_bpem_bootstrap)) {
+        require_once $bp3d_bpem_bootstrap;
     }
 
 

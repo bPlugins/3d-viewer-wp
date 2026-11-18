@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable WordPress.WP.I18n.TextDomainMismatch -- bundled library with its own text domain.
 /**
  * bfields — sanitization and validation on save.
  *

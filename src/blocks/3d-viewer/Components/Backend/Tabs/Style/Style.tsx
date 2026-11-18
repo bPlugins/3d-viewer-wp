@@ -114,8 +114,8 @@ const Style: React.FC<StyleProps> = ({ attributes, setAttributes, device }) => {
                 ]}
             />
             <ColorControl
-                value={bgColor || '#ffffff'}
-                defaultColor="#ffffff"
+                value={bgColor || 'transparent'}
+                defaultColor="transparent"
                 label={__('Background Color', "3d-viewer")}
                 onChange={(bgColor: string) => setAttributes({ styles: { ...styles, bgColor } })}
             />

@@ -88,15 +88,27 @@ body.bp3d-list-modern {
     }
 
     // ---- header ----------------------------------------------------------
+    // The Settings title row: logo, 12px, 22px title.
     .wrap .wp-heading-inline {
-        margin: 12px 12px 0 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin: 12px 16px 0 0;
         padding: 0;
-        color: $title;
-        font-size: 30px;
+        color: #000;
+        font-size: 22px;
         font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
+        line-height: 40px;
+        letter-spacing: -0.01em;
         vertical-align: middle;
+
+        &::before {
+            content: "";
+            flex: none;
+            width: 28px;
+            height: 28px;
+            background: url("../../../admin/images/logo.svg") center / contain no-repeat;
+        }
     }
 
     .wrap .page-title-action {
@@ -494,13 +506,15 @@ body.bp3d-list-modern {
             font-weight: 500;
         }
 
-        // Always shown, as in the design; core hides them off-screen until hover.
+        // Revealed on hover and keyboard focus, as core does; opacity instead of core's off-screen offset keeps the row height still.
         .row-actions {
             position: static;
             left: 0;
             padding-top: 2px;
             color: #c0c6d0;
             font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.12s ease;
 
             a {
                 color: $primary;
@@ -511,6 +525,12 @@ body.bp3d-list-modern {
             .delete a {
                 color: #d63638;
             }
+        }
+
+        tr:hover .row-actions,
+        tr:focus-within .row-actions,
+        tr.is-expanded .row-actions {
+            opacity: 1;
         }
 
         .column-date {
@@ -642,6 +662,20 @@ body.bp3d-list-modern {
         color: #7e22ce;
     }
 
+    .bp3d-list-thumb--none {
+        border-style: dashed;
+        border-color: #d8dce2;
+        background: #f6f7f9;
+        color: #9aa0a6;
+    }
+
+    .bp3d-list-thumb__none {
+        display: none; // grid cards only; a 48px tile has no room for it
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+    }
+
     .bp3d-list-thumb__format {
         display: none; // the Viewer column names the format in list view
     }
@@ -765,12 +799,25 @@ body.bp3d-list-modern {
     }
 }
 
+// Touch screens have no hover, so the row actions stay visible there, like core's body.mobile.
+@media (hover: none) {
+    body.bp3d-list-modern .wp-list-table .row-actions {
+        opacity: 1;
+    }
+}
+
+body.bp3d-list-modern.mobile .wp-list-table .row-actions {
+    opacity: 1;
+}
+
+// No row on this page has a poster: drop the Preview column. !important beats core's expanded-row display:block !important.
+body.bp3d-list-modern.bp3d-list-no-posters #posts-filter .wp-list-table .column-bp3d_thumb {
+    display: none !important;
+}
+
 // wp-admin's narrow layout: stack the toolbar, let the search fill the row.
 @media screen and (max-width: 782px) {
     body.bp3d-list-modern {
-        .wrap .wp-heading-inline {
-            font-size: 24px;
-        }
 
         .subsubsub {
             float: none;
@@ -814,46 +861,10 @@ body.bp3d-list-modern.bp3d-list-grid #posts-filter .wp-list-table {
     overflow: visible;
     background: transparent;
 
+    // Cards need no column header; sorting and select-all stay in list view.
     thead,
-    tbody {
-        display: block;
-    }
-
     tfoot {
         display: none;
-    }
-
-    // The header stays as a bar for select-all and sorting.
-    thead tr {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 16px;
-        padding: 0 8px;
-        border: 1px solid $border;
-        border-radius: 10px;
-        background: #fff;
-    }
-
-    thead th,
-    thead td {
-        display: none;
-        width: auto;
-        border: 0;
-    }
-
-    thead .check-column,
-    thead .column-title,
-    thead .column-date {
-        display: block;
-    }
-
-    thead .check-column {
-        padding: 12px 4px 12px 6px;
-    }
-
-    thead .column-title {
-        flex: 1;
     }
 
     tbody {
@@ -927,12 +938,10 @@ body.bp3d-list-modern.bp3d-list-grid #posts-filter .wp-list-table {
         border: 0;
         border-bottom: 1px solid #eef0f3;
         border-radius: 0;
+    }
 
-        > svg {
-            width: 48px;
-            height: 48px;
-            stroke-width: 1.2;
-        }
+    .bp3d-list-thumb__none {
+        display: block;
     }
 
     .bp3d-list-thumb__format {
@@ -1005,3 +1014,9 @@ body.bp3d-list-modern.bp3d-list-grid #posts-filter .wp-list-table {
         line-height: 17px;
     }
 }
+
+// No Preview tile above the title, so it makes room for the card's checkbox.
+body.bp3d-list-modern.bp3d-list-grid.bp3d-list-no-posters #posts-filter .wp-list-table .column-title {
+    padding-left: 46px;
+}
+

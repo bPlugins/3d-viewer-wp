@@ -22,7 +22,7 @@ final class Registrar
     public static function createOptions(string $unique, array $args = []): void
     {
         if (self::modern($unique)) {
-            // No Reset Section / Reset All in Modern; Classic keeps them.
+            // No Reset Section / Reset All in either mode.
             \BFields\Compat\Codestar::createOptions($unique, ['show_reset_section' => false, 'show_reset_all' => false] + $args + [
                 // Codestar shows search unless told otherwise; bfields does not.
                 'show_search' => true,
@@ -41,7 +41,7 @@ final class Registrar
             return;
         }
 
-        \CSF::createOptions($unique, $args);
+        \CSF::createOptions($unique, ['show_reset_section' => false, 'show_reset_all' => false] + $args);
     }
 
     /** The toolbar node Codestar adds for an options page (CSF_Options::add_admin_bar_menu()), so Modern keeps it. */

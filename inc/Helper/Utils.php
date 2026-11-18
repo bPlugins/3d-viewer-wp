@@ -154,6 +154,8 @@ class Utils
             'eStore',
             'Customify',
             'B Technologies',
+            // Custom single-product template without Woo's gallery hooks.
+            'Shop Zen',
         ];
 
         if ($is_not_compatible) {

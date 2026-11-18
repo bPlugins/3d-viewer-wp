@@ -31,6 +31,7 @@ const FALLBACK_GALLERIES: Array<{ selector: string; images?: string; beside?: bo
     // Woo's Product Gallery block (Ollie, Purple).
     { selector: '.wp-block-woocommerce-product-gallery', beside: true },
     { selector: '.wp-block-woocommerce-product-image-gallery' },
+    { selector: '.shop-zen-gallery' },
 ];
 
 const findGallery = (configured: string): Gallery | null => {

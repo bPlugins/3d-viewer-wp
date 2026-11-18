@@ -1,0 +1,2 @@
+- Prefers UI scrollbars to be visually hidden when they are not desired, while the underlying content can remain scrollable. Confidence: 0.85
+- Prefers validating UI changes in a real browser with the browser automation tool, relying on an already-running `npm run start` dev server for automatic updates and running `npm run build` only when needed. Confidence: 0.95

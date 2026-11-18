@@ -385,9 +385,10 @@ body.wp-admin:has(.bp3d-ob-page) #wpwrap {
   color: var(--bp3d-ob-tile-blue-fg);
 }
 
+// UI/UX 2.2 wiz-help-text: both lines at 12px.
 .bp3d-ob-help__sub {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.3;
   color: var(--bp3d-ob-text-quiet);
@@ -665,4 +666,9 @@ body.wp-admin:has(.bp3d-ob-page) #wpwrap {
     width: 24px;
     margin: 0 8px;
   }
+}
+
+// A step heading takes focus on Next / Back (wiz-step-focus); it is not a control, so no focus ring.
+.bp3d-ob-title:focus {
+  outline: none;
 }

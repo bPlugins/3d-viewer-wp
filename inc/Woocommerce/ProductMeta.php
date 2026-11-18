@@ -45,6 +45,8 @@ class ProductMeta
         Registrar::createMetabox($this->prefix, [
             'title' => esc_html__('3D Product Settings', '3d-viewer'),
             'post_type' => 'product',
+            // 'core' draws right after Woo's own boxes (Product data); 'high' would land above it. A user's own drag order still wins.
+            'priority' => 'core',
             'show_restore' => false,
         ]);
 
@@ -152,7 +154,7 @@ class ProductMeta
                 'title' => esc_html__('3D Source', '3d-viewer'),
                 'subtitle' => esc_html__('Upload Model Or Input Valid Model url', '3d-viewer'),
                 'desc' => esc_html__('Upload or paste a model URL. GLB and GLTF are supported; other formats need Premium.', '3d-viewer'),
-                'placeholder' => esc_html__('You Can Paste here Model url', '3d-viewer'),
+                'placeholder' => __('Paste a URL or upload a file', '3d-viewer'),
                 'default' => $url($models[0]['model_src'] ?? ''),
             ],
             [
@@ -161,7 +163,7 @@ class ProductMeta
                 'type' => 'upload',
                 'title' => __('3D Poster', '3d-viewer'),
                 'subtitle' => __('Upload Poster Or Input Valid poster/image url', '3d-viewer'),
-                'placeholder' => 'You Can Paste here Poster/image url',
+                'placeholder' => __('Paste a URL or upload an image', '3d-viewer'),
                 'desc' => __('This image will display until the model is either loaded or fails to load.', '3d-viewer'),
                 'default' => $url($models[0]['poster_src'] ?? ''),
             ],

@@ -53,6 +53,7 @@ class Init
             Woocommerce\SingleProduct::class,
             Addons\Blocks::class,
             Addons\Addons::class,
+            Promo::class,
             Addons\Controls\Controls::class,
             Integrations\FluentCart\FluentCart::class, // Optional FluentCart module; remove this line and inc/Integrations/FluentCart to drop it.
             Integrations\Dokan\Dokan::class, // Optional Dokan module; remove this line and inc/Integrations/Dokan to drop it.

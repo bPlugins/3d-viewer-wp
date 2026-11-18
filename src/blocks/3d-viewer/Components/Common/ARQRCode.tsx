@@ -99,7 +99,7 @@ const ARQRCode = ({ viewerRef, arLink, placement, uniqueId = 'bp3d' }: ARQRCodeP
 
     return <>
         <div className="ar-qrcode" ref={wrapperRef}>
-            <ControlButton className="ar-qr-opener" label={__('View in AR', '3d-viewer')} aria-expanded={qrVisible} aria-controls={panelId} buttonRef={openerRef} onClick={() => {
+            <ControlButton className="ar-qr-opener" label={__('View in AR', '3d-viewer')} aria-expanded={qrVisible} aria-controls={panelId} aria-haspopup="dialog" buttonRef={openerRef} onClick={() => {
                 if (viewerRef.current?.canActivateAR) {
                     viewerRef.current?.activateAR();
                 } else {
@@ -112,9 +112,9 @@ const ARQRCode = ({ viewerRef, arLink, placement, uniqueId = 'bp3d' }: ARQRCodeP
             <div className="bp3d-qr-overlay" onClick={() => setQrVisible(false)}>
                 <div className="qr-content" ref={dialogRef} id={panelId} role="dialog" aria-modal="true" aria-labelledby={titleId} onClick={(event: MouseEvent) => event.stopPropagation()}>
                     <ControlButton className="qr-content-close" label={__('Close QR code', '3d-viewer')} buttonRef={closeRef} onClick={() => setQrVisible(false)}><Close /></ControlButton>
-                    <strong id={titleId}>{__('QR Code', '3d-viewer')}</strong>
-                    {placement !== 'shop-loop-item' && <p>{__('Scan QR code to view in AR on mobile', '3d-viewer')}</p>}
-                    <img src={qrSrc} width="100%" alt={__('QR code to view in AR', '3d-viewer')} />
+                    <strong id={titleId}>{__('View in AR', '3d-viewer')}</strong>
+                    {placement !== 'shop-loop-item' && <p>{__('Point your phone camera at the code', '3d-viewer')}</p>}
+                    <span className="qr-content__code"><img src={qrSrc} width="100%" alt={__('QR code to view in AR', '3d-viewer')} /></span>
                 </div>
             </div>,
             portalTarget,

@@ -196,12 +196,13 @@ class ViewerListModern
     /** @param array{poster: string, format: string, viewer: string, count: int} $summary */
     private function renderThumb(array $summary): void
     {
-        echo '<span class="bp3d-list-thumb bp3d-list-thumb--' . esc_attr($summary['viewer']) . '">';
+        $none = $summary['poster'] === '';
+        echo '<span class="bp3d-list-thumb bp3d-list-thumb--' . esc_attr($summary['viewer']) . ($none ? ' bp3d-list-thumb--none' : '') . '">';
 
-        if ($summary['poster'] !== '') {
-            echo '<img src="' . esc_url($summary['poster']) . '" alt="" loading="lazy" decoding="async">';
+        if ($none) {
+            echo '<span class="bp3d-list-thumb__none">' . esc_html__('No poster', '3d-viewer') . '</span>';
         } else {
-            echo '<svg class="bp3d-list-thumb__icon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>';
+            echo '<img src="' . esc_url($summary['poster']) . '" alt="" loading="lazy" decoding="async">';
         }
 
         if ($summary['format'] !== '') {
@@ -270,11 +271,13 @@ class ViewerListModern
     /** A display preference, so like core's `mode` it is taken from the URL without a nonce. */
     public function saveView(): void
     {
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- display preference, like core's list `mode`.
         if (!PostTypeModelViewer::isModernList() || !isset($_GET['bp3d_view'])) {
             return;
         }
 
         $view = sanitize_key(wp_unslash($_GET['bp3d_view']));
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
         $user_id = get_current_user_id();
 
         if ($user_id && in_array($view, self::VIEWS, true) && $view !== self::view()) {
@@ -289,7 +292,34 @@ class ViewerListModern
     /** Spaces on both sides: other plugins append without one. */
     public function bodyClass($classes)
     {
-        return PostTypeModelViewer::isModernList() && self::view() === 'grid' ? $classes . ' bp3d-list-grid ' : $classes;
+        if (!PostTypeModelViewer::isModernList()) {
+            return $classes;
+        }
+
+        if (self::view() === 'grid') {
+            $classes .= ' bp3d-list-grid ';
+        }
+
+        // CSS hides the Preview column rather than the columns filter, so Quick Edit's ajax row keeps its cells.
+        return self::anyPoster() ? $classes : $classes . ' bp3d-list-no-posters ';
+    }
+
+    /** Whether any row of the current list page has a poster. */
+    private static function anyPoster(): bool
+    {
+        global $wp_query;
+
+        $posts = $wp_query instanceof \WP_Query && is_array($wp_query->posts) ? $wp_query->posts : [];
+
+        foreach ($posts as $post) {
+            // Hierarchical lists query `id=>parent`, so rows may be plain objects.
+            $id = is_object($post) ? (int) $post->ID : (int) $post;
+            if ($id && self::summary($id)['poster'] !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function renderViewToggle($which)

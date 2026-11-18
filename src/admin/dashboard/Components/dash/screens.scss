@@ -106,7 +106,8 @@
     color: var(--bp3d-dash-heading);
 
     &:focus { box-shadow: none; outline: 0; }
-    &::placeholder { color: var(--bp3d-dash-slate-3); }
+    // dash-contrast: slate-2 on white is 4.76:1 (slate-3 was 2.56:1).
+    &::placeholder { color: var(--bp3d-dash-slate-2); }
   }
 
   &--sm { height: 36px; }
@@ -118,7 +119,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 44px;
+  height: 40px;
   padding: 0 18px;
   border: 0;
   border-radius: 8px;

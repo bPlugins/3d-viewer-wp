@@ -4,7 +4,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { dispatch, useSelect } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 import { HeroArt, SearchField, Tag, openInNewTab } from './shared';
-import { Cuboid, Zap, CircleCheck, Box, Power, ExternalLink, ArrowRight, Lightbulb, Puzzle, Star, Blocks } from './icons';
+import { Cuboid, Zap, CircleCheck, Box, ExternalLink, ArrowRight, Lightbulb, Puzzle, Star, Blocks } from './icons';
 
 /*
  * The design's Extensions tab, filled with what Our Plugins has always listed: bPlugins'
@@ -85,7 +85,10 @@ const PluginCard = ({ plugin, path, initStatus, caps }: { plugin: any; path?: st
 
         <div className='bp3d-dash-extcard__body'>
             <div className='bp3d-dash-extcard__head'>
-                <span className='bp3d-dash-extcard__icon'><Box size={20} weight={1.75} /></span>
+                {/* The plugin's own icon; the 3D cube only when WordPress.org has none. */}
+                <span className={icon ? 'bp3d-dash-extcard__icon bp3d-dash-extcard__icon--img' : 'bp3d-dash-extcard__icon'}>
+                    {icon ? <img src={icon} alt='' /> : <Box size={20} weight={1.75} />}
+                </span>
                 <div>
                     <h3 className='bp3d-dash-title'>{name}</h3>
                     <div className='bp3d-dash-extcard__by'>
@@ -156,8 +159,8 @@ const OurPlugins = ({ slug, links, pages, extensions, canManageOptions, canInsta
         return out;
     }, [withStatus, filter, search, sort]);
 
-    const installedCount = counts.active + counts.inactive;
-    const countChip = sprintf(/* translators: %d: number of plugins listed. */ _n('%d Plugin', '%d Plugins', counts.all, '3d-viewer'), counts.all);
+    // UI/UX 2.2 dash-our-plugins: one count line instead of Installed / Active tiles that read 0 on most sites.
+    const countChip = sprintf(/* translators: %d: number of plugins listed. */ _n('%d free plugin', '%d free plugins', counts.all, '3d-viewer'), counts.all);
 
     const chips = [
         { id: 'all', label: __('All', '3d-viewer'), width: 73 },
@@ -184,7 +187,7 @@ const OurPlugins = ({ slug, links, pages, extensions, canManageOptions, canInsta
                         <div className='bp3d-dash-chips'>
                             <span className='bp3d-dash-chip' style={{ minWidth: 128 }}><Cuboid size={14} weight={1.5} /> {countChip}</span>
                             <span className='bp3d-dash-chip' style={{ minWidth: 122.5 }}><Zap size={14} weight={1.5} /> {__('One-Click Install', '3d-viewer')}</span>
-                            <span className='bp3d-dash-chip' style={{ minWidth: 138.67 }}><CircleCheck size={14} weight={1.5} /> {__('Free on WordPress.org', '3d-viewer')}</span>
+                            <span className='bp3d-dash-chip' style={{ minWidth: 138.67 }}><CircleCheck size={14} weight={1.5} /> {__('On WordPress.org', '3d-viewer')}</span>
                         </div>
                     </div>
                 </div>
@@ -192,24 +195,11 @@ const OurPlugins = ({ slug, links, pages, extensions, canManageOptions, canInsta
 
             <HeroArt
                 large
-                blobs={[{ left: 477, top: -198.6 }, { left: 658.04, top: -66.11 }]}
-                model={{ left: 541, top: 59.4 }}
-                degree={{ left: 727.44, top: 72.04 }}
-            >
-                {canActivatePlugins && <div className='bp3d-dash-stats'>
-                    <div className='bp3d-dash-stat'>
-                        <span className='bp3d-dash-stat__icon'><Box size={20} weight={2} /></span>
-                        <strong>{installedCount}</strong>
-                        <span>{__('Installed', '3d-viewer')}</span>
-                    </div>
-                    <span className='bp3d-dash-stats__rule' />
-                    <div className='bp3d-dash-stat'>
-                        <span className='bp3d-dash-stat__icon bp3d-dash-stat__icon--on'><Power size={20} weight={2} /></span>
-                        <strong>{counts.active}</strong>
-                        <span>{__('Active', '3d-viewer')}</span>
-                    </div>
-                </div>}
-            </HeroArt>
+                // No stat tiles here any more, so the headphones sit at the end like Demos and Tools.
+                blobs={[{ left: 742, top: -198.6 }, { left: 923.04, top: -66.11 }]}
+                model={{ left: 806, top: 59.4 }}
+                degree={{ left: 992.44, top: 72.04 }}
+            />
         </section>
 
         <div className='bp3d-dash-ext bp3d-dash-ext--plugins'>

@@ -35,7 +35,7 @@ class Viewer
   {
     $screen = get_current_screen();
     // Edit screen render only: saves read the stored row.
-    if (!$screen || 'bp3d-model-viewer' !== $screen->post_type || 'GET' !== ($_SERVER['REQUEST_METHOD'] ?? '')) {
+    if (!$screen || 'bp3d-model-viewer' !== $screen->post_type || 'GET' !== sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'] ?? ''))) {
       return;
     }
     add_filter('get_post_metadata', [$this, 'renderedRow'], 10, 4);
@@ -441,8 +441,8 @@ class Viewer
           'id' => 'bp_3d_camera_btn',
           'icon' => 'camera',
           'type' => 'switcher',
-          'title' => __('Camera Button', '3d-viewer'),
-          'subtitle' => __('Show/Hide Camera Button', '3d-viewer'),
+          'title' => __('Capture image', '3d-viewer'),
+          'subtitle' => __('Show a button that saves an image of the model', '3d-viewer'),
           'desc' => __("Show/Hide Camera Button in the 3D model viewer.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
           'text_off' => __('No', '3d-viewer'),
@@ -465,7 +465,8 @@ class Viewer
         array(
           'id' => 'bp_3d_loading',
           'icon' => 'loader',
-          'type' => 'radio',
+          // Classic: a button set like its neighbours; same stored value.
+          'type' => \BP3D\Helper\Registrar::modern($this->prefix) ? 'radio' : 'button_set',
           'title' => __('Loading Type', '3d-viewer'),
           'subtitle' => __('Choose Loading type, default:  \'Auto\' ', '3d-viewer'),
           'options' => array(
@@ -481,8 +482,8 @@ class Viewer
           'id' => 'bp_3d_progressbar',
           'icon' => 'sliders',
           'type' => 'switcher',
-          'title' => __('Progressbar', '3d-viewer'),
-          'subtitle' => __('Show/Hide Progressbar', '3d-viewer'),
+          'title' => __('Progress bar', '3d-viewer'),
+          'subtitle' => __('Show or hide the progress bar', '3d-viewer'),
           'desc' => __("Displays a progress bar during model loading to indicate loading status.", "3d-viewer"),
           'text_on' => __('Yes', '3d-viewer'),
           'text_off' => __('No', '3d-viewer'),
@@ -509,7 +510,7 @@ class Viewer
           'title' => __('3D Source for iOS (Optional)', '3d-viewer'),
           'subtitle' => __('Upload Model Or Input Valid Model url', '3d-viewer'),
           'desc' => __("Specifies the iOS-specific model file (.usdz) used for viewing the 3D model in AR on Apple devices.", "3d-viewer"),
-          'placeholder' => 'You Can Paste here Model url',
+          'placeholder' => __('Paste a URL or upload a file', '3d-viewer'),
           'sanitize' => [\BP3D\Helper\Utils::class, 'safeMediaUrl'],
           'dependency' => ['bp_3d_enable_ar|currentViewer', '==|==', '1|modelViewer', 'all']
         ),
@@ -555,7 +556,7 @@ class Viewer
           'icon' => 'move',
           'type' => 'dimensions',
           'title' => __('Width', '3d-viewer'),
-          'desc' => __("Sets the width of the 3D viewer. You can use values like %, px, or vw for responsive layouts.", "3d-viewer"),
+          'desc' => __("Sets the width of the 3D viewer. Use % for a width that follows its container, or a fixed unit such as px. Note: Width does not apply to the right-side live preview", "3d-viewer"),
           'default' => array(
             'width' => 100,
             'unit' => '%',

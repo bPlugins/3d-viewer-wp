@@ -694,7 +694,7 @@
   display: flex;
   flex-direction: column;
   gap: 13px;
-  height: 244px;
+  min-height: 244px;
   padding: 19.75px;
   border-radius: 9.88px;
   background: #fff;
@@ -738,6 +738,7 @@
   display: flex;
   align-items: center;
   gap: 9.88px;
+  min-width: 0;
 }
 
 .bp3d-dash-log__icon {
@@ -751,6 +752,23 @@
   font-size: 14px;
   line-height: 20px;
   color: #737373; /* #a5a5aa in the file: 2.45:1 */
+}
+
+// Phones: the date moves under the text, lined up with it.
+@media (max-width: 600px) {
+  .bp3d-dash-log__item {
+    flex-wrap: wrap;
+    gap: 4px 0;
+  }
+
+  .bp3d-dash-log__what {
+    flex: 1 1 100%;
+  }
+
+  .bp3d-dash-log__when {
+    margin-inline-start: calc(19.75px + 9.88px);
+    white-space: nowrap;
+  }
 }
 
 .bp3d-dash-log__rule {
@@ -1974,8 +1992,9 @@
   line-height: 13px;
 }
 
+// dash-contrast: #475569 on #f1f5f9 is 6.9:1 (slate-2 was 4.34:1).
 .bp3d-dash-subnav .bp3d-dash-search input::placeholder {
-  color: var(--bp3d-dash-slate-2);
+  color: var(--bp3d-dash-slate);
 }
 
 .bp3d-dash-shelf {
@@ -2140,6 +2159,19 @@
   background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
   box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
   color: #4f46e5;
+}
+
+.bp3d-dash-extcard__icon--img {
+  overflow: hidden;
+  background: none;
+  box-shadow: none;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .bp3d-dash-extcard__body > .bp3d-dash-text {

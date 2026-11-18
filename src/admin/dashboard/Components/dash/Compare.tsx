@@ -4,7 +4,7 @@ import { BillingToggle, PriceLoading } from './Pricing';
 import { SearchField, Tag } from './shared';
 import { CircleCheck, Check, X, List } from './icons';
 import { useProduct, cyclesOf, annualSaving, openCheckout, num, money, Cycle, Plan, Product } from './product';
-import { planFeatures, Feature } from './features';
+import { COMPARE_ROWS } from './features';
 
 /* "Not included" is a plain X at the check's size; the file's shrunken circle-x reads as a dot. */
 const Mark = ({ yes }: { yes: boolean }) => (yes
@@ -70,19 +70,13 @@ const Tiers = ({ product, pro, cycle }: { product: Product; pro: Plan; cycle: Cy
 
 const Compare = ({ freemius }: any) => {
     const { loading, product } = useProduct(freemius.product_id);
-    const free = product?.plans?.find((p) => p.name === 'free');
     const pro = product?.plans?.find((p) => p.name === 'pro');
     const cycles = cyclesOf(pro);
     const [picked, setCycle] = useState<Cycle>('annual');
     const cycle: Cycle = cycles.includes(picked) ? picked : (cycles[0] || 'annual');
     const [query, setQuery] = useState('');
 
-    // Rows follow Pro's list, free features first, exactly as the previous table sorted them.
-    const rows = useMemo(() => {
-        const inFree = new Set(planFeatures(free).map((f) => f.key));
-        const all: (Feature & { free: boolean })[] = planFeatures(pro).map((f) => ({ ...f, free: inFree.has(f.key) }));
-        return [...all.filter((r) => r.free), ...all.filter((r) => !r.free)];
-    }, [free, pro]);
+    const rows = COMPARE_ROWS;
 
     const shown = useMemo(() => {
         const q = query.trim().toLowerCase();

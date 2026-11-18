@@ -14,7 +14,7 @@ import { wpEvalFile } from '../wp';
  * without deleting it.
  */
 
-const LABEL: Record<AdminUiMode, string> = { modern: 'New', classic: 'Classic' };
+const LABEL: Record<AdminUiMode, string> = { modern: 'New', classic: 'Classic (legacy)' };
 const other = (mode: AdminUiMode): AdminUiMode => (mode === 'modern' ? 'classic' : 'modern');
 
 function renderNotice(screen: string, nodata = false): { html: string; ready: boolean; siteMode: string } {

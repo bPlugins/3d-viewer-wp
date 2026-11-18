@@ -1,5 +1,5 @@
 // Hides admin notices on every 3D Viewer screen (inc/admin.php); kept from bpl-tools/Admin/style.scss.
-.notice,
+.notice:not(#bp3d-promo-banner),
 .fs-notice,
 .fs_notice_board,
 div.fs-notice.promotion,

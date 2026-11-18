@@ -266,7 +266,7 @@ class VendorPolicy
         $authors = array_values(array_unique($authors));
 
         $placeholders = implode(',', array_fill(0, count($authors), '%d'));
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are built above; live value needed for the quota.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Placeholders and values are built above; live value needed for the quota.
         $ids = $wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND post_author IN ($placeholders) AND (guid LIKE %s OR guid LIKE %s OR post_mime_type LIKE %s)", array_merge($authors, ['%.glb', '%.usdz', 'model/%'])));
 
         $total = 0;

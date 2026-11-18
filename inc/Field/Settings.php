@@ -90,7 +90,7 @@ class Settings
 
     \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'id' => 'general-settings',
-      'title' => __('General Settings', '3d-viewer'),
+      'title' => \BP3D\Helper\Registrar::modern($this->prefix) ? __('General', '3d-viewer') : __('General Settings', '3d-viewer'),
       'icon' => 'fas fa-cog',
       'fields' => array(
         array(
@@ -108,7 +108,8 @@ class Settings
           'layout' => 'danger',
           'type' => 'switcher',
           'title' => __('Delete data on uninstall', '3d-viewer'),
-          'desc' => __('Delete data on uninstall', '3d-viewer'),
+          // Matches uninstall.php: keep the two in step.
+          'desc' => __('When you delete the plugin from the Plugins screen, this removes all 3D Viewer settings and viewers. Deactivating keeps everything. Nothing is removed while the Pro version is installed.', '3d-viewer'),
           'text_on' => __('Yes', '3d-viewer'),
           'text_off' => __('No', '3d-viewer'),
           'default' => false,
@@ -126,7 +127,7 @@ class Settings
 
     \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'id' => 'woocommerce-settings',
-      'title' => __('Woocommerce Settings', '3d-viewer'),
+      'title' => \BP3D\Helper\Registrar::modern($this->prefix) ? __('WooCommerce', '3d-viewer') : __('Woocommerce Settings', '3d-viewer'),
       'icon' => 'fas fa-shopping-cart',
       'fields' => array(
         array(
@@ -134,8 +135,7 @@ class Settings
           'icon' => 'cart',
           'type' => 'switcher',
           'title' => __('Woocommerce', '3d-viewer'),
-          'subtitle' => __('Enable / Disable Woocommerce Feature for 3D Viewer.', '3d-viewer'),
-          'desc' => __('Enable / Disable. Default is Enable.', '3d-viewer'),
+          'desc' => __('Adds 3D models to products and shows them on product pages.', '3d-viewer'),
           'default' => true,
         ),
         array(
@@ -151,7 +151,7 @@ class Settings
           'icon' => 'move',
           'type' => 'switcher',
           'title' => __('Moving Controls', '3d-viewer'),
-          'desc' => __('Use The Moving controls to enable user interaction', '3d-viewer'),
+          'desc' => __('Lets visitors rotate and pan the model with the mouse or a finger.', '3d-viewer'),
           'text_on' => __('Yes', '3d-viewer'),
           'text_off' => __('No', '3d-viewer'),
           'default' => true,
@@ -161,8 +161,7 @@ class Settings
           'icon' => 'zoom-in',
           'type' => 'switcher',
           'title' => __('Enable Zoom', '3d-viewer'),
-          'subtitle' => __('Enable or Disable Zoom Behaviour', '3d-viewer'),
-          'desc' => __('If you wish to disable zooming behaviour please choose No.', '3d-viewer'),
+          'desc' => __('Lets visitors zoom with the scroll wheel or a pinch. Needs Moving Controls.', '3d-viewer'),
           'text_on' => __('Yes', '3d-viewer'),
           'text_off' => __('No', '3d-viewer'),
           'text_width' => 60,
@@ -172,9 +171,10 @@ class Settings
         array(
           'id' => 'bp_3d_loading',
           'icon' => 'loader',
-          'type' => 'radio',
+          // Classic: a button set like its neighbours; same stored value.
+          'type' => \BP3D\Helper\Registrar::modern($this->prefix) ? 'radio' : 'button_set',
           'title' => __('Loading Type', '3d-viewer'),
-          'subtitle' => __('Choose Loading type, default:  \'Auto\' ', '3d-viewer'),
+          'desc' => __('When the model file starts downloading: Auto lets the browser decide, Lazy waits until the viewer scrolls into view, Eager starts with the page.', '3d-viewer'),
           'options' => array(
             'auto' => __('Auto', '3d-viewer'),
             'lazy' => __('Lazy', '3d-viewer'),
@@ -192,7 +192,7 @@ class Settings
   {
     \BP3D\Helper\Registrar::createSection($this->prefix, array(
       'id' => 'woocommerce-selectors',
-      'title' => __('WooCommerce Selectors', '3d-viewer'),
+      'title' => \BP3D\Helper\Registrar::modern($this->prefix) ? __('Woo Selectors', '3d-viewer') : __('WooCommerce Selectors', '3d-viewer'),
       'icon' => 'fas fa-crosshairs',
       'fields' => array(
         // 3D Model Options
@@ -258,7 +258,7 @@ class Settings
           'icon' => 'code',
           'type' => 'switcher',
           'title' => __('Enable Gutenberg', '3d-viewer'),
-          'subtitle' => __('Enable / Disable Gutenberg Shortcode Generator.', '3d-viewer'),
+          'subtitle' => __('New viewers open in the block editor. Off uses the 3D Viewer form. Existing viewers keep the editor they were made with.', '3d-viewer'),
           'default' => false,
         ),
       ) // End fields

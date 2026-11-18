@@ -159,12 +159,12 @@ export const welcomeInfo = (cleanAdminUrl: string) => {
         },
         // Newest first; the Welcome tab shows these rows as they are.
         changelogs: [
+            { version: '2.1.1', date: '2026-11-14', tag: 'viewer', text: __('Round viewer buttons with outline icons and a larger touch area', '3d-viewer') },
+            { version: '2.1.1', date: '2026-11-14', tag: 'viewer', text: __('Larger AR QR code card, titled View in AR', '3d-viewer') },
             { version: '2.1.0', date: '2026-11-02', tag: 'plugin', text: __('FluentCart integration: show 3D models on FluentCart product pages', '3d-viewer') },
             { version: '2.1.0', date: '2026-11-02', tag: 'plugin', text: __('Dokan integration: vendors can add 3D models to their own products', '3d-viewer') },
             { version: '2.0.0', date: '2026-10-15', tag: 'plugin', text: __('New admin interface, with a switch back to Classic in Settings', '3d-viewer') },
-            { version: '2.0.0', date: '2026-10-15', tag: 'plugin', text: __('Redesigned Help & Demos dashboard', '3d-viewer') },
-            { version: '1.9.4', date: '2026-09-26', tag: 'plugin', text: __('Redesigned the guided setup as a three-step onboarding', '3d-viewer') },
-            { version: '1.9.4', date: '2026-09-26', tag: 'plugin', text: __('Added a Monthly billing cycle to the Pricing page', '3d-viewer') }
+            { version: '2.0.0', date: '2026-10-15', tag: 'plugin', text: __('Redesigned Help & Demos dashboard', '3d-viewer') }
         ],
         changelogsUrl: `https://wordpress.org/plugins/${slug}/#developers`,
         // Pro-only in source (hotspots, galleries, per-variation models); AR and lighting are free.

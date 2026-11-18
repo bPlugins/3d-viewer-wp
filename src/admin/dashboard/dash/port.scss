@@ -71,18 +71,18 @@
   .bp3d-dash-home .bp3d-dash-hero__art { display: none; }
 }
 
-/* Demos: the thumbnails meet the copy below 1000px. */
+/* Demos and Our Plugins (no stats card since UI/UX 2.2): the art meets the copy below 1000px. */
 @container bp3d-hero (max-width: 999px) {
-  .bp3d-dash-wide .bp3d-dash-hero__art { display: none; }
+  :is(.bp3d-dash-wide, .bp3d-dash-hero--plugins) .bp3d-dash-hero__art { display: none; }
 }
 
-/* Our Plugins: the headphones reach the copy first; the stats card holds on longer. */
+/* Extensions: the headphones reach the copy first; the stats card holds on longer. */
 @container bp3d-hero (max-width: 1218px) {
-  :is(.bp3d-dash-hero--plugins, .bp3d-dash-hero--extensions) :is(.bp3d-dash-hero__model, .bp3d-dash-degree, .bp3d-dash-hero__blob) { display: none; }
+  .bp3d-dash-hero--extensions :is(.bp3d-dash-hero__model, .bp3d-dash-degree, .bp3d-dash-hero__blob) { display: none; }
 }
 
 @container bp3d-hero (max-width: 910px) {
-  :is(.bp3d-dash-hero--plugins, .bp3d-dash-hero--extensions) .bp3d-dash-hero__art { display: none; }
+  .bp3d-dash-hero--extensions .bp3d-dash-hero__art { display: none; }
 }
 
 /* ---- Welcome ---- */
@@ -283,3 +283,75 @@ html[dir="rtl"] .bp3d-dash-rtl-flip { scale: -1 1; }
 }
 
 .bp3d-dash-ext--plugins .bp3d-dash-extcard__author svg { color: #f59e0b; }
+
+/* dash-demos-help: the help card is a band under the demo grid, as tall as its content. */
+.bp3d-dash-help.bp3d-dash-help--band {
+  gap: 24px;
+  height: auto;
+}
+
+/* ---- UI/UX 2.2 adm-chrome: the bfields chrome — pill tabs, 40px buttons with 8px corners, 10px cards ---- */
+.bp3d-dash-nav {
+  border-radius: 10px;
+}
+
+.bp3d-dash-tabs {
+  align-self: center;
+  column-gap: 8px;
+  row-gap: 8px;
+  padding: 8px 0;
+}
+
+@media (max-width: 1439px) {
+  .bp3d-dash-tabs { column-gap: 8px; }
+}
+
+.bp3d-dash-tab.bp3d-dash-tab {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--bp3d-dash-line);
+  background: #fff;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bp3d-dash-tab.bp3d-dash-tab:not(.bp3d-dash-tab--current):hover {
+  box-shadow: inset 0 0 0 1px #cbd5e1;
+  color: var(--bp3d-dash-title);
+}
+
+.bp3d-dash-tab.bp3d-dash-tab--current {
+  box-shadow: none;
+  background: var(--bp3d-dash-blue);
+  color: #fff;
+  text-decoration: none;
+}
+
+.bp3d-dash-btn.bp3d-dash-btn {
+  height: 40px;
+  border-radius: 8px;
+}
+
+.bp3d-dash-hero,
+.bp3d-dash-qcard,
+.bp3d-dash-updates,
+.bp3d-dash-steps-card,
+.bp3d-dash-docs,
+.bp3d-dash-pro,
+.bp3d-dash-support,
+.bp3d-dash-help,
+.bp3d-dash-assure__card,
+.bp3d-dash-faq__item,
+.bp3d-dash-tier,
+.bp3d-dash-table,
+.bp3d-dash-stats,
+.bp3d-dash-shelf,
+.bp3d-dash-extcard,
+.bp3d-dash-exthelp {
+  border-radius: 10px;
+}
+
+.bp3d-dash-extcard__shot {
+  border-radius: 9px 9px 0 0;
+}

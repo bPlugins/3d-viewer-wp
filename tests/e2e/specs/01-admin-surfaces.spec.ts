@@ -9,9 +9,9 @@ test.describe('Admin surfaces', () => {
 
         // ShortCode column with a copyable [3d_viewer id=N] for the seeded model
         await expect(page.locator('#shortcode, th:has-text("ShortCode")').first()).toBeVisible();
-        const input = page.locator(`input[value="[3d_viewer id=${state.models.block.id}]"]`);
-        await expect(input).toHaveCount(1);
-        await expect(page.locator('.bp3d_shortcode_copy_icon').first()).toBeVisible();
+        const chip = page.locator('.bp3d-list-shortcode', { hasText: `[3d_viewer id="${state.models.block.id}"]` });
+        await expect(chip).toHaveCount(1);
+        await expect(chip).toBeVisible();
     });
 
     test('settings page renders the form with mime checkboxes', async ({ page, admin, adminUi: mode }) => {

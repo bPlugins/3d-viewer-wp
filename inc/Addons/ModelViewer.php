@@ -233,7 +233,7 @@ class ModelViewer extends \Elementor\Widget_Base
         ]);
 
         $this->add_control('progressBar', [
-            'label' => esc_html__('Show Progress Bar', '3d-viewer'),
+            'label' => esc_html__('Show progress bar', '3d-viewer'),
             'type' => \Elementor\Controls_Manager::SWITCHER,
             'return_value' => 'yes',
             'default' => 'yes',
@@ -260,7 +260,7 @@ class ModelViewer extends \Elementor\Widget_Base
         ]);
 
         $this->add_control('cameraBtn', [
-            'label' => esc_html__('Camera/Capture Button', '3d-viewer'),
+            'label' => esc_html__('Capture image', '3d-viewer'),
             'type' => \Elementor\Controls_Manager::SWITCHER,
             'label_on' => esc_html__('Show', '3d-viewer'),
             'label_off' => esc_html__('Hide', '3d-viewer'),

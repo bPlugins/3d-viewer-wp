@@ -51,7 +51,7 @@ test.describe('Guided setup wizard', () => {
         await expect(page.locator('#adminmenu')).toBeVisible();
         await expect(page.locator('body')).not.toHaveClass(/bpl-onboarding-fullscreen/);
 
-        await expect(page.locator('.bp3d-ob-stepper__label')).toHaveText(['Model', 'Customize', 'Publish']);
+        await expect(page.locator('.bp3d-ob-stepper__label')).toHaveText(['Welcome', "What's included", "How you'll add models"]);
         await expect(page.locator('.bp3d-ob-title')).toHaveCSS('font-family', /^Inter/);
 
         // Exit Setup lives on step 2 only.
