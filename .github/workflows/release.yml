@@ -39,42 +39,7 @@ jobs:
           [ "$const" = "$tag" ] || { echo "::error file=3d-viewer.php::BP3D_VERSION is $const, tag is $tag"; ok=0; }
           [ "$ok" = 1 ]
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
-          tools: composer, wp-cli
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: 3d-viewer/package.json
-
-      - name: Composer (production)
-        run: composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
-
-      - name: npm install
-        run: npm install --legacy-peer-deps --no-audit --no-fund
-
-      # Same script as a local release: build, i18n, zip.
-      - name: Build zip
-        run: |
-          mkdir -p languages zip
-          npm run build
-
-      - name: Check zip contents
-        run: |
-          unzip -Z1 zip/3d-viewer.zip > files.txt
-          for f in 3d-viewer.php readme.txt uninstall.php vendor/autoload.php vendor/freemius/wordpress-sdk/start.php \
-                   vendor/codestar-framework/codestar-framework.php vendor/bp-extension-manager/bootstrap.php \
-                   3d-viewer-block/build/block.json build/blocks/3d-viewer/block.json languages/3d-viewer.pot; do
-            grep -qxF "$f" files.txt || { echo "::error::$f missing from zip"; exit 1; }
-          done
-          if grep -E '(^|/)(node_modules|\.git|src|tests)/|\.map$|\.DS_Store$' files.txt; then
-            echo "::error::dev files in zip"; exit 1
-          fi
-          echo "$(wc -l < files.txt) files, $(du -h zip/3d-viewer.zip | cut -f1)"
+      - uses: ./3d-viewer/.github/actions/build-zip
 
       - name: Draft GitHub Release
         env:
@@ -87,8 +52,3 @@ jobs:
           [ -s notes.md ] || echo "See readme.txt changelog." > notes.md
           gh release create "$GITHUB_REF_NAME" zip/3d-viewer.zip \
             --draft --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: 3d-viewer-${{ github.ref_name }}
-          path: 3d-viewer/zip/3d-viewer.zip

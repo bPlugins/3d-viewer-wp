@@ -131,3 +131,37 @@ jobs:
 
       - name: Build
         run: npx wp-scripts build --webpack-copy-php
+
+  zip:
+    name: Plugin zip
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: 3d-viewer
+
+      - uses: actions/checkout@v4
+        with:
+          repository: bPlugins/bpl-tools
+          ref: main
+          path: bpl-tools
+
+      - uses: ./3d-viewer/.github/actions/build-zip
+
+      # Artifacts are always re-zipped on download, so ship a 3d-viewer/ folder:
+      # the download then installs straight into wp-content/plugins/3d-viewer.
+      - name: Stage plugin folder
+        run: unzip -q 3d-viewer/zip/3d-viewer.zip -d stage/3d-viewer
+
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 3d-viewer-pr${{ github.event.number }}-run${{ github.run_number }}
+          path: stage
+          retention-days: 14
+
+      - name: Summary
+        run: |
+          echo "### Plugin zip for PR #${{ github.event.number }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Download](${{ steps.upload.outputs.artifact-url }}) and upload it in Plugins → Add New → Upload Plugin. Kept for 14 days." >> "$GITHUB_STEP_SUMMARY"
