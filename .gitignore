@@ -5,7 +5,11 @@ bundled
 zip
 pricing-page
 /pricing-page
-/vendor/
+# vendor/ is mostly Composer output; these two libraries are committed because they ship in the zip.
+/vendor/*
+!/vendor/codestar-framework/
+!/vendor/bp-extension-manager/
+!/vendor/codestar-framework/languages/
 
 /build
 .codegpt
@@ -18,13 +22,15 @@ test-results
 build
 !/lib/bfields/build/
 !/lib/bfields/languages/
+# Legacy block output, built in the 3d-viewer-block repo.
+!/3d-viewer-block/build/
+!/vendor/bp-extension-manager/build/
 tsconfig.json
 !/tsconfig.json
 todo.txt
 temp.txt
 skills-lock.json
 bpluprint.json
-composer.lock
 fs-config.json
 gulpfile.js
 package-lock.json
