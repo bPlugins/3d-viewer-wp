@@ -78,6 +78,23 @@ class Dokan
         (new ProductEditor($this))->register();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets'], 20);
+        add_filter('bp3d_optimizer_exclusions', [$this, 'vendorExclusions']);
+    }
+
+    /**
+     * Speed plugins: keep the vendor editor, its dependencies (wp-element, wp-api-fetch…) and its config un-delayed.
+     *
+     * @param  mixed $set
+     * @return array<string, mixed>
+     */
+    public function vendorExclusions($set)
+    {
+        $set = is_array($set) ? $set : [];
+        $set['handles'][] = self::SCRIPT_HANDLE;
+        $set['inline'][] = 'var bp3dDokan =';
+        $set['inline'][] = self::SCRIPT_HANDLE . '-js-';
+
+        return $set;
     }
 
     public function policy(): VendorPolicy
