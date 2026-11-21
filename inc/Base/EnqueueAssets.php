@@ -33,8 +33,60 @@ class EnqueueAssets
             return $tag;
         }
 
-        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Modifying tag of an already enqueued script.
-        return '<script type="module" id="bp3d-lib-model-viewer-js" src="' . esc_url($src) . '"></script>';
+        return self::moduleTag((string) $tag, (string) $src, 'bp3d-lib-model-viewer-js');
+    }
+
+    /**
+     * Edits only the <script> that carries the src: type="module" always (it replaces text/javascript and a consent
+     * plugin's text/plain, as before, D7) and our id. Other attributes and inline before/after scripts are kept.
+     */
+    public static function moduleTag(string $tag, string $src, string $id): string
+    {
+        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Rebuilds the tag of an already enqueued script.
+        $rebuilt = '<script type="module" id="' . esc_attr($id) . '" src="' . esc_url($src) . '"></script>';
+
+        if (!class_exists('\WP_HTML_Tag_Processor')) {
+            return $rebuilt;
+        }
+
+        $target = self::srcTagIndex($tag, $src);
+        if ($target === null) {
+            return $rebuilt;
+        }
+
+        $processor = new \WP_HTML_Tag_Processor($tag);
+        $index = 0;
+        while ($processor->next_tag('script')) {
+            if ($index++ !== $target) {
+                continue;
+            }
+            $processor->set_attribute('type', 'module');
+            $processor->set_attribute('id', $id);
+            break;
+        }
+
+        return $processor->get_updated_html();
+    }
+
+    /** Position of the <script> whose src is $src, else of the first one with any src; null when none has one. */
+    private static function srcTagIndex(string $tag, string $src): ?int
+    {
+        $processor = new \WP_HTML_Tag_Processor($tag);
+        $first = null;
+        $index = 0;
+
+        while ($processor->next_tag('script')) {
+            $value = $processor->get_attribute('src');
+            if (is_string($value) && $value !== '') {
+                if ($value === $src || $value === html_entity_decode($src, ENT_QUOTES)) {
+                    return $index;
+                }
+                $first = $first ?? $index;
+            }
+            $index++;
+        }
+
+        return $first;
     }
 
 

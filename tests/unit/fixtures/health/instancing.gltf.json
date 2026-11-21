@@ -1,0 +1,16 @@
+{
+    "asset": { "version": "2.0" },
+    "extensionsUsed": ["EXT_mesh_gpu_instancing"],
+    "scenes": [{ "nodes": [0, 1] }],
+    "nodes": [
+        { "mesh": 0, "extensions": { "EXT_mesh_gpu_instancing": { "attributes": { "TRANSLATION": 2, "SCALE": 3 } } } },
+        { "mesh": 0 }
+    ],
+    "meshes": [{ "primitives": [{ "attributes": { "POSITION": 0 }, "indices": 1 }] }],
+    "accessors": [
+        { "componentType": 5126, "count": 24, "type": "VEC3" },
+        { "componentType": 5123, "count": 36, "type": "SCALAR" },
+        { "componentType": 5126, "count": 50, "type": "VEC3" },
+        { "componentType": 5126, "count": 50, "type": "VEC3" }
+    ]
+}

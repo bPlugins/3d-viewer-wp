@@ -9,6 +9,7 @@ import { ColorControl as BplColorControl } from '../../../../../../../../bpl-too
 import Device from '../../../../../../../../bpl-tools/Components/Device/Device';
 import StyleIcon from '../../../../../../icons/StyleIcon';
 import Title from '../../../../../../components/Title';
+import MoreInPro, { proItems } from '../../MoreInPro';
 
 // bpl-tools ships this as untyped JS forwardRef, so TS would see no props.
 const ColorControl = BplColorControl as React.ComponentType<any>;
@@ -122,6 +123,8 @@ const Style: React.FC<StyleProps> = ({ attributes, setAttributes, device }) => {
                 label={__('Background Color', "3d-viewer")}
                 onChange={(bgColor: string) => setAttributes({ styles: { ...styles, bgColor } })}
             />
+
+            <MoreInPro panel="style" items={proItems.style()} />
         </PanelBody>
     );
 };

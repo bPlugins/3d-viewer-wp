@@ -1,0 +1,17 @@
+{
+    "asset": { "version": "2.0" },
+    "extensionsUsed": ["EXT_meshopt_compression", "KHR_mesh_quantization"],
+    "extensionsRequired": ["EXT_meshopt_compression", "KHR_mesh_quantization"],
+    "scenes": [{ "nodes": [0] }],
+    "nodes": [{ "mesh": 0 }],
+    "meshes": [{ "primitives": [{ "attributes": { "POSITION": 0 }, "indices": 1 }] }],
+    "accessors": [
+        { "bufferView": 0, "componentType": 5123, "count": 400, "type": "VEC3", "normalized": false },
+        { "bufferView": 1, "componentType": 5123, "count": 600, "type": "SCALAR" }
+    ],
+    "bufferViews": [
+        { "buffer": 1, "byteLength": 2400, "byteStride": 8, "extensions": { "EXT_meshopt_compression": { "buffer": 0, "byteLength": 900, "byteStride": 8, "mode": "ATTRIBUTES", "count": 400 } } },
+        { "buffer": 1, "byteLength": 1200, "extensions": { "EXT_meshopt_compression": { "buffer": 0, "byteOffset": 900, "byteLength": 300, "byteStride": 2, "mode": "TRIANGLES", "count": 600 } } }
+    ],
+    "buffers": [{ "byteLength": 1200 }, { "byteLength": 3600, "extensions": { "EXT_meshopt_compression": { "fallback": true } } }]
+}

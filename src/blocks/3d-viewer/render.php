@@ -6,6 +6,7 @@ $bp3d_id = wp_unique_id('bp3d-viewer-');
 
 if ($attributes['currentViewer'] == 'modelViewer') {
     wp_enqueue_script_module('bp3d-lib-model-viewer');
+    do_action('bp3d_script_module_enqueued');
 } else if ($attributes['currentViewer'] == 'O3DViewer') {
     wp_enqueue_script('bp3d-lib-o3dviewer');
 }
@@ -17,7 +18,9 @@ if (isset($bp3d_attributes['model']['modelISOSrc'])) {
 }
 
 if (!isset($bp3d_attributes['loading'])) {
-    $bp3d_attributes['loading'] = !empty($bp3d_attributes['lazyLoad']) ? 'lazy' : 'eager';
+    // A Pro-built block stores lazyLoad as "auto", "lazy" or "eager".
+    $bp3d_lazy = $bp3d_attributes['lazyLoad'] ?? null;
+    $bp3d_attributes['loading'] = !empty($bp3d_lazy) && $bp3d_lazy !== 'eager' ? 'lazy' : 'eager';
 }
 
 $bp3d_class = trim('wp-block-b3dviewer-modelviewer ' . ($attributes['className'] ?? ''));

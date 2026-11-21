@@ -115,7 +115,7 @@ class Product
      *
      * @param array<string, mixed> $modelData
      */
-    private static function effectiveModelUrl(array $modelData): string
+    public static function effectiveModelUrl(array $modelData): string
     {
         return self::urlOf($modelData['bp3d_model_src'] ?? $modelData['bp3d_models']['0']['model_src'] ?? '');
     }
@@ -156,6 +156,11 @@ class Product
             return '';
         }
 
+        // Covers every render path, incl. the incompatible-theme footer and the first-image thumbnail (as `gallery`).
+        if (!Coexistence::show((int) $product->get_id(), $placement)) {
+            return '';
+        }
+
         $finalData = self::getProductAttributes($modelData);
 
         $class = Utils::getThemeClass();
@@ -186,6 +191,7 @@ class Product
             wp_enqueue_script('bp3d-lib-o3dviewer');
         } else {
             wp_enqueue_script_module('bp3d-lib-model-viewer');
+            do_action('bp3d_script_module_enqueued');
         }
 
         $content = ob_get_clean() ?: '';

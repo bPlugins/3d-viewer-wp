@@ -53,7 +53,8 @@ export interface BlockAttributes {
 	O3DVSettings: O3DVSettings;
 
 	// Loading
-	lazyLoad: boolean;
+	// Pro-built blocks store "auto" | "lazy" | "eager".
+	lazyLoad: boolean | string;
 	preload: string;
 
 

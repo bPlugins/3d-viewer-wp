@@ -77,6 +77,17 @@ final class FluentCart
         (new AdminPage())->register();
         (new Rest())->register();
         (new Storefront())->register();
+
+        add_filter('bp3d_optimizer_exclusions', [self::class, 'optimizerExclusions']);
+    }
+
+    /** Our storefront handle for OptimizerCompat, which only names the base handles. */
+    public static function optimizerExclusions($set)
+    {
+        $set = is_array($set) ? $set : [];
+        $set['handles'][] = self::FRONT_HANDLE;
+
+        return $set;
     }
 
     /**

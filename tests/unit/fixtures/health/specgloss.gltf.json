@@ -1,0 +1,12 @@
+{
+    "asset": { "version": "2.0" },
+    "extensionsUsed": ["KHR_materials_pbrSpecularGlossiness"],
+    "scenes": [{ "nodes": [0] }],
+    "nodes": [{ "mesh": 0 }],
+    "meshes": [{ "primitives": [{ "attributes": { "POSITION": 0 }, "material": 0 }] }],
+    "materials": [
+        { "name": "Body", "extensions": { "KHR_materials_pbrSpecularGlossiness": { "diffuseFactor": [0.8, 0.2, 0.1, 1] } } },
+        { "name": "Trim", "pbrMetallicRoughness": { "baseColorFactor": [0.2, 0.2, 0.2, 1] }, "extensions": { "KHR_materials_pbrSpecularGlossiness": { "diffuseFactor": [0.2, 0.2, 0.2, 1] } } }
+    ],
+    "accessors": [{ "componentType": 5126, "count": 3, "type": "VEC3" }]
+}

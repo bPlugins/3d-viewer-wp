@@ -6,6 +6,7 @@ import { useBlockProps, MediaUpload } from "@wordpress/block-editor";
 import { Button, PanelRow, TextControl } from "@wordpress/components";
 
 import Settings from "./settings";
+import SpecGlossNotice from "./SpecGlossNotice";
 import Viewer from "../Common/Viewer";
 import ThreeDIcons from "../../../../icons/ThreeDIcons";
 import { MODEL_MEDIA_TYPES } from "../../../../utils/modelMediaTypes";
@@ -92,6 +93,7 @@ const Edit = ({ clientId, attributes, setAttributes, isSelected, postType }: Edi
       <>
         <Settings {...{ attributes, setAttributes, viewerRef }} />
 
+        {modelSrc && isValid && <SpecGlossNotice modelUrl={modelSrc as string} currentViewer={attributes.currentViewer} />}
         {modelSrc && isValid && <Viewer {...{ viewerRef, attributes: viewerAttributes, setAttributes, __, containerRef }} />}
         {modelSrc && !isValid && <h2>{__("3D file is not valid", "3d-viewer")}</h2>}
         {!modelSrc && (

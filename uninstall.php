@@ -59,6 +59,7 @@ foreach ($bp3d_option_keys as $bp3d_key) {
 
 // ── 2b. Per-user guided setup notice dismissals ──────────────────────
 delete_metadata('user', 0, 'bp3d_dismissed_onboarding_notice', '', true);
+delete_metadata('user', 0, 'bp3d_optimizer_notice_dismissed', '', true); // Speed-plugin notice (inc/Compat/OptimizerCompat.php)
 
 // ── 3. Clean up any CSF framework transients ─────────────────────────
 delete_transient('csf_remote_stylesheets');

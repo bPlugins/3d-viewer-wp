@@ -297,6 +297,15 @@ p.bp3d-lite-notice {
   margin: 12px 15px 0;
 }
 
+/* The health check (2.4.0) in the same slot: one line per finding. */
+.bp3d-preview-health__line {
+  display: block;
+}
+
+.bp3d-preview-health__line + .bp3d-preview-health__line {
+  margin-top: 4px;
+}
+
 .bp3d-model-preview__empty {
   display: flex;
   flex-direction: column;

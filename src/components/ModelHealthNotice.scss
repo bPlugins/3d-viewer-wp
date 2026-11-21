@@ -1,0 +1,12 @@
+// One line per finding inside the shared bpl-tools Notice; the same spacing as the big-file notice beside it.
+.bp3dModelHealthNotice {
+  margin: 8px 0 12px;
+}
+
+.bp3dModelHealthNotice__line {
+  display: block;
+
+  & + & {
+    margin-top: 4px;
+  }
+}

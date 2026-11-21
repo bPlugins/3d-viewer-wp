@@ -52,7 +52,10 @@
       }
     },
     "lazyLoad": {
-      "type": "boolean",
+      "type": [
+        "boolean",
+        "string"
+      ],
       "default": true
     },
     "preload": {
@@ -132,6 +135,96 @@
     "placement": {
       "type": "string",
       "default": "block"
+    },
+    "multiple": {
+      "type": "boolean"
+    },
+    "models": {
+      "type": "array"
+    },
+    "autoplay": {
+      "type": "boolean"
+    },
+    "autoRotate": {
+      "type": "boolean"
+    },
+    "isPagination": {
+      "type": "boolean"
+    },
+    "isNavigation": {
+      "type": "boolean"
+    },
+    "rotationPerSecond": {
+      "type": "number"
+    },
+    "rotateDelay": {
+      "type": "number"
+    },
+    "resetViewBtn": {
+      "type": "boolean"
+    },
+    "variant": {
+      "type": "boolean"
+    },
+    "variantSelector": {
+      "type": "object"
+    },
+    "rotateAlongX": {
+      "type": "number"
+    },
+    "rotateAlongY": {
+      "type": "number"
+    },
+    "useEnvironmentAsSkybox": {
+      "type": "boolean"
+    },
+    "zoomLevel": {
+      "type": "number"
+    },
+    "appliedTextures": {
+      "type": "object"
+    },
+    "toneMapping": {
+      "type": "string"
+    },
+    "hotspots": {
+      "type": "array"
+    },
+    "stylesheet": {
+      "type": "string"
+    },
+    "additional": {
+      "type": "object"
+    },
+    "animation": {
+      "type": "boolean"
+    },
+    "selectedAnimation": {
+      "type": "string"
+    },
+    "hotspotStyle": {
+      "type": "string"
+    },
+    "lockXAxisRotation": {
+      "type": "boolean"
+    },
+    "lockYAxisRotation": {
+      "type": "boolean"
+    },
+    "mobile": {
+      "type": "object"
+    },
+    "dimensions": {
+      "type": "object"
+    },
+    "explode": {
+      "type": "object"
+    },
+    "pins": {
+      "type": "object"
+    },
+    "controls": {
+      "type": "object"
     }
   },
   "supports": {

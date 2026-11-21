@@ -2,6 +2,7 @@ import { PanelBody, ToggleControl, } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 import BInfoControl from "../../../../../../components/BInfoControl";
 import Notice from "../../../../../../../../bpl-tools/Components/Notice";
+import MoreInPro, { proItems } from "../../MoreInPro";
 
 interface O3DVOptionsProps {
   attributes: any;
@@ -24,6 +25,8 @@ const O3DVOptions = ({ attributes, setAttributes, setOpen }: O3DVOptionsProps) =
 
       <ToggleControl label={__("Mouse Control", "3d-viewer")} checked={mouseControl} onChange={() => handleChange({ mouseControl: !mouseControl })} />
       {mouseControl && <Notice>{__("Mouse control does not work in Editor (Backend).", "3d-viewer")}</Notice>}
+
+      <MoreInPro panel="advanced" items={proItems.advanced()} />
 
     </PanelBody>
   );

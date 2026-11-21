@@ -4,7 +4,8 @@ import Title from "../../../../../../components/Title";
 import SettingsIcon from "../../../../../../icons/SettingsIcon";
 import BInfoControl from "../../../../../../components/BInfoControl";
 import { helpText } from "../../../../../../utils/constant";
-import Notice from "../../../../../../../../bpl-tools/Components/Notice";
+import { isLazy, toggleLazy } from "../../../../lazyLoad";
+import MoreInPro, { proItems } from "../../MoreInPro";
 
 interface OptionsProps {
   attributes: any;
@@ -26,7 +27,7 @@ const Options = ({ attributes, setAttributes }: OptionsProps) => {
 
             <BInfoControl Component={ToggleControl} label={__("Mouse Control", "3d-viewer")} checked={mouseControl} onChange={() => setAttributes({ mouseControl: !mouseControl })} info={helpText.mouseControl} />
 
-            <BInfoControl Component={ToggleControl} className="mt5" label={__("Lazy Load", "3d-viewer")} checked={lazyLoad} onChange={() => setAttributes({ lazyLoad: !lazyLoad })} info={helpText.lazyLoad} />
+            <BInfoControl Component={ToggleControl} className="mt5" label={__("Lazy Load", "3d-viewer")} checked={isLazy(lazyLoad)} onChange={() => setAttributes({ lazyLoad: toggleLazy(lazyLoad) })} info={helpText.lazyLoad} />
 
             <BInfoControl Component={ToggleControl} className="mt5" label={__("Show Loading Percentage", "3d-viewer")} checked={loadingPercentage} onChange={() => setAttributes({ loadingPercentage: !loadingPercentage })} info={helpText.loadingPercentage} />
 
@@ -40,9 +41,7 @@ const Options = ({ attributes, setAttributes }: OptionsProps) => {
 
             <BInfoControl Component={RangeControl} labelPosition="side" label={__("Exposure", "3d-viewer")} value={exposure} onChange={(exposure: number) => setAttributes({ exposure })} min={0.1} step={0.1} max={5} info={__("Adjusts the brightness of the model scene. Higher values make the model brighter.", "3d-viewer")} />
 
-            <Notice status={"premium"} isIcon={true}>
-              {__("autoplay, variant selector, animation selector, lock left-right, up-down rotation, auto rotate, zoom, set initial zoom available in premium version", "3d-viewer")}
-            </Notice>
+            <MoreInPro panel="options" items={proItems.options()} />
 
 
           </>

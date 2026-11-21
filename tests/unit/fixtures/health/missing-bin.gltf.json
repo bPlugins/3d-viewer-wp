@@ -1,0 +1,14 @@
+{
+    "asset": { "version": "2.0" },
+    "scenes": [{ "nodes": [0] }],
+    "nodes": [{ "mesh": 0 }],
+    "meshes": [{ "primitives": [{ "attributes": { "POSITION": 0 } }] }],
+    "accessors": [{ "bufferView": 0, "componentType": 5126, "count": 3, "type": "VEC3" }],
+    "bufferViews": [{ "buffer": 0, "byteLength": 36 }],
+    "buffers": [{ "uri": "scene.bin", "byteLength": 36 }],
+    "images": [
+        { "uri": "textures/wood.png" },
+        { "uri": "data:image/png;base64,iVBORw0KGgo=" },
+        { "uri": "scene.bin" }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "asset": { "version": "2.0" },
+    "extensionsUsed": ["KHR_draco_mesh_compression", "KHR_materials_unlit"],
+    "extensionsRequired": ["KHR_draco_mesh_compression"],
+    "scenes": [{ "nodes": [0] }],
+    "nodes": [{ "mesh": 0 }],
+    "meshes": [{
+        "primitives": [{
+            "attributes": { "POSITION": 0, "NORMAL": 1 },
+            "indices": 2,
+            "extensions": { "KHR_draco_mesh_compression": { "bufferView": 0, "attributes": { "POSITION": 0, "NORMAL": 1 } } }
+        }]
+    }],
+    "accessors": [
+        { "componentType": 5126, "count": 1200, "type": "VEC3", "min": [-1, -1, -1], "max": [1, 1, 1] },
+        { "componentType": 5126, "count": 1200, "type": "VEC3" },
+        { "componentType": 5125, "count": 3000, "type": "SCALAR" }
+    ],
+    "bufferViews": [{ "buffer": 0, "byteLength": 4096 }],
+    "buffers": [{ "byteLength": 4096 }]
+}

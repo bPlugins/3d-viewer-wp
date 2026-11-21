@@ -409,6 +409,17 @@ The uncompiled source of everything in `build/` is on GitHub, where you can also
 * Freemius Checkout JS – MIT – [https://github.com/Freemius/freemius-checkout-js](https://github.com/Freemius/freemius-checkout-js) – the Help & Demos checkout
 == Changelog ==
 
+= 2.2.0 - 23 February, 2027 =
+* New: Health check under the block's model field and in the viewer preview: wrong viewer for the file, missing file, a web page instead of a model, blocked cross-site file, large file and more, each with a How to fix link.
+* New: The block warns when a model uses legacy Specular-Glossiness materials and shows white.
+* New: "More in Pro" lists in the block settings replace the two Pro upsell lines; dismissing one hides it until the next update.
+* Improvement: On pages with a viewer, 3D Viewer's scripts are left out of combine, minify and delay in Autoptimize, WP Rocket, LiteSpeed Cache, SiteGround Optimizer, W3 Total Cache, Perfmatters, Jetpack Boost, FlyingPress, Hummingbird, WP-Optimize and Breeze.
+* Improvement: One admin notice when NitroPack is active, since it can delay 3D Viewer's scripts.
+* Improvement: Developer filters `bp3d_product_show_3d` (hide the viewer on a product) and `bp3d_product_has_3d`.
+* Fixed: Saving a block made with Pro in the free version no longer drops its Pro settings.
+* Fixed: A block made with Pro and set to Eager loading now loads right away in the free version.
+* Fixed: Attributes and inline scripts other plugins add to the model-viewer script tag are no longer removed.
+
 = 2.1.1 - 16 November, 2026 =
 * Changed: Viewer buttons are round with outline icons and a larger touch area; custom icon colours on `.control-btn` now need `!important`.
 * Changed: The AR QR code card is larger and titled "View in AR".

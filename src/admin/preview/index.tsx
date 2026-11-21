@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 import Viewer from '../../blocks/3d-viewer/Components/Common/Viewer';
 import '../../blocks/3d-viewer/style.scss';
 import { applyModelView } from '../../utils/setView';
 import openFullscreen from '../../utils/openFullscreen';
+import HealthLines from '../../components/HealthLines';
+import useModelHealth from '../../hooks/useModelHealth';
+import { editorView } from '../../utils/health/messages';
 
 // Use WordPress's bundled ReactDOM (React 18) rather than importing
 // `react-dom/client`, which would bundle the incompatible React 19 copy from
@@ -210,32 +213,17 @@ function useLiveAttributes() {
 
 const hasModelIn = (attrs: Record<string, any>): boolean => !!attrs?.model?.modelUrl;
 
-// model-viewer sniffs the bytes, so script endpoints (get.php?f=x.glb) and VRM (a GLB) load fine; no extension = no verdict.
-const LITE_OK = ['glb', 'gltf', 'vrm', 'php', 'asp', 'aspx', 'ashx', 'jsp', 'cgi'];
-const ADVANCED_OK = ['obj', '3ds', 'stl', 'ply', 'off', '3dm', 'fbx', 'dae', 'wrl', '3mf', 'amf', 'ifc', 'brep', 'step', 'stp', 'iges', 'igs', 'fcstd', 'bim'];
+/** The basic health check (2.4.0) in the slot the Lite-format notice used; free has no other notice beside it. */
+const HealthNotice: React.FC<{ attrs: Record<string, any> }> = ({ attrs }) => {
+    const { findings } = useModelHealth(attrs?.model?.modelUrl, { currentViewer: attrs?.currentViewer || 'modelViewer', variant: 'free' });
+    const view = editorView(findings, { variant: 'free' });
+    if (!view) return null;
 
-const modelExtension = (url: string): string => {
-    let name = url.split('?')[0];
-    const slash = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
-    if (slash !== -1) name = name.slice(slash + 1);
-    const dot = name.lastIndexOf('.');
-    return dot === -1 ? '' : name.slice(dot + 1).toLowerCase();
-};
-
-/** Extensions of the models the Lite viewer can't show. */
-const liteUnsupported = (attrs: Record<string, any>): string[] => {
-    if ((attrs?.currentViewer || 'modelViewer') !== 'modelViewer') return [];
-    const url = attrs?.model?.modelUrl;
-    const ext = typeof url === 'string' ? modelExtension(url.split('#')[0]) : '';
-    return ext && !LITE_OK.includes(ext) ? [ext] : [];
-};
-
-const LiteNotice: React.FC<{ exts: string[] }> = ({ exts }) => {
-    if (!exts.length) return null;
-    /* translators: %s: file extensions, e.g. ".obj, .fbx". */
-    let text = sprintf(__('The Lite viewer opens only .glb and .gltf files, not %s.', '3d-viewer'), exts.map((ext) => `.${ext}`).join(', '));
-    if (exts.every((ext) => ADVANCED_OK.includes(ext))) text += ' ' + __('Switch the 3D Viewer to Advanced.', '3d-viewer');
-    return <p className="bp3d-lite-notice" role="status">{text}</p>;
+    return (
+        <p className="bp3d-lite-notice bp3d-preview-health" role="status">
+            <HealthLines view={view} lineClass="bp3d-preview-health__line" />
+        </p>
+    );
 };
 
 type StageState = 'idle' | 'loading' | 'ready' | 'failed' | 'webgl';
@@ -401,7 +389,7 @@ const PreviewApp: React.FC<{ bare?: boolean }> = ({ bare = false }) => {
 
             {/* Collapsible body */}
             <div className="bp3d-model-preview__body">
-                <LiteNotice exts={liteUnsupported(attrs)} />
+                <HealthNotice attrs={attrs} />
                 <div className="bp3d-model-preview__stage">
                     {hasModel ? (
                         <Viewer
@@ -740,7 +728,7 @@ const SidePreview: React.FC = () => {
                 </button>
             </div>
 
-            <LiteNotice exts={liteUnsupported(attrs)} />
+            <HealthNotice attrs={attrs} />
 
             <div className="bfields-preview__stage bp3d-side-preview__stage" ref={stage}>
                 {hasModel ? (

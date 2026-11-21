@@ -170,6 +170,7 @@ class Dokan
         // The classic handle is registered together with the module of the same id (Addons\Blocks).
         if (function_exists('wp_enqueue_script_module') && wp_script_is('bp3d-lib-model-viewer', 'registered')) {
             wp_enqueue_script_module('bp3d-lib-model-viewer');
+            do_action('bp3d_script_module_enqueued');
         }
     }
 

@@ -30,7 +30,15 @@ class Blocks
         add_filter('block_type_metadata', [$this, 'styleVersion']);
         add_action('enqueue_block_editor_assets', [$this, 'enqueueEditorAssets']);
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
+        add_filter('render_block_tdvb/td-viewer', [$this, 'flagScriptModule']);
+    }
 
+    /** The tdvb/td-viewer block loads model-viewer through its block.json viewScriptModule, so flag it for OptimizerCompat. */
+    public function flagScriptModule($content)
+    {
+        do_action('bp3d_script_module_enqueued');
+
+        return $content;
     }
 
     /**
@@ -106,10 +114,13 @@ class Blocks
         wp_localize_script('b3dviewer-modelviewer-editor-script', 'bp3dBlock', [
             'admin_url' => admin_url(),
             'allowedMimeTypes' => Utils::getAllowedMimeTypes(),
-            'supportedMimes' => Utils::SUPPORTED_MIME_TYPES
+            'supportedMimes' => Utils::SUPPORTED_MIME_TYPES,
+            // The header version, not BP3D_VERSION (time() under WP_DEBUG): "More in Pro" dismissals last until it changes.
+            'version' => (string) (get_file_data(BP3D__FILE__, ['Version' => 'Version'])['Version'] ?? ''),
         ]);
 
         wp_enqueue_script_module('bp3d-lib-model-viewer');
+        do_action('bp3d_script_module_enqueued');
 
     }
     public function enqueueBlockAssets()

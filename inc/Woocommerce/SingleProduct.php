@@ -33,6 +33,7 @@ class SingleProduct
         add_action('bp3d_product_model_before', [$this, 'renderModel']);
         add_action('bp3d_product_model_after', [$this, 'renderModel']);
         add_action('woocommerce_product_thumbnails', [$this, 'renderGalleryThumbnail'], 40);
+        Coexistence::register();
     }
 
     /**
@@ -63,6 +64,11 @@ class SingleProduct
         }
 
         if ($settings('3d_woo_switcher') !== '0' && $settings('is_not_compatible') !== '1') {
+            // Before the gallery goes and before renderProductModels() is queued, which enqueues bp3d-public itself.
+            if (is_singular('product') && !Coexistence::show((int) get_the_ID(), Coexistence::GALLERY)) {
+                return;
+            }
+
             remove_action('woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 10);
             remove_action('woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 20);
             remove_action('woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 30);

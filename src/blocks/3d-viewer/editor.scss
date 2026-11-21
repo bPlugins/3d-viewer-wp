@@ -212,3 +212,61 @@
   letter-spacing: 1px;
   line-height: 1.3em;
 }
+// "More in Pro" rows at the end of a panel (Components/Backend/MoreInPro.tsx): labels only, never controls.
+.bp3dMoreInPro {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  &__title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1e1e1e;
+  }
+
+  &__dismiss.components-button {
+    min-width: 24px;
+    height: 24px;
+    padding: 0;
+    color: #757575;
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0;
+    padding: 4px 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #50575e;
+
+    & + & {
+      border-top: 1px solid #f0f0f0;
+    }
+
+    a {
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+  }
+}

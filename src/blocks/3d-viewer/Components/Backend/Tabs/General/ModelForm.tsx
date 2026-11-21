@@ -10,8 +10,9 @@ import ThreeDIcons from "../../../../../../icons/ThreeDIcons";
 import Title from "../../../../../../components/Title";
 import BInfoControl from "../../../../../../components/BInfoControl";
 import { MODEL_MEDIA_TYPES } from "../../../../../../utils/modelMediaTypes";
-import { helpText, pricingUrl } from "../../../../../../utils/constant";
-import { PremiumPanel } from "../../../../../../../../bpl-tools/ProControls";
+import { helpText } from "../../../../../../utils/constant";
+import MoreInPro, { proItems } from "../../MoreInPro";
+import EditorHealthNotice from "../../../../../../components/EditorHealthNotice";
 
 
 interface ModelFormProps {
@@ -103,6 +104,8 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
         label={__("Model URL", "3d-viewer")}
         info={helpText.modelUrl}
       />
+      {/* Edit.tsx shows SpecGlossNotice for this same model. */}
+      {placement !== 'visual-editor' && <EditorHealthNotice modelUrl={model?.modelUrl} currentViewer={currentViewer} />}
 
 
 
@@ -171,9 +174,9 @@ const ModelForm = ({ attributes, setAttributes }: ModelFormProps) => {
             />
           </>
         )}
-        <hr />
-        <PremiumPanel title={__('Premium Features', '3d-viewer')} description={__('Multiple models, tone mapping and applying textures are available in the premium version', '3d-viewer')} pricingUrl={pricingUrl}><></></PremiumPanel>
       </>}
+
+      <MoreInPro panel="model" items={proItems.model(currentViewer === "modelViewer")} />
 
     </PanelBody>
   );
