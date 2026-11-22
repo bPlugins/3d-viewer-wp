@@ -111,7 +111,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: bPlugins/bpl-tools
-          ref: main
+          # Pinned: main has moved on (Device API). Bump when the local ../bpl-tools moves.
+          ref: 5074778ffea37637349dbebc6c3efc35bf0af821
           path: bpl-tools
 
       - uses: actions/setup-node@v4
@@ -131,3 +132,64 @@ jobs:
 
       - name: Build
         run: npx wp-scripts build --webpack-copy-php
+
+  zip:
+    name: Plugin zip
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: 3d-viewer
+
+      - uses: actions/checkout@v4
+        with:
+          repository: bPlugins/bpl-tools
+          # Pinned: main has moved on (Device API). Bump when the local ../bpl-tools moves.
+          ref: 5074778ffea37637349dbebc6c3efc35bf0af821
+          path: bpl-tools
+
+      - uses: ./3d-viewer/.github/actions/build-zip
+
+      # Artifacts are always re-zipped on download, so ship a 3d-viewer/ folder:
+      # the download then installs straight into wp-content/plugins/3d-viewer.
+      - name: Stage plugin folder
+        run: |
+          mkdir -p stage/3d-viewer
+          unzip -q 3d-viewer/zip/3d-viewer.zip -d stage/3d-viewer
+
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 3d-viewer-pr${{ github.event.number }}-run${{ github.run_number }}
+          path: stage
+          retention-days: 14
+
+      - name: Summary
+        run: |
+          echo "### Plugin zip for PR #${{ github.event.number }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Download](${{ steps.upload.outputs.artifact-url }}) and upload it in Plugins → Add New → Upload Plugin. Kept for 14 days." >> "$GITHUB_STEP_SUMMARY"
+
+      # One sticky comment per PR, updated on every push. Fork PRs get a read-only token, so never fail the job.
+      - name: Download link on the PR
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.upload.outputs.artifact-url }}
+          PR: ${{ github.event.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          marker='<!-- bp3d-plugin-zip -->'
+          version=$(grep -m1 -E '^[[:space:]]*\*[[:space:]]*Version:' 3d-viewer/3d-viewer.php | sed -E 's/.*Version:[[:space:]]*//' | tr -d '[:space:]')
+          size=$(du -h 3d-viewer/zip/3d-viewer.zip | cut -f1)
+          body=$(printf '%s\n### Plugin zip\n\n**[Download 3d-viewer %s](%s)** (%s, commit %s, CI run #%s)\n\nUpload it in Plugins → Add New → Upload Plugin. Kept for 14 days. Every push builds a new zip and updates this comment.\n' \
+            "$marker" "$version" "$URL" "$size" "${SHA:0:7}" "$GITHUB_RUN_NUMBER")
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" > /dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" > /dev/null
+          fi

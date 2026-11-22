@@ -22,6 +22,8 @@ class EnqueueAssets
     {
         add_action('admin_enqueue_scripts', [$this, 'enqueueBackendFiles']);
         add_filter('script_loader_tag', [$this, 'addModuleTypeAttribute'], 10, 3);
+        add_action('wp_print_footer_scripts', [$this, 'printMeshoptDecoder'], 9);
+        add_action('admin_print_footer_scripts', [$this, 'printMeshoptDecoder'], 9);
     }
 
     /**
@@ -147,4 +149,65 @@ class EnqueueAssets
         return $assets[$entry];
     }
 
+    /**
+     * Points model-viewer at the meshopt decoder only once its WebAssembly is ready: model-viewer awaits the
+     * decoder for every model, so a blocked file or a CSP without 'wasm-unsafe-eval' must leave it unset.
+     */
+    public function printMeshoptDecoder(): void
+    {
+        $screen = is_admin() && function_exists('get_current_screen') ? get_current_screen() : null;
+        $product_screen = $screen && $screen->base === 'post' && $screen->post_type === 'product';
+
+        if (
+            !$product_screen
+            && !wp_script_is('bp3d-lib-model-viewer', 'enqueued')
+            && !wp_script_is('bp3d-lib-model-viewer', 'done')
+            && !did_action('bp3d_script_module_enqueued')
+        ) {
+            return;
+        }
+
+        $url = esc_url_raw(\BP3D\Helper\Utils::meshoptDecoderUrl());
+        if ($url === '') {
+            return;
+        }
+
+        wp_print_inline_script_tag(
+            '(function (url) {'
+            . 'var w = window, cfg = w.ModelViewerElement;'
+            // A site's own setting wins.
+            . 'if (!url || (cfg && cfg.meshoptDecoderLocation)) return;'
+            . 'var s = document.createElement("script");'
+            . 's.async = true;'
+            . 's.src = url;'
+            . 's.onload = function () {'
+            // onload fires even when the file's own code fails, so wait for its WebAssembly to compile.
+            . 'var d = w.MeshoptDecoder;'
+            . 'if (!d || !d.supported || !d.ready || typeof d.ready.then !== "function") return;'
+            . 'd.ready.then(function () { whenBody(apply); }, function () {});'
+            . '};'
+            . 'function apply() {'
+            . 'w.ModelViewerElement = Object.assign(w.ModelViewerElement || {}, { meshoptDecoderLocation: url });'
+            // Already defined: the static setter.
+            . 'var MV = w.customElements && w.customElements.get("model-viewer");'
+            . 'if (MV && !MV.meshoptDecoderLocation) MV.meshoptDecoderLocation = url;'
+            . '}'
+            // model-viewer appends the decoder to document.body; the block editor iframe has none until React mounts it.
+            . 'function whenBody(cb) {'
+            . 'var doc = document, done = false, mo;'
+            . 'function check() {'
+            . 'if (done || doc.readyState === "loading" || !doc.body) return;'
+            . 'done = true;'
+            . 'if (mo) mo.disconnect();'
+            . 'cb();'
+            . '}'
+            . 'if (w.MutationObserver) { mo = new MutationObserver(check); mo.observe(doc.documentElement, { childList: true }); }'
+            . 'doc.addEventListener("DOMContentLoaded", check);'
+            . 'check();'
+            . '}'
+            . '(document.head || document.documentElement).appendChild(s);'
+            . '})(' . wp_json_encode($url) . ');',
+            ['id' => 'bp3d-meshopt-decoder-js']
+        );
+    }
 }

@@ -118,6 +118,7 @@ final class Addons
 
         if (function_exists('wp_enqueue_script_module')) {
             wp_enqueue_script_module('bp3d-lib-model-viewer', BP3D_DIR . 'public/js/model-viewer.latest.min.js', [], BP3D_VERSION);
+            do_action('bp3d_script_module_enqueued');
 
             return;
         }

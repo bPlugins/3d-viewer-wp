@@ -16,6 +16,79 @@ class ExtendMimeType
         add_filter('upload_mimes', [$this, 'bplugins_stp_mime_types']);
         add_filter('wp_check_filetype_and_ext', [$this, 'bplugins_stp_add_allow_upload_extension_exception'], 10, 5);
         add_action('wp_enqueue_media', [$this, 'restrictModelPickerUploads']);
+        // Overrides, not the prefilter: a caller's test_type/mimes overrides are known here, and only core's own refusal is reworded.
+        add_filter('wp_handle_upload_overrides', [$this, 'explainRefusal'], 20, 2);
+        add_filter('wp_handle_sideload_overrides', [$this, 'explainRefusal'], 20, 2);
+    }
+
+    /** Formats the Pro build uploads and free doesn't; the Advanced viewer opens all but `bin` from a URL. */
+    private const PRO_ONLY_EXTENSIONS = ['bin', 'ply', 'off', '3dm', 'amf', 'ifc', 'brep', 'brp', 'iges', 'igs', 'fcstd', 'bim'];
+
+    /**
+     * Names the format when core refuses a 3D file type: Pro-only, or unticked under Allowed Mime Types. Wraps the
+     * upload error handler, so the text changes only when core itself refuses the file type.
+     *
+     * @param  mixed $overrides
+     * @param  mixed $file
+     * @return mixed
+     */
+    public function explainRefusal($overrides, $file = null)
+    {
+        $overrides = is_array($overrides) ? $overrides : [];
+        // The caller skips the type check or brings its own list: core's result is the caller's choice.
+        if ((array_key_exists('test_type', $overrides) && !$overrides['test_type']) || !empty($overrides['mimes'])) {
+            return $overrides;
+        }
+
+        $name = is_array($file) && isset($file['name']) && is_string($file['name']) ? $file['name'] : '';
+        $message = $this->refusalMessage($name);
+        if ($message === '') {
+            return $overrides;
+        }
+
+        $previous = $overrides['upload_error_handler'] ?? 'wp_handle_upload_error';
+        // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Core's own string, compared with core's upload error.
+        $generic = __('Sorry, you are not allowed to upload this file type.');
+        $overrides['upload_error_handler'] = static function (&$file, $error) use ($previous, $generic, $message) {
+            $error = $error === $generic ? $message : $error;
+            // Core defines wp_handle_upload_error() inside _wp_handle_upload(); same result if it is ever missing.
+            return is_callable($previous) ? call_user_func_array($previous, [&$file, $error]) : ['error' => $error];
+        };
+
+        return $overrides;
+    }
+
+    /** The refusal text for a 3D file type, or '' when it doesn't apply. */
+    private function refusalMessage(string $name): string
+    {
+        $ext = strtolower((string) pathinfo($name, PATHINFO_EXTENSION));
+        if ($ext === '') {
+            return '';
+        }
+
+        if (in_array($ext, self::PRO_ONLY_EXTENSIONS, true)) {
+            /* translators: %s: file extension in capitals, e.g. "IGES" */
+            $message = sprintf(__('%s files can be uploaded with 3D Viewer Pro.', '3d-viewer'), strtoupper($ext));
+            if ($ext !== 'bin') {
+                $message .= ' ' . __('In the free plugin, the Advanced viewer can still open one from its URL.', '3d-viewer');
+            }
+            return $message;
+        }
+
+        // .stp is STEP under another name (no checkbox of its own).
+        $key = $ext === 'stp' ? 'step' : $ext;
+        if (!isset(Utils::SUPPORTED_MIME_TYPES[$key]) || in_array($key, (array) $this->getActiveMimeTypes(), true)) {
+            return '';
+        }
+
+        $label = strtoupper($key) . ' (.' . $key . ')';
+        if (current_user_can('manage_options')) {
+            /* translators: %s: file type label, e.g. "STP (.stp)" */
+            return sprintf(__('%s uploads are turned off. Tick it under 3D Viewer › Settings › General › Allowed Mime Types, then upload again.', '3d-viewer'), $label);
+        }
+
+        /* translators: %s: file type label, e.g. "STP (.stp)" */
+        return sprintf(__('%s uploads are turned off on this site. Ask a site administrator to allow it in 3D Viewer Settings.', '3d-viewer'), $label);
     }
 
     /**
@@ -87,6 +160,10 @@ class ExtendMimeType
             if (isset($all_mimes[$key])) {
                 $filtered[$key] = $all_mimes[$key];
             }
+        }
+        // .stp is the other STEP extension: allowed with STEP, without a checkbox of its own.
+        if (isset($filtered['step'])) {
+            $filtered['stp'] = $filtered['step'];
         }
         return $filtered;
     }

@@ -1,0 +1,55 @@
+name: Release zip
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    name: Build 3d-viewer.zip
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 3d-viewer
+    steps:
+      # src/ imports ../bpl-tools, so both repos sit side by side like in wp-content/plugins.
+      - uses: actions/checkout@v4
+        with:
+          path: 3d-viewer
+
+      - uses: actions/checkout@v4
+        with:
+          repository: bPlugins/bpl-tools
+          # Pinned: main has moved on (Device API). Bump when the local ../bpl-tools moves.
+          ref: 5074778ffea37637349dbebc6c3efc35bf0af821
+          path: bpl-tools
+
+      - name: Tag must match plugin version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          header=$(grep -m1 -E '^[[:space:]]*\*[[:space:]]*Version:' 3d-viewer.php | sed -E 's/.*Version:[[:space:]]*//' | tr -d '[:space:]')
+          stable=$(grep -m1 -E '^Stable tag:' readme.txt | sed -E 's/Stable tag:[[:space:]]*//' | tr -d '[:space:]')
+          const=$(grep -oE "define\('BP3D_VERSION', '[^']+'\)" 3d-viewer.php | sed -E "s/.*, '([^']+)'.*/\1/")
+          echo "tag=$tag header=$header stable=$stable BP3D_VERSION=$const"
+          ok=1
+          [ "$header" = "$tag" ] || { echo "::error file=3d-viewer.php::Version header is $header, tag is $tag"; ok=0; }
+          [ "$stable" = "$tag" ] || { echo "::error file=readme.txt::Stable tag is $stable, tag is $tag"; ok=0; }
+          [ "$const" = "$tag" ] || { echo "::error file=3d-viewer.php::BP3D_VERSION is $const, tag is $tag"; ok=0; }
+          [ "$ok" = 1 ]
+
+      - uses: ./3d-viewer/.github/actions/build-zip
+
+      - name: Draft GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            /^= / { if (f) exit; if (index($0, "= " v " ") == 1 || $0 == "= " v " =") { f = 1; next } }
+            f' readme.txt > notes.md
+          [ -s notes.md ] || echo "See readme.txt changelog." > notes.md
+          gh release create "$GITHUB_REF_NAME" zip/3d-viewer.zip \
+            --draft --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag

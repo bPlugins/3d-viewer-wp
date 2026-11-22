@@ -294,6 +294,16 @@ class Utils
         );
     }
 
+    /** Meshopt decoder script for model-viewer, or '' when it is off (`bp3d_meshopt_decoder_url`) or missing. */
+    public static function meshoptDecoderUrl(): string
+    {
+        $url = is_readable(BP3D_PATH . 'public/js/meshopt_decoder.js')
+            ? BP3D_DIR . 'public/js/meshopt_decoder.js?ver=' . BP3D_VERSION
+            : '';
+
+        return (string) apply_filters('bp3d_meshopt_decoder_url', $url);
+    }
+
     /**
      * Collapse the preset + custom-URL pair used by the Elementor widget and
      * the shortcode generator onto the single value the block stores: '' for
