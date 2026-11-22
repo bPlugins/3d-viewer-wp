@@ -39,6 +39,8 @@ class Init
             // First: it adds the bfields type map before any screen is built.
             Base\AdminUi::class,
             Base\EnqueueAssets::class,
+            // Speed-plugin exclusions; the same file as Pro's (no Pro class references).
+            Compat\OptimizerCompat::class,
             Base\Import::class,
             Shortcode\Shortcode::class,
             Base\ExtendMimeType::class,

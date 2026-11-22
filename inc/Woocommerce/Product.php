@@ -186,6 +186,7 @@ class Product
             wp_enqueue_script('bp3d-lib-o3dviewer');
         } else {
             wp_enqueue_script_module('bp3d-lib-model-viewer');
+            do_action('bp3d_script_module_enqueued');
         }
 
         $content = ob_get_clean() ?: '';

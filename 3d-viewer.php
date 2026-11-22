@@ -4,8 +4,8 @@
 /*
  * Plugin Name: 3D Viewer - 3D Model Viewer & 3D Product Viewer with AR for WooCommerce
  * Plugin URI:  https://bplugins.com/
- * Description: Easily display interactive 3D models on the web. Supported File type .glb, .gltf,obj 3ds stl ply off 3dm fbx dae wrl 3mf amf ifc brep step iges fcstd bim
- * Version: 2.1.1
+ * Description: Display interactive 3D models. Upload GLB, glTF, OBJ, 3DS, STL, FBX, DAE, WRL, 3MF and STEP (.step, .stp); the Advanced viewer also opens PLY, OFF, 3DM, AMF, IFC, BREP, IGES, FCSTD and BIM from a URL.
+ * Version: 2.1.2
  * Author: bPlugins
  * Author URI: https://bplugins.com
  * Requires PHP: 7.4
@@ -65,7 +65,7 @@ if (function_exists('bp3d_fs')) {
     if (defined('WP_DEBUG') && WP_DEBUG === true) {
         define('BP3D_VERSION', time());
     } else {
-        define('BP3D_VERSION', '2.1.1');
+        define('BP3D_VERSION', '2.1.2');
     }
 
     defined('BP3D_DIR') or define('BP3D_DIR', plugin_dir_url(__FILE__));

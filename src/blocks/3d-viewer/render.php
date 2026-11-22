@@ -6,6 +6,7 @@ $bp3d_id = wp_unique_id('bp3d-viewer-');
 
 if ($attributes['currentViewer'] == 'modelViewer') {
     wp_enqueue_script_module('bp3d-lib-model-viewer');
+    do_action('bp3d_script_module_enqueued');
 } else if ($attributes['currentViewer'] == 'O3DViewer') {
     wp_enqueue_script('bp3d-lib-o3dviewer');
 }

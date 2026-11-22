@@ -4,7 +4,7 @@ Tags: 3d product viewer, 3d model viewer, woocommerce, augmented reality, glb
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 Donate link: https://www.buymeacoffee.com/abuhayat
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -44,14 +44,14 @@ Sell online? Show your products in 3D right on the product page.
 * **Desktop visitors:** Scan a QR code to open the model on their phone.
 * **Placement:** Floor or wall.
 
-AR on WooCommerce product pages is part of Pro.
+AR works on WooCommerce product pages too: turn on Enable AR in the product's 3D box.
 
 ### 3D Model Viewer for GLB, glTF, OBJ, STL, FBX and STEP Files
 
 Two viewers are built in, so you pick the right one for each file.
 
 * **Lite viewer:** GLB and glTF with AR, realistic lighting, environment and skybox images, and lazy loading. Fastest option.
-* **Advanced viewer (Three.js):** OBJ, STL, FBX, DAE, 3DS, 3MF, WRL and STEP. Good for 3D printing, CAD and game assets.
+* **Advanced viewer (Three.js):** OBJ, STL, FBX, DAE, 3DS, 3MF, WRL and STEP (.step, .stp). Good for 3D printing, CAD and game assets.
 
 Upload from the Media Library or paste a model URL.
 
@@ -79,7 +79,7 @@ Upload from the Media Library or paste a model URL.
 
 * **Hotspots and annotations:** Info, link, image, video, product, animation and waypoint hotspots.
 * **Several models in one viewer,** with a thumbnail strip.
-* **WooCommerce 3D gallery:** Several models per product, a model per variation, a 3D tab, popups, 3D in shop listings and AR on product pages.
+* **WooCommerce 3D gallery:** Several models per product, a model per variation, a 3D tab, popups and 3D in shop listings.
 * **Camera control:** Initial view, zoom level, auto-rotate and rotation locks.
 * **Animations and material variants,** exploded view and real-world dimensions.
 * **Cloud Storage:** Serve models from your own Amazon S3, Cloudflare R2, Google Drive, Dropbox and more, using signed URLs.
@@ -110,7 +110,7 @@ Upload from the Media Library or paste a model URL.
 ### Supported 3D File Formats
 
 * **Lite viewer (with AR):** GLB, glTF
-* **Advanced viewer:** OBJ, STL, FBX, DAE, 3DS, 3MF, WRL, STEP, GLB, glTF
+* **Advanced viewer:** OBJ, STL, FBX, DAE, 3DS, 3MF, WRL, STEP (.step, .stp), GLB, glTF
 * **Advanced viewer, from a URL:** PLY, OFF, 3DM, AMF, IFC, BREP, IGES, FCSTD, BIM
 * **Also accepted:** USDZ for iPhone and iPad AR, and HDR for skybox and environment images
 
@@ -155,23 +155,23 @@ Like the plugin? Missing a feature? Send your feedback through the [support page
 
 = How do I add a 3D model to a WooCommerce product? =
 
-Open the product, find the 3D Product Settings box, add a GLB or glTF model in 3D Source, and choose a 3D Viewer Position: above, below or instead of the product images, or on the first gallery image with a View in 3D button (the default for new products). To show a product's model anywhere else, use [3d_viewer_product id="..."] or the 3D Product Model Elementor widget. Pro adds several models per product, a model per variation, a 3D tab, popups, 3D in shop listings, and AR on product pages.
+Open the product, find the 3D Product Settings box, add a GLB or glTF model in 3D Source, and choose a 3D Viewer Position: above, below or instead of the product images, or on the first gallery image with a View in 3D button (the default for new products). To show a product's model anywhere else, use [3d_viewer_product id="..."] or the 3D Product Model Elementor widget. Pro adds several models per product, a model per variation, a 3D tab, popups and 3D in shop listings.
 
 = Is there a free 3D product viewer for WooCommerce? =
 
-Yes. The free version shows a GLB or glTF model on WooCommerce product pages with rotate, zoom, fullscreen and lazy loading. Pro adds several models per product, a model per variation and AR on product pages.
+Yes. The free version shows a GLB or glTF model on WooCommerce product pages with rotate, zoom, fullscreen, lazy loading and AR. Pro adds several models per product and a model per variation.
 
 = Does it support Augmented Reality (AR)? =
 
-Yes, and it is free. Turn on Enable AR for a GLB or glTF model (Lite viewer) in the 3D Model Viewer block, the Elementor widget or the viewer editor, then choose the AR placement (floor or wall) and AR mode. Visitors on supported Android phones open the model with Scene Viewer or WebXR, and on iPhone and iPad with Quick Look. Desktop visitors can scan a QR code to open it on their phone. An iOS .usdz file is optional: without one, the viewer converts your GLB for Quick Look on the fly. On WooCommerce product pages, AR is part of Pro, and it also works for models added by Dokan vendors.
+Yes, and it is free, including WooCommerce product pages and models added by Dokan vendors. Turn on Enable AR for a GLB or glTF model (Lite viewer) in the 3D Model Viewer block, the Elementor widget or the viewer editor, then choose the AR placement (floor or wall) and AR mode. Visitors on supported Android phones open the model with Scene Viewer or WebXR, and on iPhone and iPad with Quick Look. Desktop visitors can scan a QR code to open it on their phone. An iOS .usdz file is optional: without one, the viewer converts your GLB for Quick Look on the fly.
 
 = How do I add AR to my WooCommerce store? =
 
-Use Pro to turn on AR on product pages. In the free version, you can add AR to any page, post or landing page with the block, the Elementor widget or a shortcode viewer, then link to it from your product.
+Turn on Enable AR in the product's 3D Product Settings box.
 
 = Which 3D file formats does this plugin support? =
 
-The Lite viewer shows GLB and glTF files, with AR. The Advanced viewer also opens OBJ, STL, FBX, DAE, 3DS, 3MF, WRL and STEP files, plus PLY, OFF, 3DM, AMF, IFC, BREP, IGES, FCSTD and BIM files from a URL. Choose the viewer in the block, the Elementor widget or the viewer editor. WooCommerce product pages use the Lite viewer, so add GLB or glTF files to products.
+The Lite viewer shows GLB and glTF files, with AR. The Advanced viewer also opens OBJ, STL, FBX, DAE, 3DS, 3MF, WRL and STEP (.step, .stp) files, plus PLY, OFF, 3DM, AMF, IFC, BREP, IGES, FCSTD and BIM files from a URL. Choose the viewer in the block, the Elementor widget or the viewer editor. WooCommerce product pages use the Lite viewer, so add GLB or glTF files to products.
 
 = Lite or Advanced viewer - which should I use? =
 
@@ -243,20 +243,20 @@ Contact us through [bPlugins support](https://bplugins.com/support/) for help, f
 
 == Screenshots ==
 
-1. Adding a 3D viewer (classic interface; some options need Pro)
-2. Viewer settings (classic interface; some options need Pro)
-3. A single 3D model, and several models in one viewer (Pro)
-4. WooCommerce: 3D model above the product images
-5. WooCommerce: 3D model below the product images
-6. WooCommerce: 3D model in place of the product images
-7. WooCommerce: a different 3D model for each variation (Pro)
-8. Settings (classic interface; some options need Pro)
-9. The 3D Model Viewer block with a live preview in the editor
-10. Block settings (some options need Pro)
+1. WooCommerce: 3D right in the product gallery, with one tap back to the photos.
+2. WooCommerce: or put the 3D model in place of the product image (four free positions).
+3. A 3D viewer anywhere on your site, with zoom, screenshot, download and fullscreen buttons.
+4. Fullscreen: visitors turn and zoom the model on the whole screen.
+5. Made for phones: touch to turn and zoom, and one tap for AR on iPhone and Android.
+6. On a computer? Visitors scan the QR code to see the model in their room with AR.
+7. STL, STEP, OBJ, FBX and more, shown right on the page with no conversion.
+8. As many viewers as you need: collections, portfolios, blogs and landing pages.
+9. A modern editor with a live preview: paste or upload a model and see it in 3D as you work.
+10. Built into the block editor: set the model, poster, lighting and skybox in the sidebar.
 
 == Source Code ==
 
-The uncompiled source of everything in `build/` is on GitHub, where you can also report bugs and contribute: [**3D Viewer on GitHub**](https://github.com/bPlugins/3d-viewer-wp) (this release is tag `v2.1.1`). To build it, clone [bpl-tools](https://github.com/bPlugins/bpl-tools) next to the plugin folder, then run `npm install --legacy-peer-deps` and `npx wp-scripts build --webpack-copy-php`.
+The uncompiled source of everything in `build/` is on GitHub, where you can also report bugs and contribute: [**3D Viewer on GitHub**](https://github.com/bPlugins/3d-viewer-wp) (this release is tag `v2.1.2`). To build it, clone [bpl-tools](https://github.com/bPlugins/bpl-tools) next to the plugin folder, then run `npm install --legacy-peer-deps` and `npx wp-scripts build --webpack-copy-php`.
 
 == External Services ==
 
@@ -353,6 +353,14 @@ The uncompiled source of everything in `build/` is on GitHub, where you can also
 * **Includes:** Three.js r163 – MIT; fflate 0.8.2 – MIT – [https://github.com/101arrowz/fflate](https://github.com/101arrowz/fflate); Chevrotain 9.0.1 – Apache-2.0 – [https://github.com/Chevrotain/chevrotain](https://github.com/Chevrotain/chevrotain)
 * **Purpose:** The Advanced viewer.
 
+= meshoptimizer decoder =
+
+* **File:** `public/js/meshopt_decoder.js` (unmodified copy of `meshopt_decoder.js` from meshoptimizer 0.18.1)
+* **Source:** [https://github.com/zeux/meshoptimizer](https://github.com/zeux/meshoptimizer)
+* **npm:** `meshoptimizer`
+* **License:** MIT, Copyright (c) 2016-2022 Arseny Kapoulkine – [https://github.com/zeux/meshoptimizer/blob/master/LICENSE.md](https://github.com/zeux/meshoptimizer/blob/master/LICENSE.md)
+* **Purpose:** Lets the "Lite" viewer open GLB files compressed with meshopt (`EXT_meshopt_compression`). Loaded from your own site, only on pages that show a Lite viewer.
+
 = Codestar Framework 2.3.1 =
 
 * **Folder:** `vendor/codestar-framework/`
@@ -408,6 +416,12 @@ The uncompiled source of everything in `build/` is on GitHub, where you can also
 * React Router 7.18.1 – MIT – [https://github.com/remix-run/react-router](https://github.com/remix-run/react-router) – Help & Demos navigation
 * Freemius Checkout JS – MIT – [https://github.com/Freemius/freemius-checkout-js](https://github.com/Freemius/freemius-checkout-js) – the Help & Demos checkout
 == Changelog ==
+
+= 2.1.2 - 10 December, 2026 =
+* Fixed: Meshopt-compressed GLB files load in the Lite viewer.
+* Fixed: Autoptimize no longer combines or defers 3D Viewer's scripts on pages that show a viewer.
+* Fixed: A refused 3D upload names the file type and says where to turn it on, or that it needs Pro.
+* Improvement: STEP files with the .stp extension can be uploaded.
 
 = 2.1.1 - 16 November, 2026 =
 * Changed: Viewer buttons are round with outline icons and a larger touch area; custom icon colours on `.control-btn` now need `!important`.
