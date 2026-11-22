@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tdvb/td-viewer",
+  "title": "3D Viewer",
+  "description": "Display interactive 3D models on the web.",
+  "category": "media",
+  "keywords": [
+    "3d",
+    "3d model",
+    "3d viewer"
+  ],
+  "textdomain": "3d-viewer",
+  "attributes": {
+    "align": {
+      "type": "string",
+      "default": ""
+    },
+    "cId": {
+      "type": "string",
+      "default": ""
+    },
+    "alignment": {
+      "type": "string",
+      "default": "center"
+    },
+    "sourceType": {
+      "type": "string",
+      "default": "upload"
+    },
+    "model": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "url": "",
+        "title": ""
+      }
+    },
+    "modelLink": {
+      "type": "string",
+      "default": ""
+    },
+    "width": {
+      "type": "string",
+      "default": "100%"
+    },
+    "height": {
+      "type": "string",
+      "default": "350px"
+    },
+    "isTouchMove": {
+      "type": "boolean",
+      "default": true
+    },
+    "isZoom": {
+      "type": "boolean",
+      "default": true
+    },
+    "loadingType": {
+      "type": "string",
+      "default": "auto"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false
+  },
+  "example": {
+    "attributes": {
+      "preview": true,
+      "sourceType": "link"
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./view.css",
+  "render": "file:./render.php",
+  "viewScriptModule": "bp3d-lib-model-viewer"
+}
