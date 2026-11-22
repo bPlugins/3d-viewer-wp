@@ -184,13 +184,27 @@ class EnqueueAssets
             // onload fires even when the file's own code fails, so wait for its WebAssembly to compile.
             . 'var d = w.MeshoptDecoder;'
             . 'if (!d || !d.supported || !d.ready || typeof d.ready.then !== "function") return;'
-            . 'd.ready.then(function () {'
+            . 'd.ready.then(function () { whenBody(apply); }, function () {});'
+            . '};'
+            . 'function apply() {'
             . 'w.ModelViewerElement = Object.assign(w.ModelViewerElement || {}, { meshoptDecoderLocation: url });'
             // Already defined: the static setter.
             . 'var MV = w.customElements && w.customElements.get("model-viewer");'
             . 'if (MV && !MV.meshoptDecoderLocation) MV.meshoptDecoderLocation = url;'
-            . '}, function () {});'
-            . '};'
+            . '}'
+            // model-viewer appends the decoder to document.body; the block editor iframe has none until React mounts it.
+            . 'function whenBody(cb) {'
+            . 'var doc = document, done = false, mo;'
+            . 'function check() {'
+            . 'if (done || doc.readyState === "loading" || !doc.body) return;'
+            . 'done = true;'
+            . 'if (mo) mo.disconnect();'
+            . 'cb();'
+            . '}'
+            . 'if (w.MutationObserver) { mo = new MutationObserver(check); mo.observe(doc.documentElement, { childList: true }); }'
+            . 'doc.addEventListener("DOMContentLoaded", check);'
+            . 'check();'
+            . '}'
             . '(document.head || document.documentElement).appendChild(s);'
             . '})(' . wp_json_encode($url) . ');',
             ['id' => 'bp3d-meshopt-decoder-js']
